@@ -37,15 +37,9 @@ body { font-family: var(--ff); background: var(--bg); color: var(--text); font-s
 
 /* HEADER */
 header {
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-  padding: 0 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  flex-wrap: wrap;
-  height: 56px;
+  background: var(--surface); border-bottom: 1px solid var(--border);
+  padding: 0 2rem; display: flex; align-items: center;
+  justify-content: space-between; gap: 1rem; flex-wrap: wrap; height: 56px;
 }
 .brand { font-size: 13px; font-weight: 600; color: var(--text); letter-spacing: -.2px; }
 .brand span { color: var(--text3); font-weight: 400; margin-left: 6px; }
@@ -59,93 +53,77 @@ header {
 .sync-dot { width: 6px; height: 6px; border-radius: 50%; background: #22c55e; animation: pulse 2s infinite; }
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
 .btn {
-  background: var(--text); color: #fff;
-  border: none; border-radius: 7px;
+  background: var(--text); color: #fff; border: none; border-radius: 7px;
   padding: 6px 14px; font-family: var(--ff); font-size: 12px; font-weight: 500;
-  cursor: pointer; display: flex; align-items: center; gap: 6px;
-  transition: opacity .15s;
+  cursor: pointer; display: flex; align-items: center; gap: 6px; transition: opacity .15s;
 }
 .btn:hover { opacity: .85; }
 .btn.spinning svg { animation: spin .7s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* KPI CARDS */
-.kpi-row {
-  display: grid;
-  grid-template-columns: repeat(5,1fr);
-  gap: 12px;
-  padding: 1.25rem 2rem;
+/* TAB STRIP */
+.tab-strip {
+  background: var(--surface); border-bottom: 1px solid var(--border);
+  padding: 0 2rem; display: flex; gap: 0;
 }
-.kpi {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 1rem 1.25rem;
+.tab-btn {
+  padding: 10px 18px; font-size: 12.5px; font-weight: 500; font-family: var(--ff);
+  color: var(--text3); cursor: pointer; border: none; background: none;
+  border-bottom: 2px solid transparent; transition: color .15s, border-color .15s;
+  white-space: nowrap;
 }
+.tab-btn:hover { color: var(--text); }
+.tab-btn.active { color: var(--text); border-bottom-color: var(--text); }
+.tab-count {
+  display: inline-block; background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 20px; padding: 1px 7px; font-size: 10px; font-family: var(--fm);
+  margin-left: 6px; color: var(--text3);
+}
+.tab-btn.active .tab-count { background: var(--text); color: #fff; border-color: var(--text); }
+
+/* KPI */
+.kpi-row { display: grid; grid-template-columns: repeat(5,1fr); gap: 12px; padding: 1.25rem 2rem; }
+.kpi { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1rem 1.25rem; }
 .kpi-label { font-size: 11px; color: var(--text3); margin-bottom: 6px; font-weight: 500; text-transform: uppercase; letter-spacing: .04em; }
 .kpi-val { font-size: 26px; font-weight: 600; color: var(--text); line-height: 1; letter-spacing: -.5px; }
 .kpi-sub { font-size: 11px; color: var(--text3); margin-top: 4px; }
 .kpi-bar { height: 3px; border-radius: 2px; margin-top: 10px; background: var(--border); overflow: hidden; }
 .kpi-bar-fill { height: 100%; border-radius: 2px; transition: width .6s ease; }
 
-/* CHARTS ROW */
-.charts-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 12px;
-  padding: 0 2rem 1.25rem;
-}
-.chart-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 1.25rem;
-}
-.chart-title {
-  font-size: 11px; font-weight: 600; text-transform: uppercase;
-  letter-spacing: .05em; color: var(--text2); margin-bottom: 1rem;
-}
-
-/* Donut chart */
+/* CHARTS */
+.charts-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; padding: 0 2rem 1.25rem; }
+.chart-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; }
+.chart-title { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--text2); margin-bottom: 1rem; }
 .donut-wrap { display: flex; align-items: center; gap: 1.25rem; }
 .donut-legend { flex: 1; display: flex; flex-direction: column; gap: 7px; }
 .legend-item { display: flex; align-items: center; gap: 7px; font-size: 12px; }
 .legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
 .legend-label { flex: 1; color: var(--text2); }
 .legend-val { font-family: var(--fm); font-size: 11px; font-weight: 500; color: var(--text); }
-
-/* Bar chart */
 .bar-chart { display: flex; flex-direction: column; gap: 8px; }
 .bar-row { display: flex; align-items: center; gap: 8px; }
 .bar-label { font-size: 11px; color: var(--text2); width: 32px; flex-shrink: 0; text-align: right; font-family: var(--fm); }
-.bar-track { flex: 1; height: 20px; background: var(--surface2); border-radius: 4px; overflow: hidden; position: relative; }
-.bar-fill { height: 100%; border-radius: 4px; transition: width .6s ease; display: flex; align-items: center; padding-left: 8px; }
+.bar-track { flex: 1; height: 20px; background: var(--surface2); border-radius: 4px; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 4px; display: flex; align-items: center; padding-left: 8px; transition: width .6s; }
 .bar-fill span { font-size: 10px; font-weight: 500; color: rgba(255,255,255,.9); white-space: nowrap; }
-
-/* Timeline / ETA chart */
 .timeline-chart { display: flex; flex-direction: column; gap: 6px; }
 .tl-row { display: flex; align-items: center; gap: 8px; }
 .tl-date { font-family: var(--fm); font-size: 10px; color: var(--text3); width: 60px; flex-shrink: 0; }
-.tl-bar-wrap { flex: 1; display: flex; align-items: center; gap: 6px; }
-.tl-bar { height: 16px; border-radius: 4px; display: flex; align-items: center; padding: 0 7px; transition: width .5s ease; }
+.tl-bar { height: 16px; border-radius: 4px; display: flex; align-items: center; padding: 0 7px; transition: width .5s; }
 .tl-bar span { font-size: 10px; font-weight: 500; white-space: nowrap; }
 .tl-count { font-family: var(--fm); font-size: 10px; color: var(--text3); width: 20px; text-align: right; }
 
 /* CONTROLS */
 .controls-bar {
-  display: flex; align-items: center; gap: 10px;
-  padding: .75rem 2rem;
-  background: var(--surface);
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-  flex-wrap: wrap;
+  display: flex; align-items: center; gap: 10px; padding: .75rem 2rem;
+  background: var(--surface); border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border); flex-wrap: wrap;
 }
 .search-wrap { position: relative; flex: 1; min-width: 200px; }
 .search-wrap svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text3); pointer-events: none; }
 .controls-bar input[type=text] {
-  width: 100%; background: var(--bg); border: 1px solid var(--border);
-  border-radius: 7px; padding: 6px 10px 6px 32px;
-  font-family: var(--ff); font-size: 12.5px; color: var(--text); outline: none;
+  width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 7px;
+  padding: 6px 10px 6px 32px; font-family: var(--ff); font-size: 12.5px; color: var(--text); outline: none;
 }
 .controls-bar input:focus { border-color: var(--border2); }
 .controls-bar input::placeholder { color: var(--text3); }
@@ -159,11 +137,10 @@ header {
 .divider { width: 1px; height: 20px; background: var(--border); flex-shrink: 0; }
 
 /* TABLE */
-.table-wrap { background: var(--surface); border-top: none; overflow: hidden; margin: 0 2rem 2rem; border: 1px solid var(--border); border-radius: 12px; }
+.table-wrap { background: var(--surface); overflow: hidden; margin: 0 2rem 2rem; border: 1px solid var(--border); border-radius: 12px; }
 .tbl-meta {
   display: flex; align-items: center; justify-content: space-between;
-  padding: .7rem 1.25rem; border-bottom: 1px solid var(--border);
-  background: var(--surface2);
+  padding: .7rem 1.25rem; border-bottom: 1px solid var(--border); background: var(--surface2);
 }
 .tbl-meta strong { font-size: 12.5px; font-weight: 600; }
 .tbl-meta span { font-size: 11px; color: var(--text3); font-family: var(--fm); }
@@ -171,7 +148,7 @@ header {
 table { width: 100%; border-collapse: collapse; table-layout: fixed; }
 col.c-po { width: 105px; } col.c-sup { width: 50px; } col.c-type { width: 115px; }
 col.c-qty { width: 66px; } col.c-mode { width: 70px; } col.c-exf { width: 88px; }
-col.c-eta { width: 88px; } col.c-status { width: 118px; } col.c-tops { width: 118px; }
+col.c-eta { width: 88px; } col.c-status { width: 95px; } col.c-tops { width: 110px; }
 col.c-note { width: auto; }
 thead th {
   padding: 8px 12px; font-size: 10px; font-weight: 600; text-transform: uppercase;
@@ -192,29 +169,26 @@ tr:hover td { background: #faf9f6; }
 .eta-overdue { color: #991b1b; }
 .badge {
   display: inline-flex; align-items: center; gap: 5px;
-  padding: 2px 8px; border-radius: 5px;
-  font-size: 10.5px; font-weight: 500; white-space: nowrap;
+  padding: 2px 8px; border-radius: 5px; font-size: 10.5px; font-weight: 500; white-space: nowrap;
 }
 .dot { width: 5px; height: 5px; border-radius: 50%; }
 .bs-transit  { background: var(--accent-bg); color: var(--accent); }
 .bs-transit .dot { background: var(--accent); }
-.bs-prod     { background: var(--amber-bg);  color: var(--amber); }
+.bs-prod     { background: var(--amber-bg); color: var(--amber); }
 .bs-prod .dot { background: var(--amber); }
-.bs-booked   { background: var(--blue-bg);   color: var(--blue); }
+.bs-booked   { background: var(--blue-bg); color: var(--blue); }
 .bs-booked .dot { background: var(--blue); }
-.bs-ready    { background: var(--slate-bg);  color: var(--slate); }
+.bs-ready    { background: var(--slate-bg); color: var(--slate); }
 .bs-ready .dot { background: var(--slate); }
 .bs-dev      { background: var(--purple-bg); color: var(--purple); }
 .bs-dev .dot { background: var(--purple); }
-.bs-delivered { background: #e8f0fe; color: #1a3d8b; }
-.bs-delivered .dot { background: #1a3d8b; }
 .bm-sea { background: var(--blue-bg); color: var(--blue); font-family: var(--fm); font-size: 10px; }
 .bm-air { background: var(--purple-bg); color: var(--purple); font-family: var(--fm); font-size: 10px; }
 .bm-tbd { background: var(--surface2); color: var(--text3); font-family: var(--fm); font-size: 10px; }
-.bt-approved { background: var(--accent-bg); color: var(--accent); }
-.bt-review   { background: var(--amber-bg); color: var(--amber); }
-.bt-submitted{ background: var(--blue-bg); color: var(--blue); }
-.bt-transit  { background: var(--accent-bg); color: var(--accent); }
+.bt-approved  { background: var(--accent-bg); color: var(--accent); }
+.bt-review    { background: var(--amber-bg); color: var(--amber); }
+.bt-submitted { background: var(--blue-bg); color: var(--blue); }
+.bt-transit   { background: var(--accent-bg); color: var(--accent); }
 .note-text { font-size: 11px; color: var(--text3); line-height: 1.4; max-height: 38px; overflow: hidden; cursor: pointer; }
 .note-text::after { content: " ▾"; opacity: .5; font-size: 9px; }
 .note-text.expanded { max-height: 240px; }
@@ -223,12 +197,22 @@ tr:hover td { background: #faf9f6; }
 .error-bar { background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: .75rem 1.25rem; margin: 1rem 2rem; font-size: 12px; color: #b91c1c; display: none; }
 .error-bar a { color: #b91c1c; font-weight: 600; }
 
+/* source badge */
+.src-badge {
+  display: inline-block; padding: 1px 6px; border-radius: 4px;
+  font-family: var(--fm); font-size: 9px; font-weight: 500; white-space: nowrap;
+}
+.src-transit { background: var(--accent-bg); color: var(--accent); }
+.src-booked  { background: var(--blue-bg); color: var(--blue); }
+.src-quoted  { background: var(--amber-bg); color: var(--amber); }
+
 @media (max-width: 1000px) {
   .kpi-row { grid-template-columns: repeat(3,1fr); }
   .charts-row { grid-template-columns: 1fr 1fr; }
-  .kpi-row, .charts-row, header, .controls-bar, .tbl-meta { padding-left: 1rem; padding-right: 1rem; }
+  header, .tab-strip, .controls-bar, .tbl-meta { padding-left: 1rem; padding-right: 1rem; }
+  .kpi-row, .charts-row { padding-left: 1rem; padding-right: 1rem; }
   .table-wrap { margin: 0 1rem 1.5rem; overflow-x: auto; }
-  table { min-width: 860px; }
+  table { min-width: 900px; }
 }
 </style>
 </head>
@@ -241,38 +225,48 @@ tr:hover td { background: #faf9f6; }
       <span class="sync-dot"></span>
       <span id="lastSync">—</span>
     </div>
-    <button class="btn" id="refreshBtn" onclick="loadData()">
+    <button class="btn" id="refreshBtn" onclick="loadAll()">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
       Refresh
     </button>
   </div>
 </header>
 
+<div class="tab-strip">
+  <button class="tab-btn active" data-tab="all" onclick="switchTab('all')">
+    All POs <span class="tab-count" id="cnt-all">—</span>
+  </button>
+  <button class="tab-btn" data-tab="In-Transit" onclick="switchTab('In-Transit')">
+    In-Transit <span class="tab-count" id="cnt-transit">—</span>
+  </button>
+  <button class="tab-btn" data-tab="Booked" onclick="switchTab('Booked')">
+    Booked <span class="tab-count" id="cnt-booked">—</span>
+  </button>
+  <button class="tab-btn" data-tab="QuotedRequested" onclick="switchTab('QuotedRequested')">
+    Quoted / Requested <span class="tab-count" id="cnt-quoted">—</span>
+  </button>
+</div>
+
 <div class="kpi-row" id="kpis">
-  <div class="kpi"><div class="kpi-label">POs tracked</div><div class="kpi-val">—</div><div class="kpi-bar"><div class="kpi-bar-fill" style="background:#1a4a8b;width:0%"></div></div></div>
+  <div class="kpi"><div class="kpi-label">POs</div><div class="kpi-val">—</div><div class="kpi-bar"><div class="kpi-bar-fill" style="background:#1a4a8b;width:0%"></div></div></div>
   <div class="kpi"><div class="kpi-label">Total units</div><div class="kpi-val">—</div><div class="kpi-bar"><div class="kpi-bar-fill" style="background:#4a1a8b;width:0%"></div></div></div>
   <div class="kpi"><div class="kpi-label">In transit</div><div class="kpi-val">—</div><div class="kpi-bar"><div class="kpi-bar-fill" style="background:#1a6b3c;width:0%"></div></div></div>
   <div class="kpi"><div class="kpi-label">Arriving ≤14 days</div><div class="kpi-val">—</div><div class="kpi-bar"><div class="kpi-bar-fill" style="background:#7a4a0a;width:0%"></div></div></div>
-  <div class="kpi"><div class="kpi-label">Need ship mode</div><div class="kpi-val">—</div><div class="kpi-bar"><div class="kpi-bar-fill" style="background:#8b1a1a;width:0%"></div></div></div>
+  <div class="kpi"><div class="kpi-label">Booked</div><div class="kpi-val">—</div><div class="kpi-bar"><div class="kpi-bar-fill" style="background:#2d3a4a;width:0%"></div></div></div>
 </div>
 
 <div class="charts-row">
-  <!-- Donut: status breakdown -->
   <div class="chart-card">
-    <div class="chart-title">Status breakdown</div>
+    <div class="chart-title">Breakdown by source</div>
     <div class="donut-wrap">
       <svg id="donutSvg" width="90" height="90" viewBox="0 0 90 90" style="flex-shrink:0"></svg>
       <div class="donut-legend" id="donutLegend"></div>
     </div>
   </div>
-
-  <!-- Horizontal bars: units by supplier -->
   <div class="chart-card">
     <div class="chart-title">Units by supplier</div>
     <div class="bar-chart" id="supplierBars"></div>
   </div>
-
-  <!-- ETA timeline -->
   <div class="chart-card">
     <div class="chart-title">POs by ETA window</div>
     <div class="timeline-chart" id="etaTimeline"></div>
@@ -281,16 +275,15 @@ tr:hover td { background: #faf9f6; }
 
 <div class="error-bar" id="errorBar">
   ⚠ Could not load from Google Sheets. Make sure the sheet is public (Viewer).
-  <a href="#" onclick="loadData();return false;">Retry</a>
+  <a href="#" onclick="loadAll();return false;">Retry</a>
 </div>
 
 <div class="controls-bar">
   <div class="search-wrap">
     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-    <input type="text" id="search" placeholder="Search PO#, type, supplier, notes…">
+    <input type="text" id="search" placeholder="Search PO#, type, mode, notes…">
   </div>
   <div class="divider"></div>
-  <select id="filterStatus"><option value="">All statuses</option></select>
   <select id="filterMode"><option value="">All modes</option></select>
   <select id="filterSupplier"><option value="">All suppliers</option></select>
 </div>
@@ -298,7 +291,7 @@ tr:hover td { background: #faf9f6; }
 <div class="table-wrap">
   <div class="tbl-meta">
     <strong id="countLabel">Loading…</strong>
-    <span id="countBadge">— purchase orders · sorted by ETA</span>
+    <span id="countBadge">sorted by ETA</span>
   </div>
   <div class="scroll-wrap">
     <table>
@@ -309,165 +302,233 @@ tr:hover td { background: #faf9f6; }
       </colgroup>
       <thead><tr>
         <th>PO #</th><th>Sup.</th><th>Product type</th><th class="r">Qty</th>
-        <th>Mode</th><th>EXF</th><th>ETA</th><th>Status</th>
-        <th>TOPs status</th><th>Freight notes</th>
+        <th>Mode</th><th>EXF</th><th>ETA</th><th>Source</th>
+        <th>TOPs / Status</th><th>Freight notes</th>
       </tr></thead>
-      <tbody id="tbody"><tr><td colspan="10" class="empty-cell">Loading…</td></tr></tbody>
+      <tbody id="tbody"><tr><td colspan="10" class="empty-cell">Loading from Google Sheets…</td></tr></tbody>
     </table>
   </div>
 </div>
 
 <script>
-const SHEET_ID = "1YPxtFy4jwuj11HAouWuiJt6mJL-KDZOAGMf0JMcaS24";
-const SHEET_NAME = "RAW2";
-const COL = { po:3, supplier:4, productType:5, qty:7, mode:8, currentExf:12, eta:14, poStatus:15, poStatusDetail:18, topsStatus:20, wipUpdate:30, aiUpdate:31 };
+// ─── CONFIG ──────────────────────────────────────────────────────
+const SHEET_ID  = "1YPxtFy4jwuj11HAouWuiJt6mJL-KDZOAGMf0JMcaS24";
+const TABS = [
+  { name: "In-Transit",       label: "In-Transit",         src: "transit" },
+  { name: "Booked",           label: "Booked",             src: "booked"  },
+  { name: "QuotedRequested",  label: "Quoted/Requested",   src: "quoted"  },
+];
+// Column indices (0-based) are the same across all three tabs:
+// 0=shipRef, 1=currentExf, 2=eta, 3=po, 4=productType, 5=mode, 6=notes, 7=extraCol(transit_time | tops_status | undefined)
 
-let ALL_DATA = [];
 const TODAY = new Date(); TODAY.setHours(0,0,0,0);
+let ALL_DATA = [];       // merged records from all sheets
+let ACTIVE_TAB = "all"; // "all" | "In-Transit" | "Booked" | "QuotedRequested"
 
+// ─── HELPERS ─────────────────────────────────────────────────────
+function fmtDate(v) {
+  if (!v || v === "N/A") return "";
+  if (v instanceof Date || (typeof v === "object" && v.getTime)) {
+    const d = new Date(v); if (isNaN(d)) return String(v);
+    return `${d.getMonth()+1}/${d.getDate()}/${d.getFullYear()}`;
+  }
+  return String(v);
+}
 function parseD(s) {
-  if (!s || s==="#N/A" || s==="N/A" || s==="") return null;
-  const p = s.toString().trim().split("/");
-  if (p.length===3 && p[2].length===4) return new Date(+p[2],+p[0]-1,+p[1]);
-  return null;
+  if (!s) return null;
+  const p = s.toString().split("/");
+  if (p.length === 3 && p[2].length === 4) return new Date(+p[2], +p[0]-1, +p[1]);
+  const d = new Date(s); return isNaN(d) ? null : d;
 }
 function cell(row, idx) {
-  const c = row.c && row.c[idx];
-  if (!c || c.v===null || c.v===undefined) return "";
+  const c = row.c?.[idx];
+  if (!c || c.v === null || c.v === undefined) return "";
+  // Google date serial: type "d" comes with formatted value in c.f
   if (c.f) return c.f;
   return String(c.v).trim();
 }
-function parseSheetData(json) {
+
+// ─── SHEET FETCH ─────────────────────────────────────────────────
+async function fetchTab(tabName) {
+  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(tabName)}&t=${Date.now()}`;
+  const res  = await fetch(url);
+  const text = await res.text();
+  return JSON.parse(text.replace(/^[^\(]+\(/, "").replace(/\);\s*$/, ""));
+}
+
+function parseTab(json, src) {
+  const rows = json.table.rows;
   const data = [];
-  for (let i = 1; i < json.table.rows.length; i++) {
-    const r = json.table.rows[i];
-    if (!r || !r.c) continue;
-    const po = cell(r, COL.po);
-    if (!po) continue;
-    const note = cell(r, COL.aiUpdate) || cell(r, COL.wipUpdate) || "";
-    const fm = note.match(/Freight Overview[:\s]+([^E\n]+?)(?:Expected|$)/i);
-    const shortNote = fm ? fm[1].trim() : note.substring(0,120);
-    data.push({ po, sup: cell(r,COL.supplier), type: cell(r,COL.productType),
-      qty: parseInt(cell(r,COL.qty))||0, mode: cell(r,COL.mode),
-      exf: cell(r,COL.currentExf), eta: cell(r,COL.eta),
-      status: cell(r,COL.poStatus)||cell(r,COL.poStatusDetail),
-      tops: cell(r,COL.topsStatus), note: shortNote, fullNote: note });
+  for (let i = 1; i < rows.length; i++) {
+    const r = rows[i];
+    if (!r?.c) continue;
+    const po   = cell(r, 3);
+    const exf  = cell(r, 1);
+    const eta  = cell(r, 2);
+    const mode = cell(r, 5);
+    const note = cell(r, 6) || "";
+    const col7 = cell(r, 7) || "";       // transitTime | topsStatus | (empty for quoted)
+    const type = cell(r, 4);
+    if (!po && !type) continue;
+
+    // Extract supplier from PO prefix (TAL, SC, ED, TH, JT, AR …)
+    const supMatch = po.match(/^([A-Z]+)/);
+    const sup = supMatch ? supMatch[1].slice(0,3) : "—";
+
+    // Short note (first line only)
+    const shortNote = note.split("\n")[0].replace(/^Freight Overview:\s*/i, "").trim();
+
+    data.push({ po, sup, type, exf, eta, mode, note: shortNote, fullNote: note, extra: col7, src });
   }
   return data;
 }
 
-async function loadData() {
+// ─── LOAD ALL ────────────────────────────────────────────────────
+async function loadAll() {
   const btn = document.getElementById("refreshBtn");
   btn.classList.add("spinning");
   document.getElementById("errorBar").style.display = "none";
-  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}&t=${Date.now()}`;
+
   try {
-    const res = await fetch(url);
-    const text = await res.text();
-    const json = JSON.parse(text.replace(/^[^\(]+\(/,"").replace(/\);\s*$/,""));
-    ALL_DATA = parseSheetData(json);
+    const results = await Promise.all(TABS.map(t => fetchTab(t.name).then(j => parseTab(j, t.src))));
+    ALL_DATA = results.flat();
+
+    // Update tab counts
+    const byTab = { transit: 0, booked: 0, quoted: 0 };
+    ALL_DATA.forEach(r => byTab[r.src]++);
+    document.getElementById("cnt-all").textContent     = ALL_DATA.length;
+    document.getElementById("cnt-transit").textContent = byTab.transit;
+    document.getElementById("cnt-booked").textContent  = byTab.booked;
+    document.getElementById("cnt-quoted").textContent  = byTab.quoted;
+
     buildFilters();
     render();
     const now = new Date();
     document.getElementById("lastSync").textContent =
-      "Synced " + now.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+      "Synced " + now.toLocaleTimeString("en-US", {hour:"2-digit",minute:"2-digit"});
   } catch(e) {
+    console.error(e);
     document.getElementById("errorBar").style.display = "block";
     document.getElementById("tbody").innerHTML = `<tr><td colspan="10" class="empty-cell">Failed to load. Check sheet permissions.</td></tr>`;
-    console.error(e);
-  } finally { btn.classList.remove("spinning"); }
+  } finally {
+    btn.classList.remove("spinning");
+  }
 }
 
-/* ── CHARTS ── */
-const STATUS_COLORS = {
-  "In-Transit":         "#1a6b3c",
-  "Booked":             "#1a4a8b",
-  "Ready to Ship":      "#2d3a4a",
-  "In Production":      "#7a4a0a",
-  "Development Ongoing":"#4a1a8b",
-  "Delivered":          "#1a3d8b",
-  "":                   "#9b9890",
-};
+// ─── TAB SWITCH ──────────────────────────────────────────────────
+function switchTab(tab) {
+  ACTIVE_TAB = tab;
+  document.querySelectorAll(".tab-btn").forEach(b => b.classList.toggle("active", b.dataset.tab === tab));
+  render();
+}
+
+// ─── FILTERS ─────────────────────────────────────────────────────
+function buildFilters() {
+  const opts = (id, arr) => {
+    const el = document.getElementById(id);
+    while (el.options.length > 1) el.remove(1);
+    arr.forEach(v => { const o = document.createElement("option"); o.value=v; o.textContent=v; el.appendChild(o); });
+  };
+  opts("filterMode",     [...new Set(ALL_DATA.map(r=>r.mode).filter(Boolean))].sort());
+  opts("filterSupplier", [...new Set(ALL_DATA.map(r=>r.sup).filter(Boolean))].sort());
+}
+
+// ─── BADGES ──────────────────────────────────────────────────────
+function srcBadge(src) {
+  const m = { transit:"src-transit", booked:"src-booked", quoted:"src-quoted" };
+  const l = { transit:"In-Transit", booked:"Booked", quoted:"Quoted/Req" };
+  return `<span class="src-badge ${m[src]||''}">${l[src]||src}</span>`;
+}
+function modeBadge(m) {
+  if (!m) return `<span style="color:var(--text3)">—</span>`;
+  const u = m.toUpperCase();
+  if (u.includes("SEA")) return `<span class="badge bm-sea">⬡ SEA</span>`;
+  if (u.includes("AIR")) return `<span class="badge bm-air">△ AIR</span>`;
+  return `<span class="badge bm-tbd">${m.length>10?"TBD":m}</span>`;
+}
+function etaCell(s) {
+  const d = parseD(s); if (!d) return `<span class="date">${s||"—"}</span>`;
+  const diff = Math.round((d-TODAY)/86400000);
+  let cls="",extra="";
+  if (diff>=0&&diff<=14){cls="eta-soon";extra=`<span style="font-size:9px;margin-left:4px;opacity:.65;font-family:var(--fm)">${diff===0?"today":diff+"d"}</span>`;}
+  else if(diff<0){cls="eta-overdue";extra=`<span style="font-size:9px;margin-left:4px;opacity:.65;font-family:var(--fm)">${Math.abs(diff)}d late</span>`;}
+  return `<span class="${cls}"><span class="date">${s}</span>${extra}</span>`;
+}
+function extraBadge(v, src) {
+  if (!v) return `<span style="color:var(--text3)">—</span>`;
+  if (src==="transit") {
+    return `<span class="date" style="font-size:11px;color:var(--text3)">${v} days</span>`;
+  }
+  // booked → tops status
+  const m = {"Approved":"bt-approved","Under Review":"bt-review","Requested/Submitted":"bt-submitted","In-Transit":"bt-transit"};
+  return `<span class="badge ${m[v]||'bs-dev'}">${v}</span>`;
+}
+
+// ─── CHARTS ──────────────────────────────────────────────────────
+const SRC_COLORS = { transit:"#1a6b3c", booked:"#1a4a8b", quoted:"#7a4a0a" };
+const SRC_LABELS = { transit:"In-Transit", booked:"Booked", quoted:"Quoted/Req" };
 const SUP_COLORS = ["#1a4a8b","#1a6b3c","#7a4a0a","#4a1a8b","#8b1a1a","#2d3a4a","#1a3d8b"];
 
 function drawDonut(data) {
   const counts = {};
-  data.forEach(r => { const s = r.status||"Unknown"; counts[s]=(counts[s]||0)+1; });
+  data.forEach(r => { counts[r.src]=(counts[r.src]||0)+1; });
   const entries = Object.entries(counts).sort((a,b)=>b[1]-a[1]);
   const total = entries.reduce((s,e)=>s+e[1],0);
   const svg = document.getElementById("donutSvg");
-  const cx=45, cy=45, r=35, ri=22;
-  let paths = "", angle = -Math.PI/2;
-  const colorMap = {...STATUS_COLORS};
-  entries.forEach(([status, count], i) => {
-    const frac = count/total;
-    const a1 = angle, a2 = angle + frac*2*Math.PI;
-    const x1=cx+r*Math.cos(a1), y1=cy+r*Math.sin(a1);
-    const x2=cx+r*Math.cos(a2), y2=cy+r*Math.sin(a2);
-    const xi1=cx+ri*Math.cos(a1), yi1=cy+ri*Math.sin(a1);
-    const xi2=cx+ri*Math.cos(a2), yi2=cy+ri*Math.sin(a2);
-    const large = frac>0.5?1:0;
-    const color = colorMap[status] || SUP_COLORS[i%SUP_COLORS.length];
-    paths += `<path d="M${xi1} ${yi1} L${x1} ${y1} A${r} ${r} 0 ${large} 1 ${x2} ${y2} L${xi2} ${yi2} A${ri} ${ri} 0 ${large} 0 ${xi1} ${yi1}Z" fill="${color}" opacity=".85"/>`;
-    angle = a2;
+  const cx=45,cy=45,r=35,ri=22;
+  let paths="",angle=-Math.PI/2;
+  entries.forEach(([src,count]) => {
+    const frac=count/total, a1=angle, a2=angle+frac*2*Math.PI;
+    const x1=cx+r*Math.cos(a1),y1=cy+r*Math.sin(a1);
+    const x2=cx+r*Math.cos(a2),y2=cy+r*Math.sin(a2);
+    const xi1=cx+ri*Math.cos(a1),yi1=cy+ri*Math.sin(a1);
+    const xi2=cx+ri*Math.cos(a2),yi2=cy+ri*Math.sin(a2);
+    const large=frac>0.5?1:0;
+    const color=SRC_COLORS[src]||"#aaa";
+    paths+=`<path d="M${xi1} ${yi1} L${x1} ${y1} A${r} ${r} 0 ${large} 1 ${x2} ${y2} L${xi2} ${yi2} A${ri} ${ri} 0 ${large} 0 ${xi1} ${yi1}Z" fill="${color}" opacity=".85"/>`;
+    angle=a2;
   });
-  svg.innerHTML = paths + `<text x="${cx}" y="${cy+1}" text-anchor="middle" dominant-baseline="middle" font-size="14" font-weight="600" fill="#1c1b18" font-family="Geist,sans-serif">${total}</text><text x="${cx}" y="${cy+13}" text-anchor="middle" font-size="8" fill="#9b9890" font-family="Geist,sans-serif">total</text>`;
-
-  const legend = document.getElementById("donutLegend");
-  legend.innerHTML = entries.slice(0,6).map(([s,c],i) => {
-    const color = colorMap[s] || SUP_COLORS[i%SUP_COLORS.length];
-    return `<div class="legend-item">
-      <span class="legend-dot" style="background:${color}"></span>
-      <span class="legend-label">${s||"Unknown"}</span>
+  svg.innerHTML=paths+`<text x="${cx}" y="${cy+1}" text-anchor="middle" dominant-baseline="middle" font-size="14" font-weight="600" fill="#1c1b18" font-family="Geist,sans-serif">${total}</text><text x="${cx}" y="${cy+13}" text-anchor="middle" font-size="8" fill="#9b9890" font-family="Geist,sans-serif">total</text>`;
+  document.getElementById("donutLegend").innerHTML=entries.map(([src,c])=>`
+    <div class="legend-item">
+      <span class="legend-dot" style="background:${SRC_COLORS[src]||'#aaa'}"></span>
+      <span class="legend-label">${SRC_LABELS[src]||src}</span>
       <span class="legend-val">${c}</span>
-    </div>`;
-  }).join("");
+    </div>`).join("");
 }
 
 function drawSupplierBars(data) {
-  const sup = {};
-  data.forEach(r => { if(r.sup) sup[r.sup]=(sup[r.sup]||0)+(r.qty||0); });
-  const entries = Object.entries(sup).sort((a,b)=>b[1]-a[1]).slice(0,7);
-  const max = entries[0]?.[1]||1;
-  const el = document.getElementById("supplierBars");
-  el.innerHTML = entries.map(([s,v],i) => {
-    const pct = Math.round(v/max*100);
-    const color = SUP_COLORS[i%SUP_COLORS.length];
+  // group by supplier — extract first letters of PO
+  const sup={};
+  data.forEach(r=>{if(r.sup&&r.sup!=="—")sup[r.sup]=(sup[r.sup]||0)+1;});
+  const entries=Object.entries(sup).sort((a,b)=>b[1]-a[1]).slice(0,7);
+  const max=entries[0]?.[1]||1;
+  document.getElementById("supplierBars").innerHTML=entries.map(([s,v],i)=>{
+    const pct=Math.round(v/max*100);
+    const color=SUP_COLORS[i%SUP_COLORS.length];
     return `<div class="bar-row">
       <span class="bar-label">${s}</span>
-      <div class="bar-track">
-        <div class="bar-fill" style="width:${pct}%;background:${color}">
-          <span>${v.toLocaleString()}</span>
-        </div>
-      </div>
+      <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${color}"><span>${v} POs</span></div></div>
     </div>`;
   }).join("");
 }
 
 function drawEtaTimeline(data) {
-  const today = TODAY;
-  const buckets = [
-    { label: "Today",    min: 0,  max: 0,  color: "#7a4a0a", bg: "#fdf0dc" },
-    { label: "≤7 days",  min: 1,  max: 7,  color: "#1a6b3c", bg: "#e8f5ee" },
-    { label: "≤14 days", min: 8,  max: 14, color: "#1a4a8b", bg: "#e8eef8" },
-    { label: "≤30 days", min: 15, max: 30, color: "#4a1a8b", bg: "#eeebf8" },
-    { label: "1–2 mo",   min: 31, max: 60, color: "#2d3a4a", bg: "#e8ecf0" },
-    { label: "2+ mo",    min: 61, max: 999,color: "#9b9890", bg: "#f0efe9" },
+  const buckets=[
+    {label:"Today",   min:0, max:0, color:"#7a4a0a"},
+    {label:"≤7 days", min:1, max:7, color:"#1a6b3c"},
+    {label:"≤14d",    min:8, max:14,color:"#1a4a8b"},
+    {label:"≤30d",    min:15,max:30,color:"#4a1a8b"},
+    {label:"1–2 mo",  min:31,max:60,color:"#2d3a4a"},
+    {label:"2+ mo",   min:61,max:999,color:"#9b9890"},
   ];
-  const counts = buckets.map(b => {
-    return data.filter(r => {
-      const d = parseD(r.eta); if (!d) return false;
-      const diff = Math.round((d-today)/86400000);
-      return diff >= b.min && diff <= b.max;
-    }).length;
-  });
-  const max = Math.max(...counts, 1);
-  const el = document.getElementById("etaTimeline");
-  el.innerHTML = buckets.map((b,i) => {
-    const pct = Math.round(counts[i]/max*100);
+  const counts=buckets.map(b=>data.filter(r=>{const d=parseD(r.eta);if(!d)return false;const diff=Math.round((d-TODAY)/86400000);return diff>=b.min&&diff<=b.max;}).length);
+  const max=Math.max(...counts,1);
+  document.getElementById("etaTimeline").innerHTML=buckets.map((b,i)=>{
+    const pct=Math.round(counts[i]/max*100);
     return `<div class="tl-row">
       <span class="tl-date">${b.label}</span>
-      <div class="tl-bar-wrap">
+      <div style="flex:1;display:flex;align-items:center;gap:6px">
         <div class="tl-bar" style="width:max(${pct}%,${counts[i]>0?24:4}px);background:${b.color};opacity:.85">
           ${counts[i]>0?`<span style="color:rgba(255,255,255,.9)">${counts[i]}</span>`:""}
         </div>
@@ -477,55 +538,19 @@ function drawEtaTimeline(data) {
   }).join("");
 }
 
-/* ── BADGES & RENDERING ── */
-function statusBadge(s) {
-  const m = { "In-Transit":"bs-transit","In Production":"bs-prod","Booked":"bs-booked","Ready to Ship":"bs-ready","Development Ongoing":"bs-dev","Delivered":"bs-delivered" };
-  if (!s) return `<span style="color:var(--text3)">—</span>`;
-  return `<span class="badge ${m[s]||'bs-dev'}"><span class="dot"></span>${s}</span>`;
-}
-function modeBadge(m) {
-  if (!m) return `<span style="color:var(--text3)">—</span>`;
-  const u = m.toUpperCase();
-  if (u.includes("SEA")) return `<span class="badge bm-sea">⬡ SEA</span>`;
-  if (u.includes("AIR")) return `<span class="badge bm-air">△ AIR</span>`;
-  return `<span class="badge bm-tbd">${m.length>8?"TBD":m}</span>`;
-}
-function etaCell(s) {
-  const d = parseD(s); if (!d) return `<span class="date">${s||"—"}</span>`;
-  const diff = Math.round((d-TODAY)/86400000);
-  let cls = "", extra = "";
-  if (diff>=0&&diff<=14) { cls="eta-soon"; extra=`<span style="font-size:9px;margin-left:4px;opacity:.65;font-family:var(--fm)">${diff===0?"today":diff+"d"}</span>`; }
-  else if (diff<0) { cls="eta-overdue"; extra=`<span style="font-size:9px;margin-left:4px;opacity:.65;font-family:var(--fm)">${Math.abs(diff)}d late</span>`; }
-  return `<span class="${cls}"><span class="date">${s}</span>${extra}</span>`;
-}
-function topsBadge(t) {
-  if (!t) return `<span style="color:var(--text3)">—</span>`;
-  const m = {"Approved":"bt-approved","Under Review":"bt-review","Requested/Submitted":"bt-submitted","In-Transit":"bt-transit"};
-  return `<span class="badge ${m[t]||'bs-dev'}">${t}</span>`;
-}
-
-function buildFilters() {
-  const opts = (id, arr) => {
-    const el = document.getElementById(id);
-    while (el.options.length>1) el.remove(1);
-    arr.forEach(v=>{ const o=document.createElement("option"); o.value=v; o.textContent=v; el.appendChild(o); });
-  };
-  opts("filterStatus",[...new Set(ALL_DATA.map(r=>r.status).filter(Boolean))].sort());
-  opts("filterMode",  [...new Set(ALL_DATA.map(r=>r.mode).filter(Boolean))].sort());
-  opts("filterSupplier",[...new Set(ALL_DATA.map(r=>r.sup).filter(Boolean))].sort());
-}
-
+// ─── RENDER ──────────────────────────────────────────────────────
 function render() {
-  const fS  = document.getElementById("filterStatus").value;
-  const fM  = document.getElementById("filterMode").value;
-  const fSup= document.getElementById("filterSupplier").value;
-  const q   = document.getElementById("search").value.toLowerCase().trim();
+  const fM   = document.getElementById("filterMode").value;
+  const fSup = document.getElementById("filterSupplier").value;
+  const q    = document.getElementById("search").value.toLowerCase().trim();
 
-  const rows = ALL_DATA.filter(r => {
-    if (fS  && r.status!==fS)  return false;
-    if (fM  && r.mode!==fM)    return false;
-    if (fSup&& r.sup!==fSup)   return false;
-    if (q && ![r.po,r.sup,r.type,r.note,r.fullNote].join(" ").toLowerCase().includes(q)) return false;
+  let rows = ALL_DATA.filter(r => {
+    if (ACTIVE_TAB !== "all" && r.src !== {
+      "In-Transit":"transit","Booked":"booked","QuotedRequested":"quoted"
+    }[ACTIVE_TAB]) return false;
+    if (fM   && r.mode !== fM)   return false;
+    if (fSup && r.sup  !== fSup) return false;
+    if (q && ![r.po,r.sup,r.type,r.mode,r.note,r.fullNote].join(" ").toLowerCase().includes(q)) return false;
     return true;
   }).sort((a,b)=>{
     const da=parseD(a.eta),db=parseD(b.eta);
@@ -533,49 +558,47 @@ function render() {
     return da-db;
   });
 
-  const total    = rows.reduce((s,r)=>s+(r.qty||0),0);
-  const transit  = rows.filter(r=>r.status==="In-Transit").length;
-  const arriving = rows.filter(r=>{const d=parseD(r.eta);if(!d)return false;const diff=Math.round((d-TODAY)/86400000);return diff>=0&&diff<=14&&r.status!=="Delivered";}).length;
-  const needMode = rows.filter(r=>!r.mode||r.mode.toLowerCase().includes("need")||r.mode.toUpperCase()==="TBD").length;
-  const n = rows.length;
+  const n=rows.length;
+  const transit  = rows.filter(r=>r.src==="transit").length;
+  const booked   = rows.filter(r=>r.src==="booked").length;
+  const arriving = rows.filter(r=>{const d=parseD(r.eta);if(!d)return false;const diff=Math.round((d-TODAY)/86400000);return diff>=0&&diff<=14;}).length;
 
-  document.getElementById("kpis").innerHTML = `
-    <div class="kpi"><div class="kpi-label">POs tracked</div><div class="kpi-val">${n}</div><div class="kpi-sub">of ${ALL_DATA.length} total</div><div class="kpi-bar"><div class="kpi-bar-fill" style="background:#1a4a8b;width:${ALL_DATA.length?Math.round(n/ALL_DATA.length*100):0}%"></div></div></div>
-    <div class="kpi"><div class="kpi-label">Total units</div><div class="kpi-val">${total>=1000?(total/1000).toFixed(1)+"k":total}</div><div class="kpi-sub">${total.toLocaleString()} pcs</div><div class="kpi-bar"><div class="kpi-bar-fill" style="background:#4a1a8b;width:80%"></div></div></div>
+  document.getElementById("kpis").innerHTML=`
+    <div class="kpi"><div class="kpi-label">POs shown</div><div class="kpi-val">${n}</div><div class="kpi-sub">of ${ALL_DATA.length} total</div><div class="kpi-bar"><div class="kpi-bar-fill" style="background:#1a4a8b;width:${ALL_DATA.length?Math.round(n/ALL_DATA.length*100):0}%"></div></div></div>
     <div class="kpi"><div class="kpi-label">In transit</div><div class="kpi-val">${transit}</div><div class="kpi-sub">${n?Math.round(transit/n*100):0}% of shown</div><div class="kpi-bar"><div class="kpi-bar-fill" style="background:#1a6b3c;width:${n?Math.round(transit/n*100):0}%"></div></div></div>
+    <div class="kpi"><div class="kpi-label">Booked</div><div class="kpi-val">${booked}</div><div class="kpi-sub">${n?Math.round(booked/n*100):0}% of shown</div><div class="kpi-bar"><div class="kpi-bar-fill" style="background:#1a4a8b;width:${n?Math.round(booked/n*100):0}%"></div></div></div>
     <div class="kpi"><div class="kpi-label">Arriving ≤14 days</div><div class="kpi-val">${arriving}</div><div class="kpi-sub">upcoming ETAs</div><div class="kpi-bar"><div class="kpi-bar-fill" style="background:#7a4a0a;width:${n?Math.round(arriving/n*100):0}%"></div></div></div>
-    <div class="kpi"><div class="kpi-label">Need ship mode</div><div class="kpi-val">${needMode}</div><div class="kpi-sub">TBD / unset</div><div class="kpi-bar"><div class="kpi-bar-fill" style="background:#8b1a1a;width:${n?Math.round(needMode/n*100):0}%"></div></div></div>
+    <div class="kpi"><div class="kpi-label">Quoted / Requested</div><div class="kpi-val">${rows.filter(r=>r.src==="quoted").length}</div><div class="kpi-sub">pending</div><div class="kpi-bar"><div class="kpi-bar-fill" style="background:#4a1a8b;width:${n?Math.round(rows.filter(r=>r.src==="quoted").length/n*100):0}%"></div></div></div>
   `;
 
-  // Charts always use filtered data
   drawDonut(rows);
   drawSupplierBars(rows);
   drawEtaTimeline(rows);
 
-  document.getElementById("countLabel").textContent = rows.length===ALL_DATA.length ? "All purchase orders" : "Filtered results";
-  document.getElementById("countBadge").textContent = `${rows.length} purchase orders · sorted by ETA`;
+  document.getElementById("countLabel").textContent = ACTIVE_TAB==="all" ? "All purchase orders" : `Filtered — ${ACTIVE_TAB}`;
+  document.getElementById("countBadge").textContent = `${n} records · sorted by ETA`;
 
   if (!rows.length) {
-    document.getElementById("tbody").innerHTML = `<tr><td colspan="10" class="empty-cell">No matching records</td></tr>`;
+    document.getElementById("tbody").innerHTML=`<tr><td colspan="10" class="empty-cell">No records</td></tr>`;
     return;
   }
-  document.getElementById("tbody").innerHTML = rows.map(r=>`<tr>
-    <td><span class="po-num">${r.po}</span></td>
-    <td><span class="sup">${r.sup||"—"}</span></td>
+  document.getElementById("tbody").innerHTML=rows.map(r=>`<tr>
+    <td><span class="po-num">${r.po||"—"}</span></td>
+    <td><span class="sup">${r.sup}</span></td>
     <td><span class="type" title="${r.type}">${r.type||"—"}</span></td>
-    <td><span class="qty">${(r.qty||0).toLocaleString()}</span></td>
+    <td><span class="qty">—</span></td>
     <td>${modeBadge(r.mode)}</td>
     <td><span class="date">${r.exf||"—"}</span></td>
     <td>${etaCell(r.eta)}</td>
-    <td>${statusBadge(r.status)}</td>
-    <td>${topsBadge(r.tops)}</td>
+    <td>${srcBadge(r.src)}</td>
+    <td>${extraBadge(r.extra,r.src)}</td>
     <td><div class="note-text" onclick="this.classList.toggle('expanded')">${r.note||"—"}</div></td>
   </tr>`).join("");
 }
 
-["filterStatus","filterMode","filterSupplier"].forEach(id=>document.getElementById(id).addEventListener("change",render));
+["filterMode","filterSupplier"].forEach(id=>document.getElementById(id).addEventListener("change",render));
 document.getElementById("search").addEventListener("input",render);
-loadData();
+loadAll();
 </script>
 </body>
 </html>
