@@ -258,8 +258,11 @@ function cellVal(row, idx) {
 // Use gid= (numeric sheetId) — this never falls back to another sheet.
 // If the tab is empty, gviz returns 0 rows, not RAW2 rows.
 async function fetchTab(gid) {
+  // tq=select * where D is not null  →  col D = PO# (col index 3, 1-based = D)
+  // This filters out blank rows so an empty tab returns 0 rows, not phantom rows.
+  const tq  = encodeURIComponent("select * where D is not null");
   const url = `https://docs.google.com/spreadsheets/d/${SID}/gviz/tq`
-    + `?tqx=out:json&gid=${gid}&headers=1&t=${Date.now()}`;
+    + `?tqx=out:json&gid=${gid}&headers=1&tq=${tq}&t=${Date.now()}`;
   const res  = await fetch(url);
   const text = await res.text();
   const json = JSON.parse(text.replace(/^[^(]+\(/, "").replace(/\);\s*$/, ""));
