@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PO Summary — In-Transit, Booked & Quoted</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f4f0;color:#1a1a18;font-size:14px}
+  header{background:#1a1a18;color:#f5f4f0;padding:1.25rem 2rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+  header h1{font-size:18px;font-weight:600;letter-spacing:-.3px}
+  header span{font-size:12px;opacity:.6}
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;padding:1.5rem 2rem 0}
+  .kpi{background:#fff;border:0.5px solid #e0dfd8;border-radius:10px;padding:1rem 1.125rem}
+  .kpi-label{font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+  .kpi-val{font-size:24px;font-weight:600;color:#1a1a18;line-height:1}
+  .kpi-sub{font-size:11px;color:#aaa;margin-top:4px}
+  .controls{display:flex;gap:10px;padding:1.25rem 2rem;flex-wrap:wrap;align-items:center}
+  .controls select,.controls input[type=text]{padding:7px 12px;border:0.5px solid #d0cfc8;border-radius:8px;background:#fff;color:#1a1a18;font-size:13px;outline:none}
+  .controls input[type=text]{flex:1;min-width:200px}
+  .controls select:focus,.controls input:focus{border-color:#888}
+  .table-wrap{margin:0 2rem 2rem;border:0.5px solid #e0dfd8;border-radius:12px;overflow:hidden;background:#fff}
+  .tbl-header{padding:.75rem 1.25rem;background:#f9f8f4;border-bottom:0.5px solid #e0dfd8;display:flex;justify-content:space-between;align-items:center}
+  .tbl-header span{font-size:12px;color:#888}
+  table{width:100%;border-collapse:collapse;table-layout:fixed}
+  th{padding:9px 12px;text-align:left;font-size:11px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.4px;border-bottom:0.5px solid #e0dfd8;background:#f9f8f4;white-space:nowrap;position:sticky;top:0;z-index:1}
+  td{padding:9px 12px;border-bottom:0.5px solid #f0efe8;color:#1a1a18;vertical-align:middle}
+  tr:last-child td{border-bottom:none}
+  tr:hover td{background:#faf9f6}
+  .po{font-weight:600;font-size:13px}
+  .badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:500;white-space:nowrap}
+  .b-transit{background:#e1f5ee;color:#085041}
+  .b-prod{background:#faeeda;color:#633806}
+  .b-booked{background:#e6f1fb;color:#0c447c}
+  .b-ready{background:#eaf3de;color:#27500a}
+  .b-dev{background:#f1efe8;color:#444441}
+  .b-delivered{background:#eeedfe;color:#3c3489}
+  .b-sea{background:#e6f1fb;color:#185fa5}
+  .b-air{background:#eeedfe;color:#534ab7}
+  .b-tbd{background:#f1efe8;color:#5f5e5a}
+  .b-approved{background:#eaf3de;color:#27500a}
+  .b-review{background:#faeeda;color:#633806}
+  .b-submitted{background:#e6f1fb;color:#0c447c}
+  .b-intransit-tops{background:#e1f5ee;color:#085041}
+  .note{font-size:11.5px;color:#666;line-height:1.45;max-height:44px;overflow:hidden;cursor:pointer;transition:max-height .2s}
+  .note.expanded{max-height:200px}
+  .note::after{content:" ▾";color:#bbb;font-size:10px}
+  .note.expanded::after{content:" ▴"}
+  .eta-soon{color:#3b6d11;font-weight:600}
+  .eta-overdue{color:#a32d2d;font-weight:600}
+  .col-po{width:100px}
+  .col-sup{width:52px}
+  .col-type{width:110px}
+  .col-qty{width:70px;text-align:right!important}
+  .col-mode{width:70px}
+  .col-exf{width:88px}
+  .col-eta{width:88px}
+  .col-status{width:110px}
+  .col-tops{width:110px}
+  .col-note{width:auto}
+  .empty{text-align:center;padding:3rem;color:#aaa;font-size:13px}
+  .scroll-wrap{max-height:70vh;overflow-y:auto}
+  @media(max-width:900px){
+    .controls,.kpis,header,.table-wrap{padding-left:1rem;padding-right:1rem}
+    .table-wrap{margin:0 1rem 1.5rem;overflow-x:auto}
+    table{min-width:900px}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>PO Summary — In-Transit, Booked &amp; Quoted</h1>
+    <span>State &amp; Liberty — as of May 29, 2026</span>
+  </div>
+  <span id="ts" style="font-size:11px;opacity:.5"></span>
+</header>
+
+<div class="kpis" id="kpis"></div>
+
+<div class="controls">
+  <select id="filterStatus"><option value="">All statuses</option></select>
+  <select id="filterMode"><option value="">All modes</option></select>
+  <select id="filterSupplier"><option value="">All suppliers</option></select>
+  <input type="text" id="search" placeholder="Search PO#, product type, notes…">
+</div>
+
+<div class="table-wrap">
+  <div class="tbl-header">
+    <strong id="countLabel" style="font-size:13px">All purchase orders</strong>
+    <span>sorted by ETA</span>
+  </div>
+  <div class="scroll-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th class="col-po">PO #</th>
+          <th class="col-sup">Sup.</th>
+          <th class="col-type">Product type</th>
+          <th class="col-qty">Qty</th>
+          <th class="col-mode">Mode</th>
+          <th class="col-exf">EXF</th>
+          <th class="col-eta">ETA</th>
+          <th class="col-status">Status</th>
+          <th class="col-tops">TOPs status</th>
+          <th class="col-note">Freight notes</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+const DATA=[
+  {po:"TAL6053",sup:"TAL",type:"Suit Pants",qty:2231,mode:"SEA",exf:"3/12/2026",eta:"5/29/2026",status:"In-Transit",tops:"Approved",note:"Arrived Chicago — ETA to Warehouse: 5/29/2026"},
+  {po:"SC5014",sup:"SC",type:"Suit Pants",qty:2211,mode:"SEA",exf:"4/12/2026",eta:"5/29/2026",status:"In-Transit",tops:"Approved",note:"Pop/Tap Hold — ETA to Warehouse: 5/29/2026"},
+  {po:"SC5009",sup:"SC",type:"Suit Pants",qty:1974,mode:"SEA",exf:"4/12/2026",eta:"5/29/2026",status:"In-Transit",tops:"Approved",note:"Pop/Tap Hold — ETA to Warehouse: 5/29/2026"},
+  {po:"SC5005",sup:"SC",type:"Suit Pants",qty:1262,mode:"SEA",exf:"4/12/2026",eta:"5/29/2026",status:"In-Transit",tops:"Approved",note:"Pop/Tap Hold — ETA to Warehouse: 5/29/2026"},
+  {po:"TAL6049",sup:"TAL",type:"Short Blazers",qty:1011,mode:"SEA",exf:"4/16/2026",eta:"5/29/2026",status:"In-Transit",tops:"Approved",note:"Arrived/Stocking — ETA to Warehouse: 5/29/2026"},
+  {po:"TAL6046",sup:"TAL",type:"Tuxedo Blazers",qty:1331,mode:"SEA",exf:"4/17/2026",eta:"5/29/2026",status:"In-Transit",tops:"Approved",note:"Arrived LA — ETA to Warehouse: 5/30/2026"},
+  {po:"TAL6059",sup:"TAL",type:"Dress Shirts",qty:4882,mode:"SEA",exf:"4/18/2026",eta:"5/29/2026",status:"In-Transit",tops:"Approved",note:"Rail to Chicago — ETA to Warehouse: 6/15/2026"},
+  {po:"TAL6042",sup:"TAL",type:"Polo",qty:3026,mode:"SEA",exf:"4/18/2026",eta:"5/29/2026",status:"In-Transit",tops:"Under Review",note:"Transit to Romulus — ETA to Warehouse: 5/28/2026"},
+  {po:"TAL6041",sup:"TAL",type:"SSBD",qty:2376,mode:"SEA",exf:"4/18/2026",eta:"5/29/2026",status:"In-Transit",tops:"Under Review",note:"In transit Romulus — ETA to Warehouse: 5/28/2026"},
+  {po:"ED2433",sup:"ED",type:"Polo",qty:1244,mode:"AIR",exf:"5/20/2026",eta:"5/28/2026",status:"Delivered",tops:"Approved",note:"TOPS Approved — ETA to Warehouse: 6/1/2026"},
+  {po:"ED2431",sup:"ED",type:"Crewneck",qty:1610,mode:"AIR",exf:"5/15/2026",eta:"5/28/2026",status:"Delivered",tops:"Approved",note:"Sea departed 5/16 — ETA to Warehouse: 6/1/2026"},
+  {po:"TAL6060",sup:"TAL",type:"Dress Shirts",qty:3049,mode:"AIR",exf:"5/15/2026",eta:"6/1/2026",status:"In-Transit",tops:"Approved",note:"Air departed 5/22 — ETA to Warehouse: 6/1/2026"},
+  {po:"ED2428",sup:"ED",type:"Sweater",qty:702,mode:"AIR",exf:"4/30/2026",eta:"6/2/2026",status:"In-Transit",tops:"Approved",note:"All-Air confirmed — ETA to Warehouse: 6/5/2026"},
+  {po:"ED2424",sup:"ED",type:"Denim",qty:1061,mode:"SEA",exf:"5/1/2026",eta:"6/3/2026",status:"In-Transit",tops:"Approved",note:"In Transit Sea — ETA to Warehouse: 6/3/2026"},
+  {po:"TAL6038",sup:"TAL",type:"Blazers",qty:2095,mode:"AIR",exf:"5/13/2026",eta:"6/5/2026",status:"In-Transit",tops:"Approved",note:"Docs Recvd — ETA to Warehouse: 6/5/2026"},
+  {po:"TAL6039",sup:"TAL",type:"Short Blazers",qty:443,mode:"AIR",exf:"5/13/2026",eta:"6/5/2026",status:"In-Transit",tops:"Approved",note:"Docs Received — ETA to Warehouse: 6/5/2026"},
+  {po:"TAL6040",sup:"TAL",type:"Suit Pants",qty:3610,mode:"AIR",exf:"5/13/2026",eta:"6/5/2026",status:"In-Transit",tops:"Approved",note:"Docs Received — ETA to Warehouse: 5/30/2026"},
+  {po:"ED2441",sup:"ED",type:"Suit Vest",qty:160,mode:"AIR",exf:"5/25/2026",eta:"6/5/2026",status:"In-Transit",tops:"Approved",note:"In Transit — ETA to Warehouse: 6/5/2026"},
+  {po:"TH3366",sup:"TH",type:"Accessories",qty:1000,mode:"AIR",exf:"4/30/2026",eta:"6/5/2026",status:"Booked",tops:"Approved",note:"Hot shipment — ETA to Warehouse: 6/1/2026"},
+  {po:"TAL6064 (AIR)",sup:"TAL",type:"Classic Fit",qty:165,mode:"AIR",exf:"5/22/2026",eta:"6/5/2026",status:"In-Transit",tops:"Approved",note:"In Transit — ETA to Warehouse: 6/5/2026"},
+  {po:"TAL6065 (AIR)",sup:"TAL",type:"Dress Shirts",qty:1679,mode:"AIR",exf:"5/22/2026",eta:"6/5/2026",status:"In-Transit",tops:"Approved",note:"Air departed 5/22 — ETA to Warehouse: 6/5/2026"},
+  {po:"TAL6041 (AIR)",sup:"TAL",type:"SSBD",qty:663,mode:"AIR",exf:"5/22/2026",eta:"6/5/2026",status:"In-Transit",tops:"",note:"Transit Romulus — ETA to Warehouse: 5/28/2026"},
+  {po:"JT1246",sup:"JT",type:"Casual Pants",qty:790,mode:"SEA",exf:"5/20/2026",eta:"6/8/2026",status:"In-Transit",tops:"Approved",note:"In Transit — ETA to Warehouse: 6/8/2026"},
+  {po:"JT1245",sup:"JT",type:"Casual Blazer",qty:789,mode:"SEA",exf:"5/20/2026",eta:"6/8/2026",status:"In-Transit",tops:"Approved",note:"Sea orders released — ETA to Warehouse: 6/30/2026"},
+  {po:"TH3361 (AIR)",sup:"TH",type:"Classic Fit",qty:769,mode:"AIR",exf:"4/30/2026",eta:"6/8/2026",status:"Booked",tops:"Under Review",note:"Quote Approved — ETA to Warehouse: 5/31/2026"},
+  {po:"TH3361 (SEA)",sup:"TH",type:"Classic Fit",qty:416,mode:"SEA",exf:"4/30/2026",eta:"6/8/2026",status:"Booked",tops:"Under Review",note:"Under Review — ETA to Warehouse: 7/15/2026"},
+  {po:"ED2432",sup:"ED",type:"Suit Pants",qty:1998,mode:"SEA",exf:"5/5/2026",eta:"6/12/2026",status:"In-Transit",tops:"Approved",note:"Ready to stock — ETA to Warehouse: 6/12/2026"},
+  {po:"TAL6055 (AIR)",sup:"TAL",type:"Short Blazers",qty:46,mode:"AIR",exf:"5/15/2026",eta:"6/12/2026",status:"Ready to Ship",tops:"Approved",note:"Awaiting quote — ETA to Warehouse: 5/30/2026"},
+  {po:"TAL6054",sup:"TAL",type:"Blazers",qty:2160,mode:"SEA",exf:"5/9/2026",eta:"6/15/2026",status:"In-Transit",tops:"Approved",note:"In Transit — ETA to Warehouse: 5/28/2026"},
+  {po:"TAL6056",sup:"TAL",type:"Suit Pants",qty:3603,mode:"SEA",exf:"5/9/2026",eta:"6/15/2026",status:"In-Transit",tops:"Approved",note:"Ready Stock — ETA to Warehouse: 5/28/2026"},
+  {po:"TH3360 (AIR)",sup:"TH",type:"Dress Shirts",qty:612,mode:"AIR",exf:"4/30/2026",eta:"6/15/2026",status:"Booked",tops:"Approved",note:"Waiting confirmation — ETA to Warehouse: 5/31/2026"},
+  {po:"TH3360 (SEA)",sup:"TH",type:"Dress Shirts",qty:818,mode:"SEA",exf:"4/30/2026",eta:"6/15/2026",status:"Booked",tops:"Approved",note:"All-air approved — ETA to Warehouse: 5/31/2026"},
+  {po:"ED2434",sup:"ED",type:"Polo",qty:1800,mode:"AIR",exf:"5/15/2026",eta:"6/15/2026",status:"Ready to Ship",tops:"Approved",note:"TOPS Approved — ETA to Warehouse: 6/15/2026"},
+  {po:"AR7006",sup:"AR",type:"Sport Shirt",qty:3301,mode:"AIR",exf:"5/20/2026",eta:"6/15/2026",status:"Ready to Ship",tops:"Approved",note:"Parcel Received — ETA to Warehouse: 6/15/2026"},
+  {po:"TAL6050",sup:"TAL",type:"Blazers",qty:1093,mode:"SEA",exf:"5/7/2026",eta:"6/17/2026",status:"In-Transit",tops:"Approved",note:"In Transit — ETA to Warehouse: 6/17/2026"},
+  {po:"AR7007",sup:"AR",type:"Sport Shirt",qty:1500,mode:"TBD",exf:"6/12/2026",eta:"6/19/2026",status:"Development Ongoing",tops:"",note:"PPS Approved — ETA to Warehouse: 6/19/2026"},
+  {po:"TH3510",sup:"TH",type:"Suit Pants",qty:2700,mode:"TBD",exf:"6/15/2026",eta:"6/20/2026",status:"",tops:"",note:"Need Air/Sea split — ETA to Warehouse: 6/20/2026"},
+  {po:"TAL6054 (2)",sup:"TAL",type:"Blazers",qty:268,mode:"SEA",exf:"5/12/2026",eta:"6/24/2026",status:"Ready to Ship",tops:"Approved",note:"ETA 5/28 — ETA to Warehouse: 5/28/2026"},
+  {po:"TH3535",sup:"TH",type:"Suit Pants",qty:500,mode:"TBD",exf:"6/15/2026",eta:"6/23/2026",status:"Development Ongoing",tops:"",note:"In Development — ETA to Warehouse: 6/23/2026"},
+  {po:"ED2436",sup:"ED",type:"Suit Vest",qty:269,mode:"AIR",exf:"5/25/2026",eta:"6/25/2026",status:"Ready to Ship",tops:"Approved",note:"Ship mode follow-up — ETA to Warehouse: 6/25/2026"},
+  {po:"TAL6054 Sea2",sup:"TAL",type:"Blazers",qty:268,mode:"SEA",exf:"5/12/2026",eta:"6/24/2026",status:"Ready to Ship",tops:"Approved",note:"ETA 5/28"},
+  {po:"ED2411",sup:"ED",type:"Jacket",qty:600,mode:"SEA",exf:"4/5/2026",eta:"6/30/2026",status:"In Production",tops:"Requested/Submitted",note:"Holding until 6/1 — ETA to Warehouse: 8/1/2026"},
+  {po:"TH3355 (SEA)",sup:"TH",type:"SSBD",qty:650,mode:"SEA",exf:"4/24/2026",eta:"6/30/2026",status:"In Production",tops:"In-Transit",note:"In Production — ETA to Warehouse: 6/30/2026"},
+  {po:"TH3355 (AIR)",sup:"TH",type:"SSBD",qty:100,mode:"AIR",exf:"4/30/2026",eta:"6/30/2026",status:"In Production",tops:"In-Transit",note:"Pending confirmation — ETA to Warehouse: 6/30/2026"},
+  {po:"TAL6041 Sea",sup:"TAL",type:"SSBD",qty:663,mode:"AIR",exf:"5/22/2026",eta:"6/30/2026",status:"In-Transit",tops:"",note:"Transit Romulus — ETA to Warehouse: 5/28/2026"},
+  {po:"TAL6060 (SEA)",sup:"TAL",type:"Dress Shirts",qty:1207,mode:"SEA",exf:"5/22/2026",eta:"6/30/2026",status:"In-Transit",tops:"Approved",note:"Sea departed 5/16 — ETA to Warehouse: 6/30/2026"},
+  {po:"TAL6064 (SEA)",sup:"TAL",type:"Classic Fit",qty:1311,mode:"SEA",exf:"5/22/2026",eta:"6/30/2026",status:"In-Transit",tops:"Approved",note:"Sea departed 5/16 — ETA to Warehouse: 6/30/2026"},
+  {po:"TAL6065 (SEA)",sup:"TAL",type:"Dress Shirts",qty:4355,mode:"SEA",exf:"5/22/2026",eta:"6/30/2026",status:"In-Transit",tops:"Approved",note:"Sea departed 5/16 — ETA to Warehouse: 6/30/2026"},
+  {po:"TAL6066",sup:"TAL",type:"Dress Shirts",qty:2546,mode:"SEA",exf:"5/22/2026",eta:"6/30/2026",status:"In-Transit",tops:"",note:"Dispatched 5/16 — ETA to Warehouse: 6/30/2026"},
+  {po:"TAL6057",sup:"TAL",type:"Blazers",qty:504,mode:"AIR",exf:"5/24/2026",eta:"6/30/2026",status:"In Production",tops:"Requested/Submitted",note:"TOPS delivered — ETA to Warehouse: 6/30/2026"},
+  {po:"ED2435",sup:"ED",type:"Polo",qty:900,mode:"AIR",exf:"6/2/2026",eta:"6/30/2026",status:"",tops:"",note:"Air shipment confirmed — ETA to Warehouse: 6/30/2026"},
+  {po:"TAL6062",sup:"TAL",type:"Short Blazers",qty:200,mode:"TBD",exf:"6/17/2026",eta:"6/30/2026",status:"",tops:"",note:"TOPS shipping 5/30 — ETA to Warehouse: 6/30/2026"},
+  {po:"ED2425",sup:"ED",type:"Polo",qty:1300,mode:"TBD",exf:"4/30/2026",eta:"7/15/2026",status:"In Production",tops:"Requested/Submitted",note:"Need Air/Sea split — ETA to Warehouse: 7/15/2026"},
+  {po:"TH3502 (AIR)",sup:"TH",type:"Tuxedo Blazers",qty:52,mode:"AIR",exf:"5/20/2026",eta:"7/1/2026",status:"Ready to Ship",tops:"Approved",note:"Departed — ETA to Warehouse: 7/1/2026"},
+  {po:"TH3504",sup:"TH",type:"Suit Pants",qty:2450,mode:"TBD",exf:"6/20/2026",eta:"7/1/2026",status:"",tops:"",note:"Need Air/Sea split — ETA to Warehouse: 7/1/2026"},
+  {po:"TH3506",sup:"TH",type:"Short Blazers",qty:250,mode:"AIR",exf:"5/20/2026",eta:"7/1/2026",status:"",tops:"",note:"Ready to ship — ETA to Warehouse: 7/1/2026"},
+  {po:"TH3507",sup:"TH",type:"Suit Pants",qty:1200,mode:"TBD",exf:"6/10/2026",eta:"7/1/2026",status:"",tops:"",note:"Need Air/Sea split — ETA to Warehouse: 7/1/2026"},
+  {po:"TH3509",sup:"TH",type:"Short Blazers",qty:340,mode:"TBD",exf:"5/30/2026",eta:"7/1/2026",status:"",tops:"",note:"Status Pending — ETA to Warehouse: 7/1/2026"},
+  {po:"TH3511",sup:"TH",type:"Classic Fit",qty:559,mode:"AIR",exf:"6/1/2026",eta:"7/1/2026",status:"",tops:"",note:"Under Review — ETA to Warehouse: 7/1/2026"},
+  {po:"TH3534",sup:"TH",type:"Blazers",qty:125,mode:"TBD",exf:"6/15/2026",eta:"7/1/2026",status:"Development Ongoing",tops:"",note:"Development Ongoing — ETA to Warehouse: 7/1/2026"},
+  {po:"ED2437",sup:"ED",type:"Denim",qty:1800,mode:"TBD",exf:"6/15/2026",eta:"7/1/2026",status:"",tops:"",note:"Need Air/Sea split — ETA to Warehouse: 7/1/2026"},
+  {po:"ED2438",sup:"ED",type:"Tech Chinos",qty:1100,mode:"AIR",exf:"6/15/2026",eta:"7/1/2026",status:"Ready to Ship",tops:"Approved",note:"Ready to Ship — ETA to Warehouse: 7/1/2026"},
+  {po:"TAL6069",sup:"TAL",type:"Dress Shirts",qty:1800,mode:"TBD",exf:"6/29/2026",eta:"7/22/2026",status:"",tops:"",note:"Need breakdown — ETA to Warehouse: 7/22/2026"},
+  {po:"TH3524",sup:"TH",type:"Classic Fit",qty:1050,mode:"TBD",exf:"6/30/2026",eta:"7/25/2026",status:"Development Ongoing",tops:"Requested/Submitted",note:"Development Ongoing — ETA to Warehouse: 7/25/2026"},
+  {po:"TAL6058",sup:"TAL",type:"Short Blazers",qty:2900,mode:"TBD",exf:"6/12/2026",eta:"7/2/2026",status:"Development Ongoing",tops:"",note:"Needs Air/Sea info — ETA to Warehouse: 7/2/2026"},
+  {po:"ED2439",sup:"ED",type:"Crewneck",qty:900,mode:"AIR",exf:"6/20/2026",eta:"7/10/2026",status:"",tops:"",note:"In Production — ETA to Warehouse: 7/10/2026"},
+  {po:"TH3341",sup:"TH",type:"Accessories",qty:1000,mode:"AIR",exf:"6/6/2026",eta:"7/15/2026",status:"Development Ongoing",tops:"",note:"RFID confirmation — ETA to Warehouse: 7/15/2026"},
+  {po:"TAL6067",sup:"TAL",type:"Classic Fit",qty:1250,mode:"TBD",exf:"6/29/2026",eta:"7/31/2026",status:"",tops:"",note:"Need breakdown — ETA to Warehouse: 7/31/2026"},
+  {po:"TAL6068",sup:"TAL",type:"Dress Shirts",qty:6450,mode:"TBD",exf:"6/29/2026",eta:"7/31/2026",status:"",tops:"",note:"Split pending — ETA to Warehouse: 7/31/2026"},
+  {po:"TH3502 (SEA)",sup:"TH",type:"Tuxedo Blazers",qty:248,mode:"SEA",exf:"5/20/2026",eta:"7/31/2026",status:"Ready to Ship",tops:"Approved",note:"Departed 5/22 — ETA to Warehouse: 5/31/2026"},
+  {po:"TH3508",sup:"TH",type:"Blazers",qty:2100,mode:"TBD",exf:"6/20/2026",eta:"7/31/2026",status:"",tops:"",note:"Need Air/Sea split — ETA to Warehouse: 7/31/2026"},
+  {po:"TH3515",sup:"TH",type:"Suit Pants",qty:2625,mode:"TBD",exf:"6/25/2026",eta:"7/31/2026",status:"",tops:"",note:"Need ship mode — ETA to Warehouse: 7/31/2026"},
+  {po:"TH3533",sup:"TH",type:"Blazers",qty:375,mode:"TBD",exf:"6/25/2026",eta:"7/31/2026",status:"Development Ongoing",tops:"",note:"In Development — ETA to Warehouse: 7/31/2026"},
+  {po:"TH3501",sup:"TH",type:"Classic Fit",qty:257,mode:"AIR",exf:"5/20/2026",eta:"8/1/2026",status:"",tops:"",note:"Departed — ETA to Warehouse: 8/1/2026"},
+];
+
+function parseD(s){if(!s)return null;const p=s.split("/");return new Date(+p[2],+p[0]-1,+p[1]);}
+const TODAY=new Date(2026,4,29);
+
+function statusBadge(s){
+  const m={"In-Transit":"b-transit","In Production":"b-prod","Booked":"b-booked","Ready to Ship":"b-ready","Development Ongoing":"b-dev","Delivered":"b-delivered"};
+  if(!s)return"<span style='color:#bbb'>—</span>";
+  return`<span class="badge ${m[s]||'b-dev'}">${s}</span>`;
+}
+function modeBadge(m){
+  if(m==="SEA")return`<span class="badge b-sea">&#9875; SEA</span>`;
+  if(m==="AIR")return`<span class="badge b-air">&#9992; AIR</span>`;
+  return`<span class="badge b-tbd">TBD</span>`;
+}
+function etaCell(s){
+  const d=parseD(s);if(!d)return"—";
+  const diff=Math.round((d-TODAY)/86400000);
+  let cls="";
+  if(diff<=7&&diff>=0)cls="eta-soon";
+  else if(diff<0)cls="eta-overdue";
+  return`<span class="${cls}">${s}</span>`;
+}
+function topsBadge(t){
+  if(!t)return"<span style='color:#bbb'>—</span>";
+  const m={"Approved":"b-approved","Under Review":"b-review","Requested/Submitted":"b-submitted","In-Transit":"b-intransit-tops"};
+  return`<span class="badge ${m[t]||'b-dev'}">${t}</span>`;
+}
+
+function buildFilters(){
+  const opts=(id,arr)=>{const el=document.getElementById(id);arr.forEach(v=>{const o=document.createElement("option");o.value=v;o.textContent=v;el.appendChild(o);});};
+  opts("filterStatus",[...new Set(DATA.map(r=>r.status).filter(Boolean))].sort());
+  opts("filterMode",[...new Set(DATA.map(r=>r.mode).filter(Boolean))].sort());
+  opts("filterSupplier",[...new Set(DATA.map(r=>r.sup).filter(Boolean))].sort());
+}
+
+function render(){
+  const fS=document.getElementById("filterStatus").value;
+  const fM=document.getElementById("filterMode").value;
+  const fSup=document.getElementById("filterSupplier").value;
+  const q=document.getElementById("search").value.toLowerCase().trim();
+
+  const rows=DATA.filter(r=>{
+    if(fS&&r.status!==fS)return false;
+    if(fM&&r.mode!==fM)return false;
+    if(fSup&&r.sup!==fSup)return false;
+    if(q&&![r.po,r.sup,r.type,r.note].join(" ").toLowerCase().includes(q))return false;
+    return true;
+  }).sort((a,b)=>{
+    const da=parseD(a.eta),db=parseD(b.eta);
+    if(!da&&!db)return 0;if(!da)return 1;if(!db)return -1;
+    return da-db;
+  });
+
+  const total=rows.reduce((s,r)=>s+(r.qty||0),0);
+  const inTransit=rows.filter(r=>r.status==="In-Transit").length;
+  const arriving=rows.filter(r=>{const d=parseD(r.eta);return d&&Math.round((d-TODAY)/86400000)<=14&&Math.round((d-TODAY)/86400000)>=0&&r.status!=="Delivered";}).length;
+  const needMode=rows.filter(r=>r.mode==="TBD").length;
+
+  document.getElementById("kpis").innerHTML=`
+    <div class="kpi"><div class="kpi-label">POs shown</div><div class="kpi-val">${rows.length}</div><div class="kpi-sub">of ${DATA.length} total</div></div>
+    <div class="kpi"><div class="kpi-label">Total units</div><div class="kpi-val">${total.toLocaleString()}</div></div>
+    <div class="kpi"><div class="kpi-label">In transit</div><div class="kpi-val">${inTransit}</div><div class="kpi-sub">active shipments</div></div>
+    <div class="kpi"><div class="kpi-label">Arriving ≤14 days</div><div class="kpi-val">${arriving}</div><div class="kpi-sub">upcoming ETAs</div></div>
+    <div class="kpi"><div class="kpi-label">Need ship mode</div><div class="kpi-val">${needMode}</div><div class="kpi-sub">TBD mode</div></div>
+  `;
+
+  document.getElementById("countLabel").textContent=`${rows.length} purchase order${rows.length!==1?"s":""}`;
+
+  const tbody=document.getElementById("tbody");
+  if(!rows.length){tbody.innerHTML=`<tr><td colspan="10" class="empty">No matching records</td></tr>`;return;}
+  tbody.innerHTML=rows.map(r=>`<tr>
+    <td class="po col-po">${r.po}</td>
+    <td class="col-sup">${r.sup}</td>
+    <td class="col-type" style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis">${r.type}</td>
+    <td class="col-qty" style="text-align:right">${(r.qty||0).toLocaleString()}</td>
+    <td class="col-mode">${modeBadge(r.mode)}</td>
+    <td class="col-exf" style="font-size:12px">${r.exf||"—"}</td>
+    <td class="col-eta" style="font-size:12px">${etaCell(r.eta)}</td>
+    <td class="col-status">${statusBadge(r.status)}</td>
+    <td class="col-tops">${topsBadge(r.tops)}</td>
+    <td class="col-note"><div class="note" onclick="this.classList.toggle('expanded')">${r.note||"—"}</div></td>
+  </tr>`).join("");
+}
+
+buildFilters();
+render();
+["filterStatus","filterMode","filterSupplier"].forEach(id=>document.getElementById(id).addEventListener("change",render));
+document.getElementById("search").addEventListener("input",render);
+document.getElementById("ts").textContent="Last synced: May 29, 2026";
+</script>
+</body>
+</html>
