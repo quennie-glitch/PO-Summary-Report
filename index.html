@@ -134,16 +134,13 @@ tr:last-child td{border-bottom:none}tr:hover td{background:#faf9f6}
   <div class="kpi"><div class="kl">Booked</div><div class="kv">—</div></div>
   <div class="kpi"><div class="kl">Arriving ≤14 days</div><div class="kv">—</div></div>
 </div>
-
 <div class="charts">
-  <div class="chart">
-    <div class="ct">By source</div>
+  <div class="chart"><div class="ct">By source</div>
     <div class="dw"><svg id="dsv" width="90" height="90" viewBox="0 0 90 90" style="flex-shrink:0"></svg><div class="dl" id="dlg"></div></div>
   </div>
   <div class="chart"><div class="ct">POs by supplier</div><div class="bc" id="sbar"></div></div>
   <div class="chart"><div class="ct">POs by ETA window</div><div class="tlc" id="etl"></div></div>
 </div>
-
 <div class="tsec">
   <div class="tcard">
     <div class="thead2">
@@ -162,9 +159,7 @@ tr:last-child td{border-bottom:none}tr:hover td{background:#faf9f6}
     </div>
   </div>
 </div>
-
 <div class="errbar" id="errBar"></div>
-
 <div class="ctrl">
   <div class="sw">
     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -174,7 +169,6 @@ tr:last-child td{border-bottom:none}tr:hover td{background:#faf9f6}
   <select id="fM"><option value="">All modes</option></select>
   <select id="fS"><option value="">All suppliers</option></select>
 </div>
-
 <div class="tw">
   <div class="tm"><strong id="ctLbl">—</strong><span id="ctBdg">sorted by ETA</span></div>
   <div class="sc"><table><thead id="thead"></thead><tbody id="tbody"><tr><td colspan="8" class="empty">Loading…</td></tr></tbody></table></div>
@@ -184,24 +178,21 @@ tr:last-child td{border-bottom:none}tr:hover td{background:#faf9f6}
 const SID = "1YPxtFy4jwuj11HAouWuiJt6mJL-KDZOAGMf0JMcaS24";
 
 /*
-  Fetch strategy: use the Google Sheets CSV export URL per tab.
-  Format: /export?format=csv&gid=SHEET_ID
-  This returns ONLY the exact tab, NO fallback to other sheets.
-  Empty tabs return a single header row — which we skip.
+  Fetch via gviz with:
+  1. ?sheet=EXACT_NAME  — targets the correct tab by name
+  2. &tq=select * where D is not null  — col D = PO#, filters all blank rows
+  3. Column count guard: our tabs have 7-8 cols, RAW2 has 33.
+     If response returns >10 cols → we got the wrong sheet → treat as 0 rows.
 
-  Sheet GIDs (from workbook.xml — these are the internal xlsx sheetId values,
-  but for the /export?format=csv endpoint Google uses the same numeric IDs):
-    In-Transit      = 3   col[7] = Transit Time (number)
-    Booked          = 4   col[7] = Tops Status (text)
-    QuotedRequested = 5   col[7] = (none — empty tab)
-
-  NOTE: /export?format=csv does NOT fallback like gviz does.
-  If the tab is empty, it returns only the header row.
+  Tabs (exact names from workbook):
+    "In-Transit"      col[0-6] + col[7]=Transit Time (number)
+    "Booked"          col[0-6] + col[7]=Tops Status  (text)
+    "QuotedRequested" col[0-6] only
 */
 const TABS = [
-  { gid:3, src:"transit", col7:"Transit Time" },
-  { gid:4, src:"booked",  col7:"Tops Status"  },
-  { gid:5, src:"quoted",  col7:null            },
+  { name:"In-Transit",      src:"transit", maxCols:8, col7:"Transit Time" },
+  { name:"Booked",          src:"booked",  maxCols:8, col7:"Tops Status"  },
+  { name:"QuotedRequested", src:"quoted",  maxCols:7, col7:null            },
 ];
 
 const SC = {transit:"#1a6b3c",booked:"#1a4a8b",quoted:"#7a4a0a"};
@@ -210,53 +201,48 @@ const PC = ["#1a4a8b","#1a6b3c","#7a4a0a","#4a1a8b","#8b1a1a","#2d3a4a","#1a3d8b
 const TODAY = new Date(); TODAY.setHours(0,0,0,0);
 let DATA = [], ACTIVE = "all";
 
-// ── CSV parser (handles quoted fields with commas/newlines) ──────────────────
-function parseCSV(text) {
-  const rows = [];
-  let row = [], cur = "", inQ = false;
-  for (let i = 0; i < text.length; i++) {
-    const c = text[i], n = text[i+1];
-    if (inQ) {
-      if (c === '"' && n === '"') { cur += '"'; i++; }
-      else if (c === '"') inQ = false;
-      else cur += c;
-    } else {
-      if (c === '"') inQ = true;
-      else if (c === ',') { row.push(cur.trim()); cur = ""; }
-      else if (c === '\n' || (c === '\r' && n === '\n')) {
-        if (c === '\r') i++;
-        row.push(cur.trim()); cur = "";
-        if (row.some(v => v)) rows.push(row);
-        row = [];
-      } else cur += c;
-    }
-  }
-  if (cur || row.length) { row.push(cur.trim()); if (row.some(v=>v)) rows.push(row); }
-  return rows;
+function cv(row, i) {
+  const c = row.c?.[i];
+  if (!c || c.v === null || c.v === undefined) return "";
+  return c.f ? String(c.f).trim() : String(c.v).trim();
 }
 
-async function fetchTab(gid, src, col7Label) {
-  // CSV export — guaranteed to return only THIS tab, no fallback
-  const url = `https://docs.google.com/spreadsheets/d/${SID}/export?format=csv&gid=${gid}&t=${Date.now()}`;
+async function fetchTab(tabName, src, maxCols, col7Label) {
+  // tq filters blank PO# rows. sheet= targets exact tab by name.
+  const tq  = encodeURIComponent("select * where D is not null");
+  const url = `https://docs.google.com/spreadsheets/d/${SID}/gviz/tq`
+    + `?tqx=out:json&sheet=${encodeURIComponent(tabName)}&tq=${tq}&headers=1&t=${Date.now()}`;
+
   const res  = await fetch(url);
-  if (!res.ok) throw new Error(`HTTP ${res.status} fetching gid=${gid}`);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
   const text = await res.text();
-  const rows = parseCSV(text);
+  const json = JSON.parse(text.replace(/^[^(]+\(/, "").replace(/\);\s*$/, ""));
+
+  if (json.status === "error") throw new Error(json.errors?.[0]?.message || "gviz error");
+
+  const cols = json.table?.cols ?? [];
+  const rows = json.table?.rows ?? [];
+
+  // GUARD: if column count > 10, we got the wrong sheet (RAW2 has 33 cols)
+  if (cols.length > 10) {
+    console.warn(`[${tabName}] Got ${cols.length} cols — wrong sheet returned, treating as empty`);
+    return [];
+  }
 
   const out = [];
-  for (let i = 1; i < rows.length; i++) {  // i=0 is header
-    const r = rows[i];
-    const po = (r[3] || "").trim();
-    if (!po) continue;  // skip blank rows — no PO# = not a real row
+  for (const r of rows) {
+    if (!r?.c) continue;
+    const po = cv(r, 3);
+    if (!po) continue;
     out.push({
-      shipRef: (r[0] || "").trim(),
-      exf:     (r[1] || "").trim(),
-      eta:     (r[2] || "").trim(),
+      shipRef: cv(r, 0),
+      exf:     cv(r, 1),
+      eta:     cv(r, 2),
       po,
-      type:    (r[4] || "").trim(),
-      mode:    (r[5] || "").trim(),
-      notes:   (r[6] || "").trim(),
-      col7:    col7Label ? (r[7] || "").trim() : "",
+      type:    cv(r, 4),
+      mode:    cv(r, 5),
+      notes:   cv(r, 6),
+      col7:    col7Label ? cv(r, 7) : "",
       src,
     });
   }
@@ -270,7 +256,9 @@ async function loadAll() {
   document.getElementById("sdot").classList.remove("live");
   document.getElementById("syncTime").textContent = "Fetching…";
   try {
-    const results = await Promise.all(TABS.map(t => fetchTab(t.gid, t.src, t.col7)));
+    const results = await Promise.all(
+      TABS.map(t => fetchTab(t.name, t.src, t.maxCols, t.col7))
+    );
     DATA = results.flat();
     const ct = {transit:0, booked:0, quoted:0};
     DATA.forEach(r => ct[r.src]++);
@@ -288,7 +276,7 @@ async function loadAll() {
   } catch(e) {
     console.error(e);
     const eb = document.getElementById("errBar");
-    eb.textContent = "⚠ Could not load from Google Sheets — make sure the sheet is shared as Anyone with the link (Viewer). Error: " + e.message;
+    eb.innerHTML = `⚠ Could not load from Google Sheets. ${e.message}`;
     eb.style.display = "block";
     document.getElementById("syncTime").textContent = "Load failed";
   } finally {
@@ -321,26 +309,23 @@ function drawTransitDays() {
   const tr = DATA.filter(r => r.src==="transit" && r.col7 && !isNaN(parseFloat(r.col7)));
   const agg = {};
   tr.forEach(r => {
-    const s = sup(r);
-    const m = r.mode.toUpperCase().includes("SEA") ? "SEA"
-            : r.mode.toUpperCase().includes("AIR") ? "AIR" : null;
-    if (!m || !s) return;
-    if (!agg[s]) agg[s] = {SEA:[], AIR:[]};
+    const s=sup(r), m=r.mode.toUpperCase().includes("SEA")?"SEA":r.mode.toUpperCase().includes("AIR")?"AIR":null;
+    if(!m||!s) return;
+    if(!agg[s]) agg[s]={SEA:[],AIR:[]};
     agg[s][m].push(parseFloat(r.col7));
   });
-  function rs(rid, nid, mode, col) {
-    const ent = [];
-    Object.entries(agg).forEach(([s,d]) => {
-      if (!d[mode].length) return;
-      ent.push({s, avg: Math.round(d[mode].reduce((a,v)=>a+v,0)/d[mode].length), n: d[mode].length});
+  function rs(rid,nid,mode,col) {
+    const ent=[];
+    Object.entries(agg).forEach(([s,d])=>{
+      if(!d[mode].length) return;
+      ent.push({s,avg:Math.round(d[mode].reduce((a,v)=>a+v,0)/d[mode].length),n:d[mode].length});
     });
-    ent.sort((a,b) => a.avg - b.avg);
-    const all = tr.filter(r => mode==="SEA" ? r.mode.toUpperCase().includes("SEA") : r.mode.toUpperCase().includes("AIR")).map(r => parseFloat(r.col7));
-    document.getElementById(nid).textContent = all.length
-      ? `Overall avg: ${Math.round(all.reduce((a,v)=>a+v,0)/all.length)} days` : "";
-    if (!ent.length) { document.getElementById(rid).innerHTML=`<div class="tempty">No data</div>`; return; }
-    const mx = Math.max(...ent.map(e=>e.avg), 1);
-    document.getElementById(rid).innerHTML = ent.map(e => `<div class="trow">
+    ent.sort((a,b)=>a.avg-b.avg);
+    const all=tr.filter(r=>mode==="SEA"?r.mode.toUpperCase().includes("SEA"):r.mode.toUpperCase().includes("AIR")).map(r=>parseFloat(r.col7));
+    document.getElementById(nid).textContent=all.length?`Overall avg: ${Math.round(all.reduce((a,v)=>a+v,0)/all.length)} days`:"";
+    if(!ent.length){document.getElementById(rid).innerHTML=`<div class="tempty">No data</div>`;return;}
+    const mx=Math.max(...ent.map(e=>e.avg),1);
+    document.getElementById(rid).innerHTML=ent.map(e=>`<div class="trow">
       <span class="tsup">${e.s}</span>
       <div class="ttrack"><div class="tfill" style="width:${Math.max(Math.round(e.avg/mx*100),8)}%;background:${col}"><span>${e.avg}d</span></div></div>
       <span class="tdays">${e.avg} days <span class="tships">(${e.n})</span></span>
@@ -350,34 +335,33 @@ function drawTransitDays() {
   rs("airRows","airNote","AIR","#4a1a8b");
 }
 
-function pd(s) {
-  if (!s) return null;
-  const p = String(s).split("/");
-  if (p.length===3 && p[2].length===4) return new Date(+p[2],+p[0]-1,+p[1]);
+function pd(s){
+  if(!s)return null;
+  const p=String(s).split("/");
+  if(p.length===3&&p[2].length===4)return new Date(+p[2],+p[0]-1,+p[1]);
   return null;
 }
-function modeBadge(m) {
-  if (!m) return `<span style="color:var(--text3)">—</span>`;
-  const u = m.toUpperCase();
-  if (u.includes("SEA")) return `<span class="badge bsea">⬡ SEA</span>`;
-  if (u.includes("AIR")) return `<span class="badge bair">△ AIR</span>`;
-  return `<span class="badge bmode">${m}</span>`;
+function modeBadge(m){
+  if(!m)return`<span style="color:var(--text3)">—</span>`;
+  const u=m.toUpperCase();
+  if(u.includes("SEA"))return`<span class="badge bsea">⬡ SEA</span>`;
+  if(u.includes("AIR"))return`<span class="badge bair">△ AIR</span>`;
+  return`<span class="badge bmode">${m}</span>`;
 }
-function topsBadge(v) {
-  if (!v) return `<span style="color:var(--text3)">—</span>`;
-  const m = {"Approved":"btop-ok","Under Review":"btop-rev","Requested/Submitted":"btop-sub","In-Transit":"btop-ok"};
-  return `<span class="badge ${m[v]||'bmode'}">${v}</span>`;
+function topsBadge(v){
+  if(!v)return`<span style="color:var(--text3)">—</span>`;
+  const m={"Approved":"btop-ok","Under Review":"btop-rev","Requested/Submitted":"btop-sub","In-Transit":"btop-ok"};
+  return`<span class="badge ${m[v]||'bmode'}">${v}</span>`;
 }
-function etaCell(s) {
-  const d = pd(s); if (!d) return `<span class="mono">${s||"—"}</span>`;
-  const diff = Math.round((d-TODAY)/86400000);
-  let cls="", ex="";
+function etaCell(s){
+  const d=pd(s);if(!d)return`<span class="mono">${s||"—"}</span>`;
+  const diff=Math.round((d-TODAY)/86400000);
+  let cls="",ex="";
   if(diff>=0&&diff<=14){cls="esoon";ex=`<span style="font-size:9px;margin-left:4px;opacity:.6;font-family:var(--fm)">${diff===0?"today":diff+"d"}</span>`;}
   else if(diff<0){cls="elate";ex=`<span style="font-size:9px;margin-left:4px;opacity:.6;font-family:var(--fm)">${Math.abs(diff)}d late</span>`;}
-  return `<span class="${cls} mono">${s}${ex}</span>`;
+  return`<span class="${cls} mono">${s}${ex}</span>`;
 }
-
-function drawDonut(rows) {
+function drawDonut(rows){
   const cnt={};rows.forEach(r=>{cnt[r.src]=(cnt[r.src]||0)+1;});
   const ent=Object.entries(cnt).sort((a,b)=>b[1]-a[1]);
   const tot=ent.reduce((s,[,v])=>s+v,0);
@@ -393,20 +377,19 @@ function drawDonut(rows) {
   svg.innerHTML=paths+`<text x="${cx}" y="${cy+1}" text-anchor="middle" dominant-baseline="middle" font-size="14" font-weight="600" fill="#1c1b18" font-family="Geist,sans-serif">${tot}</text><text x="${cx}" y="${cy+13}" text-anchor="middle" font-size="8" fill="#9b9890" font-family="Geist,sans-serif">total</text>`;
   document.getElementById("dlg").innerHTML=ent.map(([src,c])=>`<div class="di"><span class="dd" style="background:${SC[src]||'#aaa'}"></span><span class="dn">${SL[src]||src}</span><span class="dv">${c}</span></div>`).join("");
 }
-function drawSupBars(rows) {
+function drawSupBars(rows){
   const m={};rows.forEach(r=>{const s=sup(r);if(s)m[s]=(m[s]||0)+1;});
   const ent=Object.entries(m).sort((a,b)=>b[1]-a[1]).slice(0,8);
   const mx=ent[0]?.[1]||1;
   document.getElementById("sbar").innerHTML=ent.map(([s,v],i)=>`<div class="br"><span class="bl">${s}</span><div class="bt"><div class="bf" style="width:${Math.round(v/mx*100)}%;background:${PC[i%PC.length]}"><span>${v}</span></div></div></div>`).join("");
 }
-function drawEtaTl(rows) {
+function drawEtaTl(rows){
   const bk=[{l:"Today",min:0,max:0,col:"#7a4a0a"},{l:"≤7 days",min:1,max:7,col:"#1a6b3c"},{l:"≤14d",min:8,max:14,col:"#1a4a8b"},{l:"≤30d",min:15,max:30,col:"#4a1a8b"},{l:"1–2 mo",min:31,max:60,col:"#2d3a4a"},{l:"2+ mo",min:61,max:999,col:"#9b9890"}];
   const cn=bk.map(b=>rows.filter(r=>{const d=pd(r.eta);if(!d)return false;const dif=Math.round((d-TODAY)/86400000);return dif>=b.min&&dif<=b.max;}).length);
   const mx=Math.max(...cn,1);
   document.getElementById("etl").innerHTML=bk.map((b,i)=>`<div class="tlr"><span class="tld">${b.l}</span><div style="flex:1;display:flex;align-items:center;gap:6px"><div class="tlb" style="width:max(${Math.round(cn[i]/mx*100)}%,${cn[i]>0?24:4}px);background:${b.col};opacity:.85">${cn[i]>0?`<span style="color:rgba(255,255,255,.9)">${cn[i]}</span>`:""}</div></div><span class="tln">${cn[i]||""}</span></div>`).join("");
 }
-
-function render() {
+function render(){
   const fM=document.getElementById("fM").value;
   const fSv=document.getElementById("fS").value;
   const q=document.getElementById("srch").value.toLowerCase().trim();
@@ -464,10 +447,8 @@ function render() {
 
 ["fM","fS"].forEach(id=>document.getElementById(id).addEventListener("change",render));
 document.getElementById("srch").addEventListener("input",render);
-
-// Auto-refresh every 5 minutes
 loadAll();
-setInterval(loadAll, 5 * 60 * 1000);
+setInterval(loadAll, 5 * 60 * 1000); // auto-refresh every 5 mins
 </script>
 </body>
 </html>
