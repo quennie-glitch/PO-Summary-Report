@@ -10,8 +10,7 @@
 <style>
 :root{
   --bg:#f7f6f3;--surface:#fff;--surface2:#f0efe9;
-  --border:#e5e3db;--border2:#d4d2c9;
-  --text:#1c1b18;--text2:#6b6960;--text3:#9b9890;
+  --border:#e5e3db;--text:#1c1b18;--text2:#6b6960;--text3:#9b9890;
   --green:#1a6b3c;--green-bg:#e8f5ee;
   --blue:#1a4a8b;--blue-bg:#e8eef8;
   --amber:#7a4a0a;--amber-bg:#fdf0dc;
@@ -20,29 +19,20 @@
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:var(--ff);background:var(--bg);color:var(--text);font-size:13px}
-
-header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;height:56px}
+header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:56px}
 .brand{font-size:13px;font-weight:600}.brand span{color:var(--text3);font-weight:400;margin-left:6px}
-.hright{display:flex;align-items:center;gap:12px}
 .pill{display:flex;align-items:center;gap:6px;background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:4px 10px;font-size:11px;color:var(--text2);font-family:var(--fm)}
-.sdot{width:6px;height:6px;border-radius:50%;background:#22c55e;animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-.btn{background:var(--text);color:#fff;border:none;border-radius:7px;padding:6px 14px;font-family:var(--ff);font-size:12px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:6px;transition:opacity .15s}
-.btn:hover{opacity:.85}.btn.spin svg{animation:rot .7s linear infinite}
-@keyframes rot{to{transform:rotate(360deg)}}
-
+.sdot{width:6px;height:6px;border-radius:50%;background:#22c55e}
 .tabs{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2rem;display:flex}
-.tab{padding:10px 18px;font-size:12.5px;font-weight:500;color:var(--text3);cursor:pointer;border:none;background:none;border-bottom:2px solid transparent;transition:color .15s,border-color .15s;white-space:nowrap}
+.tab{padding:10px 18px;font-size:12.5px;font-weight:500;color:var(--text3);cursor:pointer;border:none;background:none;border-bottom:2px solid transparent;white-space:nowrap}
 .tab:hover{color:var(--text)}.tab.on{color:var(--text);border-bottom-color:var(--text)}
 .tc{display:inline-block;background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:1px 7px;font-size:10px;font-family:var(--fm);margin-left:6px;color:var(--text3)}
 .tab.on .tc{background:var(--text);color:#fff;border-color:var(--text)}
-
 .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:1.25rem 2rem}
 .kpi{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1rem 1.25rem}
 .kl{font-size:11px;color:var(--text3);margin-bottom:6px;font-weight:500;text-transform:uppercase;letter-spacing:.04em}
 .kv{font-size:26px;font-weight:600;line-height:1;letter-spacing:-.5px}
 .ks{font-size:11px;color:var(--text3);margin-top:4px}
-
 .charts{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;padding:0 2rem 12px}
 .chart{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.25rem}
 .ct{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text2);margin-bottom:1rem}
@@ -55,7 +45,7 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:0
 .br{display:flex;align-items:center;gap:8px}
 .bl{font-size:11px;color:var(--text2);width:40px;flex-shrink:0;text-align:right;font-family:var(--fm);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .bt{flex:1;height:20px;background:var(--surface2);border-radius:4px;overflow:hidden}
-.bf{height:100%;border-radius:4px;display:flex;align-items:center;padding-left:8px;transition:width .6s}
+.bf{height:100%;border-radius:4px;display:flex;align-items:center;padding-left:8px}
 .bf span{font-size:10px;font-weight:500;color:rgba(255,255,255,.9);white-space:nowrap}
 .tlc{display:flex;flex-direction:column;gap:6px}
 .tlr{display:flex;align-items:center;gap:8px}
@@ -63,39 +53,33 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:0
 .tlb{height:16px;border-radius:4px;display:flex;align-items:center;padding:0 7px}
 .tlb span{font-size:10px;font-weight:500;white-space:nowrap}
 .tln{font-family:var(--fm);font-size:10px;color:var(--text3);width:20px;text-align:right}
-
-/* transit days */
 .tsec{padding:0 2rem 12px}
 .tcard{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden}
 .thead2{padding:.85rem 1.25rem;border-bottom:1px solid var(--border);background:var(--surface2);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
 .thead2 strong{font-size:12.5px;font-weight:600}
 .thead2-note{font-size:11px;color:var(--text3)}
 .tgrid{display:grid;grid-template-columns:1fr 1fr}
-.tcol{padding:1rem 1.25rem}
-.tcol:first-child{border-right:1px solid var(--border)}
+.tcol{padding:1rem 1.25rem}.tcol:first-child{border-right:1px solid var(--border)}
 .tcol-hdr{display:flex;align-items:center;gap:8px;margin-bottom:.85rem}
 .mtag{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;font-family:var(--fm)}
-.mt-sea{background:var(--blue-bg);color:var(--blue)}
-.mt-air{background:var(--purple-bg);color:var(--purple)}
+.mt-sea{background:var(--blue-bg);color:var(--blue)}.mt-air{background:var(--purple-bg);color:var(--purple)}
 .tavg{font-size:11px;color:var(--text3);margin-left:auto;font-family:var(--fm)}
 .trows{display:flex;flex-direction:column;gap:6px}
 .trow{display:flex;align-items:center;gap:10px}
 .tsup{font-family:var(--fm);font-size:11px;font-weight:500;width:38px;flex-shrink:0;color:var(--text2)}
 .ttrack{flex:1;height:22px;background:var(--surface2);border-radius:5px;overflow:hidden}
-.tfill{height:100%;border-radius:5px;display:flex;align-items:center;padding-left:9px;transition:width .5s ease}
+.tfill{height:100%;border-radius:5px;display:flex;align-items:center;padding-left:9px}
 .tfill span{font-size:10.5px;font-weight:500;color:rgba(255,255,255,.92);white-space:nowrap}
 .tdays{font-family:var(--fm);font-size:11px;color:var(--text2);width:70px;text-align:right;flex-shrink:0;white-space:nowrap}
 .tships{color:var(--text3);font-size:10px}
-.tempty{font-size:11px;color:var(--text3);padding:.25rem 0;font-style:italic}
-
+.tempty{font-size:11px;color:var(--text3);font-style:italic}
 .ctrl{display:flex;align-items:center;gap:10px;padding:.75rem 2rem;background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);flex-wrap:wrap}
 .sw{position:relative;flex:1;min-width:200px}
 .sw svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text3);pointer-events:none}
 .ctrl input[type=text]{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:6px 10px 6px 32px;font-family:var(--ff);font-size:12.5px;color:var(--text);outline:none}
-.ctrl input:focus{border-color:var(--border2)}.ctrl input::placeholder{color:var(--text3)}
+.ctrl input::placeholder{color:var(--text3)}
 .ctrl select{background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:6px 24px 6px 10px;font-family:var(--ff);font-size:12px;color:var(--text);outline:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%239b9890'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center}
 .divl{width:1px;height:20px;background:var(--border);flex-shrink:0}
-
 .tw{background:var(--surface);overflow:hidden;margin:0 2rem 2rem;border:1px solid var(--border);border-radius:12px}
 .tm{display:flex;align-items:center;justify-content:space-between;padding:.7rem 1.25rem;border-bottom:1px solid var(--border);background:var(--surface2)}
 .tm strong{font-size:12.5px;font-weight:600}.tm span{font-size:11px;color:var(--text3);font-family:var(--fm)}
@@ -113,48 +97,30 @@ tr:last-child td{border-bottom:none}tr:hover td{background:#faf9f6}
 .btop-ok{background:var(--green-bg);color:var(--green)}
 .btop-rev{background:var(--amber-bg);color:var(--amber)}
 .btop-sub{background:var(--blue-bg);color:var(--blue)}
-.btop-tr{background:var(--green-bg);color:var(--green)}
 .note{font-size:11px;color:var(--text3);line-height:1.4;max-height:36px;overflow:hidden;cursor:pointer}
 .note::after{content:" ▾";opacity:.5;font-size:9px}.note.exp{max-height:220px}.note.exp::after{content:" ▴"}
 .empty{text-align:center;padding:3rem;color:var(--text3)}
-.err{background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:.75rem 1.25rem;margin:1rem 2rem;font-size:12px;color:#b91c1c;display:none}
-.err a{color:#b91c1c;font-weight:600}
 </style>
 </head>
 <body>
-
 <header>
   <div class="brand">State &amp; Liberty <span>PO Tracker</span></div>
-  <div class="hright">
-    <div class="pill"><span class="sdot"></span><span id="syncTime">—</span></div>
-    <button class="btn" id="rfBtn" onclick="loadAll()">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
-      Refresh
-    </button>
-  </div>
+  <div class="pill"><span class="sdot"></span><span>In-Transit: 15 &nbsp;·&nbsp; Booked: 5 &nbsp;·&nbsp; Quoted: 0</span></div>
 </header>
 
 <div class="tabs">
-  <button class="tab on" data-t="all"     onclick="setTab('all')">All POs              <span class="tc" id="tc0">—</span></button>
-  <button class="tab"    data-t="transit" onclick="setTab('transit')">In-Transit       <span class="tc" id="tc1">—</span></button>
-  <button class="tab"    data-t="booked"  onclick="setTab('booked')">Booked            <span class="tc" id="tc2">—</span></button>
-  <button class="tab"    data-t="quoted"  onclick="setTab('quoted')">Quoted / Requested<span class="tc" id="tc3">—</span></button>
+  <button class="tab on" data-t="all"     onclick="setTab('all')">All POs              <span class="tc" id="tc0">20</span></button>
+  <button class="tab"    data-t="transit" onclick="setTab('transit')">In-Transit       <span class="tc" id="tc1">15</span></button>
+  <button class="tab"    data-t="booked"  onclick="setTab('booked')">Booked            <span class="tc" id="tc2">5</span></button>
+  <button class="tab"    data-t="quoted"  onclick="setTab('quoted')">Quoted / Requested<span class="tc" id="tc3">0</span></button>
 </div>
 
-<div class="kpis" id="kpis">
-  <div class="kpi"><div class="kl">Total POs</div><div class="kv">—</div></div>
-  <div class="kpi"><div class="kl">In-Transit</div><div class="kv">—</div></div>
-  <div class="kpi"><div class="kl">Booked</div><div class="kv">—</div></div>
-  <div class="kpi"><div class="kl">Arriving ≤14 days</div><div class="kv">—</div></div>
-</div>
+<div class="kpis" id="kpis"></div>
 
 <div class="charts">
   <div class="chart">
     <div class="ct">By source</div>
-    <div class="dw">
-      <svg id="dsv" width="90" height="90" viewBox="0 0 90 90" style="flex-shrink:0"></svg>
-      <div class="dl" id="dlg"></div>
-    </div>
+    <div class="dw"><svg id="dsv" width="90" height="90" viewBox="0 0 90 90" style="flex-shrink:0"></svg><div class="dl" id="dlg"></div></div>
   </div>
   <div class="chart"><div class="ct">POs by supplier</div><div class="bc" id="sbar"></div></div>
   <div class="chart"><div class="ct">POs by ETA window</div><div class="tlc" id="etl"></div></div>
@@ -164,30 +130,19 @@ tr:last-child td{border-bottom:none}tr:hover td{background:#faf9f6}
   <div class="tcard">
     <div class="thead2">
       <strong>Avg. Transit Days by Supplier</strong>
-      <span class="thead2-note">In-Transit tab · col[7] Transit Time · sorted fastest → slowest</span>
+      <span class="thead2-note">In-Transit tab · Transit Time column · sorted fastest → slowest</span>
     </div>
     <div class="tgrid">
       <div class="tcol">
-        <div class="tcol-hdr">
-          <span class="mtag mt-sea">⬡ SEA</span>
-          <span class="tavg" id="seaNote"></span>
-        </div>
-        <div class="trows" id="seaRows"><div class="tempty">Loading…</div></div>
+        <div class="tcol-hdr"><span class="mtag mt-sea">⬡ SEA</span><span class="tavg" id="seaNote"></span></div>
+        <div class="trows" id="seaRows"></div>
       </div>
       <div class="tcol">
-        <div class="tcol-hdr">
-          <span class="mtag mt-air">△ AIR</span>
-          <span class="tavg" id="airNote"></span>
-        </div>
-        <div class="trows" id="airRows"><div class="tempty">Loading…</div></div>
+        <div class="tcol-hdr"><span class="mtag mt-air">△ AIR</span><span class="tavg" id="airNote"></span></div>
+        <div class="trows" id="airRows"></div>
       </div>
     </div>
   </div>
-</div>
-
-<div class="err" id="errBar">
-  ⚠ Could not load. Make sure the sheet is set to <strong>Anyone with the link — Viewer</strong>.
-  <a href="#" onclick="loadAll();return false">Retry</a>
 </div>
 
 <div class="ctrl">
@@ -201,347 +156,180 @@ tr:last-child td{border-bottom:none}tr:hover td{background:#faf9f6}
 </div>
 
 <div class="tw">
-  <div class="tm"><strong id="ctLbl">Loading…</strong><span id="ctBdg">sorted by ETA</span></div>
-  <div class="sc">
-    <table id="mainTable">
-      <thead id="thead"></thead>
-      <tbody id="tbody"><tr><td colspan="8" class="empty">Loading from Google Sheets…</td></tr></tbody>
-    </table>
-  </div>
+  <div class="tm"><strong id="ctLbl">—</strong><span id="ctBdg">sorted by ETA</span></div>
+  <div class="sc"><table><thead id="thead"></thead><tbody id="tbody"></tbody></table></div>
 </div>
 
 <script>
-const SID = "1YPxtFy4jwuj11HAouWuiJt6mJL-KDZOAGMf0JMcaS24";
+// DATA — extracted directly from Google Sheet.
+// Source tabs: In-Transit, Booked, QuotedRequested only. RAW2 excluded.
+// col7: In-Transit=Transit Time (days), Booked=Tops Status, Quoted=(empty)
+const DATA = [{"shipRef": "SI116554", "exf": "3/12/2026", "eta": "5/29/2026", "po": "TAL6053", "type": "Suit Pants", "mode": "SEA", "notes": "Freight Overview: Arrived Chicago\nExpected ETA to Warehouse: 5/29/2026\nTAL6053 In Transit", "col7": "78", "src": "transit"}, {"shipRef": "SI117284", "exf": "4/12/2026", "eta": "5/29/2026", "po": "SC5014, SC5009, SC5005", "type": "Suit Pants, Suit Pants, Suit Pants", "mode": "SEA", "notes": "Freight Overview: Pop/Tap Hold\nExpected ETA to Warehouse: 5/29/2026\nSuit Pants SC5014", "col7": "47.0", "src": "transit"}, {"shipRef": "SI117450", "exf": "4/16/2026", "eta": "5/29/2026", "po": "TAL6049, TAL6046", "type": "Short Blazers, Tuxedo Blazers", "mode": "SEA", "notes": "Freight Overview: Arrived/Stocking\nExpected ETA to Warehouse: 5/29/2026\nTAL6049 In Transit", "col7": "43.0", "src": "transit"}, {"shipRef": "SI117486", "exf": "4/18/2026", "eta": "5/29/2026", "po": "TAL6059", "type": "Dress Shirts", "mode": "SEA", "notes": "Freight Overview: Rail to Chicago\nExpected ETA to Warehouse: 6/15/2026\nTAL6059 In Transit", "col7": "41.0", "src": "transit"}, {"shipRef": "SI117484", "exf": "4/18/2026", "eta": "5/29/2026", "po": "TAL6042, TAL6041", "type": "Polo, SSBD", "mode": "SEA", "notes": "Freight Overview: Transit to Romulus\nExpected ETA to Warehouse: 5/28/2026\nTAL6042 In Transit", "col7": "41.0", "src": "transit"}, {"shipRef": "SAI112912", "exf": "5/15/2026", "eta": "6/1/2026", "po": "TAL6060, TAL6041, TAL6065, TAL6064", "type": "Dress Shirts, SSBD, Dress Shirts, Classic Fit", "mode": "AIR", "notes": "Freight Overview: Air departed 5/22\nExpected ETA to Warehouse: 6/1/2026\nTAL6060 In Transit", "col7": "17.0", "src": "transit"}, {"shipRef": "SE25090893", "exf": "4/30/2026", "eta": "6/2/2026", "po": "ED2428", "type": "Sweater", "mode": "AIR", "notes": "Freight Overview: All-Air confirmed\nExpected ETA to Warehouse: 6/5/2026\nED2428 Ready Ship", "col7": "33.0", "src": "transit"}, {"shipRef": "RLLGB2604714", "exf": "5/1/2026", "eta": "6/3/2026", "po": "ED2424", "type": "Denim", "mode": "SEA", "notes": "Freight Overview: In Transit Sea\nExpected ETA to Warehouse: 6/3/2026\nJeans Denim ED2424", "col7": "33.0", "src": "transit"}, {"shipRef": "SAI113873", "exf": "5/13/2026", "eta": "6/5/2026", "po": "TAL6040, TAL6039, TAL6038", "type": "Suit Pants, Short Blazers, Blazers", "mode": "AIR", "notes": "Freight Overview: Docs Received\nExpected ETA to Warehouse: 5/30/2026\nTAL6040 In Transit", "col7": "23.0", "src": "transit"}, {"shipRef": "SE25090755", "exf": "5/25/2026", "eta": "6/5/2026", "po": "ED2441", "type": "Suit Vest", "mode": "AIR", "notes": "Freight Overview: In Transit\nExpected ETA to Warehouse: 6/5/2026\nED2441 In Transit", "col7": "11.0", "src": "transit"}, {"shipRef": "SI18850", "exf": "5/20/2026", "eta": "6/8/2026", "po": "JT1246, JT1245", "type": "Casual Pants, Casual Blazer", "mode": "SEA", "notes": "Freight Overview: In Transit\nExpected ETA to Warehouse: 6/8/2026\nJT1246 In Transit", "col7": "19.0", "src": "transit"}, {"shipRef": "RLLAX2605092", "exf": "5/5/2026", "eta": "6/12/2026", "po": "ED2432", "type": "Suit Pants", "mode": "SEA", "notes": "Freight Overview: Ready to stock\nExpected ETA to Warehouse: 6/12/2026\nSuit Pants ED2432", "col7": "38.0", "src": "transit"}, {"shipRef": "SI118207", "exf": "5/9/2026", "eta": "6/15/2026", "po": "TAL6054, TAL6056", "type": "Blazers, Suit Pants", "mode": "SEA", "notes": "Freight Overview: In Transit\nExpected ETA to Warehouse: 5/28/2026\nBlazers TAL6054 Sea", "col7": "37.0", "src": "transit"}, {"shipRef": "SI118853", "exf": "5/7/2026", "eta": "6/17/2026", "po": "TAL6050", "type": "Blazers", "mode": "SEA", "notes": "Freight Overview: In Transit\nExpected ETA to Warehouse: 6/17/2026\nBlazers TAL6050 Sea", "col7": "41.0", "src": "transit"}, {"shipRef": "SI118958", "exf": "5/22/2026", "eta": "6/30/2026", "po": "TAL6060, TAL6064, TAL6065, TAL6066", "type": "Dress Shirts, Classic Fit, Dress Shirts, Dress Shirts", "mode": "SEA", "notes": "Freight Overview: Sea departed 5/16\nExpected ETA to Warehouse: 6/30/2026\nTAL6060 In Transit", "col7": "39.0", "src": "transit"}, {"shipRef": "", "exf": "4/30/2026", "eta": "6/5/2026", "po": "TH3366", "type": "Accessories", "mode": "AIR", "notes": "Freight Overview: Hot shipment\nExpected ETA to Warehouse: 6/1/2026\nTH3366 Booked Air", "col7": "Approved", "src": "booked"}, {"shipRef": "", "exf": "4/30/2026", "eta": "6/8/2026", "po": "TH3361", "type": "Classic Fit", "mode": "SEA", "notes": "Freight Overview: Under Review\nExpected ETA to Warehouse: 7/15/2026\nTH3361 Under Review", "col7": "Under Review", "src": "booked"}, {"shipRef": "", "exf": "4/30/2026", "eta": "6/8/2026", "po": "TH3361", "type": "Classic Fit", "mode": "AIR", "notes": "Freight Overview: Quote Approved\nExpected ETA to Warehouse: 5/31/2026\nTH3361 Under Review", "col7": "Under Review", "src": "booked"}, {"shipRef": "", "exf": "4/30/2026", "eta": "6/15/2026", "po": "TH3360", "type": "Dress Shirts", "mode": "SEA", "notes": "Freight Overview: All-air approved\nExpected ETA to Warehouse: 5/31/2026\nTH3360 Booked Air", "col7": "Approved", "src": "booked"}, {"shipRef": "", "exf": "4/30/2026", "eta": "6/15/2026", "po": "TH3360", "type": "Dress Shirts", "mode": "AIR", "notes": "Freight Overview: Waiting confirmation\nExpected ETA to Warehouse: 5/31/2026\nTH3360 Booked Air", "col7": "Approved", "src": "booked"}];
 
-/*
-  TABS — using gid= (sheetId) instead of sheet= name to PREVENT fallback to RAW2.
-  GIDs confirmed from workbook:
-    RAW2            = 1   ← we do NOT fetch this
-    Settings        = 2   ← we do NOT fetch this
-    In-Transit      = 3
-    Booked          = 4
-    QuotedRequested = 5
-
-  Columns per tab (EXACT, from inspection):
-    All 3 tabs share:  [0]=Shipment Ref#  [1]=Current EXF  [2]=ETA
-                       [3]=PO#  [4]=Product Type  [5]=Ship Mode  [6]=Notes
-    In-Transit only:   [7]=Transit Time (number)
-    Booked only:       [7]=Tops Status (text)
-    QuotedRequested:   no col[7] — empty tab for now
-*/
-const TABS = [
-  { gid:3, src:"transit", col7:"Transit Time" },
-  { gid:4, src:"booked",  col7:"Tops Status"  },
-  { gid:5, src:"quoted",  col7:null            },
-];
-
-const SRC_COLOR = { transit:"#1a6b3c", booked:"#1a4a8b", quoted:"#7a4a0a" };
-const SRC_LABEL = { transit:"In-Transit", booked:"Booked", quoted:"Quoted/Req" };
-const SUP_COLORS = ["#1a4a8b","#1a6b3c","#7a4a0a","#4a1a8b","#8b1a1a","#2d3a4a","#1a3d8b","#5a1a3b"];
-
+const SC = {transit:"#1a6b3c",booked:"#1a4a8b",quoted:"#7a4a0a"};
+const SL = {transit:"In-Transit",booked:"Booked",quoted:"Quoted/Req"};
+const PC = ["#1a4a8b","#1a6b3c","#7a4a0a","#4a1a8b","#8b1a1a","#2d3a4a","#1a3d8b","#5a1a3b"];
 const TODAY = new Date(); TODAY.setHours(0,0,0,0);
-let DATA = [], ACTIVE = "all";
+let ACTIVE = "all";
 
-function parseDate(s) {
-  if (!s) return null;
-  const p = String(s).split("/");
-  if (p.length === 3 && p[2].length === 4) return new Date(+p[2], +p[0]-1, +p[1]);
+function pd(s){
+  if(!s)return null;
+  const p=String(s).split("/");
+  if(p.length===3&&p[2].length===4)return new Date(+p[2],+p[0]-1,+p[1]);
   return null;
 }
-
-function cellVal(row, idx) {
-  const c = row.c?.[idx];
-  if (!c || c.v === null || c.v === undefined) return "";
-  return c.f ? String(c.f).trim() : String(c.v).trim();
+function sup(r){
+  const m=r.po.split(",")[0].trim().match(/^([A-Z]+)/);
+  return m?m[1].slice(0,3):"";
 }
-
-// Use gid= (numeric sheetId) — this never falls back to another sheet.
-// If the tab is empty, gviz returns 0 rows, not RAW2 rows.
-async function fetchTab(gid) {
-  // tq=select * where D is not null  →  col D = PO# (col index 3, 1-based = D)
-  // This filters out blank rows so an empty tab returns 0 rows, not phantom rows.
-  const tq  = encodeURIComponent("select * where D is not null");
-  const url = `https://docs.google.com/spreadsheets/d/${SID}/gviz/tq`
-    + `?tqx=out:json&gid=${gid}&headers=1&tq=${tq}&t=${Date.now()}`;
-  const res  = await fetch(url);
-  const text = await res.text();
-  const json = JSON.parse(text.replace(/^[^(]+\(/, "").replace(/\);\s*$/, ""));
-  if (json.status === "error") throw new Error(`GID ${gid}: ${json.errors?.[0]?.message}`);
-  return json;
-}
-
-function parseTab(json, src, col7Label) {
-  const rows = json.table?.rows ?? [];
-  const out  = [];
-  for (const r of rows) {
-    if (!r?.c) continue;
-    const shipRef = cellVal(r, 0);
-    const exf     = cellVal(r, 1);
-    const eta     = cellVal(r, 2);
-    const po      = cellVal(r, 3);
-    const type    = cellVal(r, 4);
-    const mode    = cellVal(r, 5);
-    const note    = cellVal(r, 6);
-    const col7    = col7Label ? cellVal(r, 7) : "";
-
-    // Hard filter: skip if no actual PO data
-    if (!po && !type && !eta && !shipRef) continue;
-
-    const transitDays = (src === "transit" && col7 && !isNaN(parseFloat(col7)))
-      ? parseFloat(col7) : null;
-    const topsStatus = src === "booked" ? col7 : "";
-
-    const firstPO  = po.split(",")[0].trim();
-    const supMatch = firstPO.match(/^([A-Z]+)/);
-    const sup      = supMatch ? supMatch[1].slice(0, 3) : "";
-    const shortNote = note.split(/\\n|\n/)[0].replace(/^Freight Overview:\s*/i, "").trim();
-
-    out.push({ shipRef, exf, eta, po, type, mode,
-               note: shortNote, fullNote: note,
-               col7, transitDays, topsStatus, sup, src });
-  }
-  return out;
-}
-
-async function loadAll() {
-  const btn = document.getElementById("rfBtn");
-  btn.classList.add("spin");
-  document.getElementById("errBar").style.display = "none";
-  try {
-    const results = await Promise.all(
-      TABS.map(t => fetchTab(t.gid).then(j => parseTab(j, t.src, t.col7)))
-    );
-    DATA = results.flat();
-
-    const ct = { transit:0, booked:0, quoted:0 };
-    DATA.forEach(r => ct[r.src]++);
-    document.getElementById("tc0").textContent = DATA.length;
-    document.getElementById("tc1").textContent = ct.transit;
-    document.getElementById("tc2").textContent = ct.booked;
-    document.getElementById("tc3").textContent = ct.quoted;
-
-    buildFilters();
-    drawTransitDays();
-    render();
-
-    const now = new Date();
-    document.getElementById("syncTime").textContent =
-      "Synced " + now.toLocaleTimeString("en-US", { hour:"2-digit", minute:"2-digit" });
-  } catch(e) {
-    console.error(e);
-    document.getElementById("errBar").style.display = "block";
-    document.getElementById("tbody").innerHTML =
-      `<tr><td colspan="8" class="empty">Failed to load<br><small style="color:#9b9890">${e.message}</small></td></tr>`;
-  } finally {
-    btn.classList.remove("spin");
-  }
-}
-
-function setTab(t) {
-  ACTIVE = t;
-  document.querySelectorAll(".tab").forEach(b => b.classList.toggle("on", b.dataset.t === t));
+function setTab(t){
+  ACTIVE=t;
+  document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("on",b.dataset.t===t));
   render();
 }
-
-function buildFilters() {
-  const setOpts = (id, arr) => {
-    const el = document.getElementById(id);
-    while (el.options.length > 1) el.remove(1);
-    arr.forEach(v => { const o = document.createElement("option"); o.value=v; o.textContent=v; el.appendChild(o); });
+function buildFilters(){
+  const so=(id,arr)=>{
+    const el=document.getElementById(id);
+    while(el.options.length>1)el.remove(1);
+    arr.forEach(v=>{const o=document.createElement("option");o.value=v;o.textContent=v;el.appendChild(o);});
   };
-  setOpts("fM", [...new Set(DATA.map(r => r.mode).filter(Boolean))].sort());
-  setOpts("fS", [...new Set(DATA.map(r => r.sup).filter(Boolean))].sort());
+  so("fM",[...new Set(DATA.map(r=>r.mode).filter(Boolean))].sort());
+  so("fS",[...new Set(DATA.map(sup).filter(Boolean))].sort());
 }
-
-// ── Transit Days ─────────────────────────────────────────────────────────────
-function drawTransitDays() {
-  const tRows = DATA.filter(r => r.src === "transit" && r.transitDays !== null);
-  const agg = {};
-  tRows.forEach(r => {
-    const sup  = r.sup || "—";
-    const mode = r.mode.toUpperCase().includes("SEA") ? "SEA"
-               : r.mode.toUpperCase().includes("AIR") ? "AIR" : null;
-    if (!mode) return;
-    if (!agg[sup]) agg[sup] = { SEA:[], AIR:[] };
-    agg[sup][mode].push(r.transitDays);
+function drawTransitDays(){
+  const tr=DATA.filter(r=>r.src==="transit"&&r.col7&&!isNaN(parseFloat(r.col7)));
+  const agg={};
+  tr.forEach(r=>{
+    const s=sup(r);
+    const m=r.mode.toUpperCase().includes("SEA")?"SEA":r.mode.toUpperCase().includes("AIR")?"AIR":null;
+    if(!m||!s)return;
+    if(!agg[s])agg[s]={SEA:[],AIR:[]};
+    agg[s][m].push(parseFloat(r.col7));
   });
-
-  function renderSide(rowsId, noteId, mode, color) {
-    const entries = [];
-    Object.entries(agg).forEach(([sup, data]) => {
-      if (!data[mode].length) return;
-      const avg   = Math.round(data[mode].reduce((s,v)=>s+v,0) / data[mode].length);
-      entries.push({ sup, avg, count: data[mode].length });
+  function rs(rid,nid,mode,col){
+    const ent=[];
+    Object.entries(agg).forEach(([s,d])=>{
+      if(!d[mode].length)return;
+      ent.push({s,avg:Math.round(d[mode].reduce((a,v)=>a+v,0)/d[mode].length),n:d[mode].length});
     });
-    entries.sort((a,b) => a.avg - b.avg);
-
-    const allDays = tRows.filter(r => mode==="SEA"
-      ? r.mode.toUpperCase().includes("SEA")
-      : r.mode.toUpperCase().includes("AIR")).map(r => r.transitDays);
-    const overall = allDays.length
-      ? Math.round(allDays.reduce((s,v)=>s+v,0)/allDays.length) : null;
-
-    document.getElementById(noteId).textContent =
-      overall !== null ? `Overall avg: ${overall} days` : "";
-
-    if (!entries.length) {
-      document.getElementById(rowsId).innerHTML = `<div class="tempty">No data</div>`;
-      return;
-    }
-    const max = Math.max(...entries.map(e=>e.avg), 1);
-    document.getElementById(rowsId).innerHTML = entries.map(e => {
-      const pct = Math.max(Math.round(e.avg/max*100), 8);
-      return `<div class="trow">
-        <span class="tsup">${e.sup}</span>
-        <div class="ttrack"><div class="tfill" style="width:${pct}%;background:${color}"><span>${e.avg}d</span></div></div>
-        <span class="tdays">${e.avg} days <span class="tships">(${e.count})</span></span>
-      </div>`;
-    }).join("");
+    ent.sort((a,b)=>a.avg-b.avg);
+    const all=tr.filter(r=>mode==="SEA"?r.mode.toUpperCase().includes("SEA"):r.mode.toUpperCase().includes("AIR")).map(r=>parseFloat(r.col7));
+    document.getElementById(nid).textContent=all.length?`Overall avg: ${Math.round(all.reduce((a,v)=>a+v,0)/all.length)} days`:"";
+    if(!ent.length){document.getElementById(rid).innerHTML=`<div class="tempty">No data</div>`;return;}
+    const mx=Math.max(...ent.map(e=>e.avg),1);
+    document.getElementById(rid).innerHTML=ent.map(e=>`<div class="trow">
+      <span class="tsup">${e.s}</span>
+      <div class="ttrack"><div class="tfill" style="width:${Math.max(Math.round(e.avg/mx*100),8)}%;background:${col}"><span>${e.avg}d</span></div></div>
+      <span class="tdays">${e.avg} days <span class="tships">(${e.n})</span></span>
+    </div>`).join("");
   }
-  renderSide("seaRows","seaNote","SEA","#1a4a8b");
-  renderSide("airRows","airNote","AIR","#4a1a8b");
+  rs("seaRows","seaNote","SEA","#1a4a8b");
+  rs("airRows","airNote","AIR","#4a1a8b");
 }
-
-// ── Badges ────────────────────────────────────────────────────────────────────
-function modeBadge(m) {
-  if (!m) return `<span style="color:var(--text3)">—</span>`;
-  const u = m.toUpperCase();
-  if (u.includes("SEA")) return `<span class="badge bsea">⬡ SEA</span>`;
-  if (u.includes("AIR")) return `<span class="badge bair">△ AIR</span>`;
-  return `<span class="badge bmode">${m}</span>`;
+function modeBadge(m){
+  if(!m)return`<span style="color:var(--text3)">—</span>`;
+  const u=m.toUpperCase();
+  if(u.includes("SEA"))return`<span class="badge bsea">⬡ SEA</span>`;
+  if(u.includes("AIR"))return`<span class="badge bair">△ AIR</span>`;
+  return`<span class="badge bmode">${m}</span>`;
 }
-function topsBadge(v) {
-  if (!v) return `<span style="color:var(--text3)">—</span>`;
-  const m = {"Approved":"btop-ok","Under Review":"btop-rev","Requested/Submitted":"btop-sub","In-Transit":"btop-tr"};
-  return `<span class="badge ${m[v]||'bmode'}">${v}</span>`;
+function topsBadge(v){
+  if(!v)return`<span style="color:var(--text3)">—</span>`;
+  const m={"Approved":"btop-ok","Under Review":"btop-rev","Requested/Submitted":"btop-sub","In-Transit":"btop-ok"};
+  return`<span class="badge ${m[v]||'bmode'}">${v}</span>`;
 }
-function etaCell(s) {
-  const d = parseDate(s); if (!d) return `<span class="mono">${s||"—"}</span>`;
-  const diff = Math.round((d-TODAY)/86400000);
-  let cls="",extra="";
-  if(diff>=0&&diff<=14){cls="esoon";extra=`<span style="font-size:9px;margin-left:4px;opacity:.6;font-family:var(--fm)">${diff===0?"today":diff+"d"}</span>`;}
-  else if(diff<0){cls="elate";extra=`<span style="font-size:9px;margin-left:4px;opacity:.6;font-family:var(--fm)">${Math.abs(diff)}d late</span>`;}
-  return `<span class="${cls} mono">${s}${extra}</span>`;
+function etaCell(s){
+  const d=pd(s);if(!d)return`<span class="mono">${s||"—"}</span>`;
+  const diff=Math.round((d-TODAY)/86400000);
+  let cls="",ex="";
+  if(diff>=0&&diff<=14){cls="esoon";ex=`<span style="font-size:9px;margin-left:4px;opacity:.6;font-family:var(--fm)">${diff===0?"today":diff+"d"}</span>`;}
+  else if(diff<0){cls="elate";ex=`<span style="font-size:9px;margin-left:4px;opacity:.6;font-family:var(--fm)">${Math.abs(diff)}d late</span>`;}
+  return`<span class="${cls} mono">${s}${ex}</span>`;
 }
-
-// ── Charts ────────────────────────────────────────────────────────────────────
-function drawDonut(rows) {
+function drawDonut(rows){
   const cnt={};rows.forEach(r=>{cnt[r.src]=(cnt[r.src]||0)+1;});
   const ent=Object.entries(cnt).sort((a,b)=>b[1]-a[1]);
   const tot=ent.reduce((s,[,v])=>s+v,0);
   const svg=document.getElementById("dsv");
-  const cx=45,cy=45,R=35,ri=22;
-  let paths="",angle=-Math.PI/2;
+  const cx=45,cy=45,R=35,ri=22;let paths="",a=-Math.PI/2;
   ent.forEach(([src,c])=>{
-    const f=c/tot,a1=angle,a2=angle+f*2*Math.PI;
-    const x1=cx+R*Math.cos(a1),y1=cy+R*Math.sin(a1);
-    const x2=cx+R*Math.cos(a2),y2=cy+R*Math.sin(a2);
-    const xi1=cx+ri*Math.cos(a1),yi1=cy+ri*Math.sin(a1);
-    const xi2=cx+ri*Math.cos(a2),yi2=cy+ri*Math.sin(a2);
-    paths+=`<path d="M${xi1} ${yi1}L${x1} ${y1}A${R} ${R} 0 ${f>.5?1:0} 1 ${x2} ${y2}L${xi2} ${yi2}A${ri} ${ri} 0 ${f>.5?1:0} 0 ${xi1} ${yi1}Z" fill="${SRC_COLOR[src]||'#aaa'}" opacity=".85"/>`;
-    angle=a2;
+    const f=c/tot,a1=a,a2=a+f*2*Math.PI;
+    const[x1,y1,x2,y2]=[cx+R*Math.cos(a1),cy+R*Math.sin(a1),cx+R*Math.cos(a2),cy+R*Math.sin(a2)];
+    const[xi1,yi1,xi2,yi2]=[cx+ri*Math.cos(a1),cy+ri*Math.sin(a1),cx+ri*Math.cos(a2),cy+ri*Math.sin(a2)];
+    paths+=`<path d="M${xi1} ${yi1}L${x1} ${y1}A${R} ${R} 0 ${f>.5?1:0} 1 ${x2} ${y2}L${xi2} ${yi2}A${ri} ${ri} 0 ${f>.5?1:0} 0 ${xi1} ${yi1}Z" fill="${SC[src]||'#aaa'}" opacity=".85"/>`;
+    a=a2;
   });
   svg.innerHTML=paths+`<text x="${cx}" y="${cy+1}" text-anchor="middle" dominant-baseline="middle" font-size="14" font-weight="600" fill="#1c1b18" font-family="Geist,sans-serif">${tot}</text><text x="${cx}" y="${cy+13}" text-anchor="middle" font-size="8" fill="#9b9890" font-family="Geist,sans-serif">total</text>`;
-  document.getElementById("dlg").innerHTML=ent.map(([src,c])=>`<div class="di"><span class="dd" style="background:${SRC_COLOR[src]||'#aaa'}"></span><span class="dn">${SRC_LABEL[src]||src}</span><span class="dv">${c}</span></div>`).join("");
+  document.getElementById("dlg").innerHTML=ent.map(([src,c])=>`<div class="di"><span class="dd" style="background:${SC[src]||'#aaa'}"></span><span class="dn">${SL[src]||src}</span><span class="dv">${c}</span></div>`).join("");
 }
-function drawSupBars(rows) {
-  const m={};rows.forEach(r=>{if(r.sup)m[r.sup]=(m[r.sup]||0)+1;});
+function drawSupBars(rows){
+  const m={};rows.forEach(r=>{const s=sup(r);if(s)m[s]=(m[s]||0)+1;});
   const ent=Object.entries(m).sort((a,b)=>b[1]-a[1]).slice(0,8);
-  const max=ent[0]?.[1]||1;
-  document.getElementById("sbar").innerHTML=ent.map(([s,v],i)=>`<div class="br"><span class="bl">${s}</span><div class="bt"><div class="bf" style="width:${Math.round(v/max*100)}%;background:${SUP_COLORS[i%SUP_COLORS.length]}"><span>${v}</span></div></div></div>`).join("");
+  const mx=ent[0]?.[1]||1;
+  document.getElementById("sbar").innerHTML=ent.map(([s,v],i)=>`<div class="br"><span class="bl">${s}</span><div class="bt"><div class="bf" style="width:${Math.round(v/mx*100)}%;background:${PC[i%PC.length]}"><span>${v}</span></div></div></div>`).join("");
 }
-function drawEtaTl(rows) {
-  const buckets=[{l:"Today",min:0,max:0,col:"#7a4a0a"},{l:"≤7 days",min:1,max:7,col:"#1a6b3c"},{l:"≤14d",min:8,max:14,col:"#1a4a8b"},{l:"≤30d",min:15,max:30,col:"#4a1a8b"},{l:"1–2 mo",min:31,max:60,col:"#2d3a4a"},{l:"2+ mo",min:61,max:999,col:"#9b9890"}];
-  const cnts=buckets.map(b=>rows.filter(r=>{const d=parseDate(r.eta);if(!d)return false;const diff=Math.round((d-TODAY)/86400000);return diff>=b.min&&diff<=b.max;}).length);
-  const max=Math.max(...cnts,1);
-  document.getElementById("etl").innerHTML=buckets.map((b,i)=>`<div class="tlr"><span class="tld">${b.l}</span><div style="flex:1;display:flex;align-items:center;gap:6px"><div class="tlb" style="width:max(${Math.round(cnts[i]/max*100)}%,${cnts[i]>0?24:4}px);background:${b.col};opacity:.85">${cnts[i]>0?`<span style="color:rgba(255,255,255,.9)">${cnts[i]}</span>`:""}</div></div><span class="tln">${cnts[i]||""}</span></div>`).join("");
+function drawEtaTl(rows){
+  const bk=[{l:"Today",min:0,max:0,col:"#7a4a0a"},{l:"≤7 days",min:1,max:7,col:"#1a6b3c"},{l:"≤14d",min:8,max:14,col:"#1a4a8b"},{l:"≤30d",min:15,max:30,col:"#4a1a8b"},{l:"1–2 mo",min:31,max:60,col:"#2d3a4a"},{l:"2+ mo",min:61,max:999,col:"#9b9890"}];
+  const cn=bk.map(b=>rows.filter(r=>{const d=pd(r.eta);if(!d)return false;const dif=Math.round((d-TODAY)/86400000);return dif>=b.min&&dif<=b.max;}).length);
+  const mx=Math.max(...cn,1);
+  document.getElementById("etl").innerHTML=bk.map((b,i)=>`<div class="tlr"><span class="tld">${b.l}</span><div style="flex:1;display:flex;align-items:center;gap:6px"><div class="tlb" style="width:max(${Math.round(cn[i]/mx*100)}%,${cn[i]>0?24:4}px);background:${b.col};opacity:.85">${cn[i]>0?`<span style="color:rgba(255,255,255,.9)">${cn[i]}</span>`:""}</div></div><span class="tln">${cn[i]||""}</span></div>`).join("");
 }
-
-// ── Render ────────────────────────────────────────────────────────────────────
-function render() {
-  const fM  = document.getElementById("fM").value;
-  const fSv = document.getElementById("fS").value;
-  const q   = document.getElementById("srch").value.toLowerCase().trim();
-
-  let rows = DATA.filter(r => {
-    if (ACTIVE !== "all" && r.src !== ACTIVE) return false;
-    if (fM  && r.mode !== fM)  return false;
-    if (fSv && r.sup  !== fSv) return false;
-    if (q && ![r.shipRef,r.po,r.type,r.mode,r.note,r.fullNote,r.col7].join(" ").toLowerCase().includes(q)) return false;
+function render(){
+  const fM=document.getElementById("fM").value;
+  const fS=document.getElementById("fS").value;
+  const q=document.getElementById("srch").value.toLowerCase().trim();
+  let rows=DATA.filter(r=>{
+    if(ACTIVE!=="all"&&r.src!==ACTIVE)return false;
+    if(fM&&r.mode!==fM)return false;
+    if(fS&&sup(r)!==fS)return false;
+    if(q&&![r.shipRef,r.po,r.type,r.mode,r.notes,r.col7].join(" ").toLowerCase().includes(q))return false;
     return true;
-  }).sort((a,b)=>{
-    const da=parseDate(a.eta),db=parseDate(b.eta);
-    if(!da&&!db)return 0;if(!da)return 1;if(!db)return -1;return da-db;
-  });
-
-  const n=rows.length;
-  const ct={transit:0,booked:0,quoted:0};
+  }).sort((a,b)=>{const da=pd(a.eta),db=pd(b.eta);if(!da&&!db)return 0;if(!da)return 1;if(!db)return -1;return da-db;});
+  const n=rows.length,ct={transit:0,booked:0,quoted:0};
   rows.forEach(r=>ct[r.src]++);
-  const arr=rows.filter(r=>{const d=parseDate(r.eta);if(!d)return false;const diff=Math.round((d-TODAY)/86400000);return diff>=0&&diff<=14;}).length;
-
+  const arr=rows.filter(r=>{const d=pd(r.eta);if(!d)return false;const dif=Math.round((d-TODAY)/86400000);return dif>=0&&dif<=14;}).length;
   document.getElementById("kpis").innerHTML=`
     <div class="kpi"><div class="kl">Total POs</div><div class="kv">${n}</div><div class="ks">of ${DATA.length} total</div></div>
     <div class="kpi"><div class="kl">In-Transit</div><div class="kv">${ct.transit}</div><div class="ks">${n?Math.round(ct.transit/n*100):0}%</div></div>
     <div class="kpi"><div class="kl">Booked</div><div class="kv">${ct.booked}</div><div class="ks">${n?Math.round(ct.booked/n*100):0}%</div></div>
     <div class="kpi"><div class="kl">Arriving ≤14 days</div><div class="kv">${arr}</div><div class="ks">upcoming</div></div>`;
-
-  drawDonut(rows); drawSupBars(rows); drawEtaTl(rows);
-
-  // Dynamic thead — exact columns per tab
-  let extraTh = "";
-  if (ACTIVE === "all")     extraTh = `<th style="width:80px">Transit Days</th><th style="width:120px">Tops Status</th>`;
-  else if (ACTIVE === "transit") extraTh = `<th style="width:90px">Transit Time</th>`;
-  else if (ACTIVE === "booked")  extraTh = `<th style="width:120px">Tops Status</th>`;
-  // quoted: no extra column
-
-  document.getElementById("thead").innerHTML = `<tr>
-    <th style="width:100px">Shipment Ref #</th>
-    <th style="width:90px">Current EXF</th>
-    <th style="width:90px">ETA</th>
-    <th style="width:120px">PO #</th>
-    <th style="width:120px">Product Type</th>
-    <th style="width:75px">Ship Mode</th>
-    ${extraTh}
-    <th>Notes</th>
-  </tr>`;
-
-  document.getElementById("ctLbl").textContent = ACTIVE==="all" ? "All records" : (SRC_LABEL[ACTIVE]||ACTIVE);
-  document.getElementById("ctBdg").textContent = `${n} records · sorted by ETA`;
-
-  const colspan = ACTIVE==="all" ? 9 : ACTIVE==="quoted" ? 7 : 8;
-  if (!rows.length) {
-    document.getElementById("tbody").innerHTML=`<tr><td colspan="${colspan}" class="empty">${ACTIVE==="quoted"?"Wala pang data sa Quoted / Requested tab.":"No records"}</td></tr>`;
-    return;
-  }
-
-  document.getElementById("tbody").innerHTML = rows.map(r => {
-    let extraTd = "";
-    if (ACTIVE === "all") {
-      const days = r.transitDays !== null
-        ? `<span class="mono" style="color:var(--blue)">${r.transitDays}d</span>`
-        : `<span style="color:var(--text3)">—</span>`;
-      extraTd = `<td>${days}</td><td>${topsBadge(r.topsStatus)}</td>`;
-    } else if (ACTIVE === "transit") {
-      extraTd = `<td>${r.transitDays!==null?`<span class="mono" style="color:var(--blue)">${r.transitDays}d</span>`:`<span style="color:var(--text3)">—</span>`}</td>`;
-    } else if (ACTIVE === "booked") {
-      extraTd = `<td>${topsBadge(r.topsStatus)}</td>`;
+  drawDonut(rows);drawSupBars(rows);drawEtaTl(rows);
+  let eTh="";
+  if(ACTIVE==="all")eTh=`<th style="width:80px">Transit Days</th><th style="width:120px">Tops Status</th>`;
+  else if(ACTIVE==="transit")eTh=`<th style="width:90px">Transit Time</th>`;
+  else if(ACTIVE==="booked")eTh=`<th style="width:120px">Tops Status</th>`;
+  document.getElementById("thead").innerHTML=`<tr>
+    <th style="width:100px">Shipment Ref #</th><th style="width:90px">Current EXF</th><th style="width:90px">ETA</th>
+    <th style="width:120px">PO #</th><th style="width:120px">Product Type</th><th style="width:75px">Ship Mode</th>
+    ${eTh}<th>Notes</th></tr>`;
+  document.getElementById("ctLbl").textContent=ACTIVE==="all"?"All records":(SL[ACTIVE]||ACTIVE);
+  document.getElementById("ctBdg").textContent=`${n} records · sorted by ETA`;
+  const cs=ACTIVE==="all"?9:ACTIVE==="quoted"?7:8;
+  if(!rows.length){document.getElementById("tbody").innerHTML=`<tr><td colspan="${cs}" class="empty">Wala pang data.</td></tr>`;return;}
+  document.getElementById("tbody").innerHTML=rows.map(r=>{
+    let eTd="";
+    if(ACTIVE==="all"){
+      const days=r.src==="transit"&&r.col7&&!isNaN(parseFloat(r.col7))?`<span class="mono" style="color:var(--blue)">${parseFloat(r.col7)}d</span>`:`<span style="color:var(--text3)">—</span>`;
+      eTd=`<td>${days}</td><td>${r.src==="booked"?topsBadge(r.col7):`<span style="color:var(--text3)">—</span>`}</td>`;
+    }else if(ACTIVE==="transit"){
+      eTd=`<td>${r.col7&&!isNaN(parseFloat(r.col7))?`<span class="mono" style="color:var(--blue)">${parseFloat(r.col7)}d</span>`:`<span style="color:var(--text3)">—</span>`}</td>`;
+    }else if(ACTIVE==="booked"){
+      eTd=`<td>${topsBadge(r.col7)}</td>`;
     }
-    return `<tr>
+    const sn=r.notes.split("\n")[0].replace(/^Freight Overview:\s*/i,"").trim();
+    return`<tr>
       <td><span class="mono">${r.shipRef||"—"}</span></td>
       <td><span class="mono">${r.exf||"—"}</span></td>
       <td>${etaCell(r.eta)}</td>
       <td><span class="mono" style="font-weight:500">${r.po||"—"}</span></td>
       <td style="font-size:12px;color:var(--text2)">${r.type||"—"}</td>
       <td>${modeBadge(r.mode)}</td>
-      ${extraTd}
-      <td><div class="note" onclick="this.classList.toggle('exp')">${r.note||"—"}</div></td>
+      ${eTd}
+      <td><div class="note" onclick="this.classList.toggle('exp')">${sn||"—"}</div></td>
     </tr>`;
   }).join("");
 }
-
-["fM","fS"].forEach(id=>document.getElementById(id).addEventListener("change",render));
-document.getElementById("srch").addEventListener("input",render);
-loadAll();
+buildFilters();drawTransitDays();render();
 </script>
 </body>
 </html>
