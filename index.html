@@ -19,10 +19,16 @@
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:var(--ff);background:var(--bg);color:var(--text);font-size:13px}
-header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:56px}
+header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:56px;gap:1rem}
 .brand{font-size:13px;font-weight:600}.brand span{color:var(--text3);font-weight:400;margin-left:6px}
+.hright{display:flex;align-items:center;gap:10px}
 .pill{display:flex;align-items:center;gap:6px;background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:4px 10px;font-size:11px;color:var(--text2);font-family:var(--fm)}
-.sdot{width:6px;height:6px;border-radius:50%;background:#22c55e}
+.sdot{width:6px;height:6px;border-radius:50%;background:#9b9890}
+.sdot.live{background:#22c55e;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.btn{background:var(--text);color:#fff;border:none;border-radius:7px;padding:6px 14px;font-family:var(--ff);font-size:12px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:6px;transition:opacity .15s}
+.btn:hover{opacity:.85}.btn.spin svg{animation:rot .7s linear infinite}
+@keyframes rot{to{transform:rotate(360deg)}}
 .tabs{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2rem;display:flex}
 .tab{padding:10px 18px;font-size:12.5px;font-weight:500;color:var(--text3);cursor:pointer;border:none;background:none;border-bottom:2px solid transparent;white-space:nowrap}
 .tab:hover{color:var(--text)}.tab.on{color:var(--text);border-bottom-color:var(--text)}
@@ -100,22 +106,34 @@ tr:last-child td{border-bottom:none}tr:hover td{background:#faf9f6}
 .note{font-size:11px;color:var(--text3);line-height:1.4;max-height:36px;overflow:hidden;cursor:pointer}
 .note::after{content:" ▾";opacity:.5;font-size:9px}.note.exp{max-height:220px}.note.exp::after{content:" ▴"}
 .empty{text-align:center;padding:3rem;color:var(--text3)}
+.errbar{background:#fef2f2;border:1px solid #fecaca;color:#b91c1c;border-radius:8px;padding:.65rem 1.25rem;margin:0 2rem 12px;font-size:12px;display:none}
 </style>
 </head>
 <body>
 <header>
   <div class="brand">State &amp; Liberty <span>PO Tracker</span></div>
-  <div class="pill"><span class="sdot"></span><span>In-Transit: 15 &nbsp;·&nbsp; Booked: 5 &nbsp;·&nbsp; Quoted: 0</span></div>
+  <div class="hright">
+    <div class="pill"><span class="sdot" id="sdot"></span><span id="syncTime">Loading…</span></div>
+    <button class="btn" id="rfBtn" onclick="loadAll()">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+      Refresh
+    </button>
+  </div>
 </header>
 
 <div class="tabs">
-  <button class="tab on" data-t="all"     onclick="setTab('all')">All POs              <span class="tc" id="tc0">20</span></button>
-  <button class="tab"    data-t="transit" onclick="setTab('transit')">In-Transit       <span class="tc" id="tc1">15</span></button>
-  <button class="tab"    data-t="booked"  onclick="setTab('booked')">Booked            <span class="tc" id="tc2">5</span></button>
-  <button class="tab"    data-t="quoted"  onclick="setTab('quoted')">Quoted / Requested<span class="tc" id="tc3">0</span></button>
+  <button class="tab on" data-t="all"     onclick="setTab('all')">All POs              <span class="tc" id="tc0">—</span></button>
+  <button class="tab"    data-t="transit" onclick="setTab('transit')">In-Transit       <span class="tc" id="tc1">—</span></button>
+  <button class="tab"    data-t="booked"  onclick="setTab('booked')">Booked            <span class="tc" id="tc2">—</span></button>
+  <button class="tab"    data-t="quoted"  onclick="setTab('quoted')">Quoted / Requested<span class="tc" id="tc3">—</span></button>
 </div>
 
-<div class="kpis" id="kpis"></div>
+<div class="kpis" id="kpis">
+  <div class="kpi"><div class="kl">Total POs</div><div class="kv">—</div></div>
+  <div class="kpi"><div class="kl">In-Transit</div><div class="kv">—</div></div>
+  <div class="kpi"><div class="kl">Booked</div><div class="kv">—</div></div>
+  <div class="kpi"><div class="kl">Arriving ≤14 days</div><div class="kv">—</div></div>
+</div>
 
 <div class="charts">
   <div class="chart">
@@ -130,20 +148,22 @@ tr:last-child td{border-bottom:none}tr:hover td{background:#faf9f6}
   <div class="tcard">
     <div class="thead2">
       <strong>Avg. Transit Days by Supplier</strong>
-      <span class="thead2-note">In-Transit tab · Transit Time column · sorted fastest → slowest</span>
+      <span class="thead2-note">In-Transit tab · Transit Time column · fastest → slowest</span>
     </div>
     <div class="tgrid">
       <div class="tcol">
         <div class="tcol-hdr"><span class="mtag mt-sea">⬡ SEA</span><span class="tavg" id="seaNote"></span></div>
-        <div class="trows" id="seaRows"></div>
+        <div class="trows" id="seaRows"><div class="tempty">Loading…</div></div>
       </div>
       <div class="tcol">
         <div class="tcol-hdr"><span class="mtag mt-air">△ AIR</span><span class="tavg" id="airNote"></span></div>
-        <div class="trows" id="airRows"></div>
+        <div class="trows" id="airRows"><div class="tempty">Loading…</div></div>
       </div>
     </div>
   </div>
 </div>
+
+<div class="errbar" id="errBar"></div>
 
 <div class="ctrl">
   <div class="sw">
@@ -157,67 +177,170 @@ tr:last-child td{border-bottom:none}tr:hover td{background:#faf9f6}
 
 <div class="tw">
   <div class="tm"><strong id="ctLbl">—</strong><span id="ctBdg">sorted by ETA</span></div>
-  <div class="sc"><table><thead id="thead"></thead><tbody id="tbody"></tbody></table></div>
+  <div class="sc"><table><thead id="thead"></thead><tbody id="tbody"><tr><td colspan="8" class="empty">Loading…</td></tr></tbody></table></div>
 </div>
 
 <script>
-// DATA — extracted directly from Google Sheet.
-// Source tabs: In-Transit, Booked, QuotedRequested only. RAW2 excluded.
-// col7: In-Transit=Transit Time (days), Booked=Tops Status, Quoted=(empty)
-const DATA = [{"shipRef": "SI116554", "exf": "3/12/2026", "eta": "5/29/2026", "po": "TAL6053", "type": "Suit Pants", "mode": "SEA", "notes": "Freight Overview: Arrived Chicago\nExpected ETA to Warehouse: 5/29/2026\nTAL6053 In Transit", "col7": "78", "src": "transit"}, {"shipRef": "SI117284", "exf": "4/12/2026", "eta": "5/29/2026", "po": "SC5014, SC5009, SC5005", "type": "Suit Pants, Suit Pants, Suit Pants", "mode": "SEA", "notes": "Freight Overview: Pop/Tap Hold\nExpected ETA to Warehouse: 5/29/2026\nSuit Pants SC5014", "col7": "47.0", "src": "transit"}, {"shipRef": "SI117450", "exf": "4/16/2026", "eta": "5/29/2026", "po": "TAL6049, TAL6046", "type": "Short Blazers, Tuxedo Blazers", "mode": "SEA", "notes": "Freight Overview: Arrived/Stocking\nExpected ETA to Warehouse: 5/29/2026\nTAL6049 In Transit", "col7": "43.0", "src": "transit"}, {"shipRef": "SI117486", "exf": "4/18/2026", "eta": "5/29/2026", "po": "TAL6059", "type": "Dress Shirts", "mode": "SEA", "notes": "Freight Overview: Rail to Chicago\nExpected ETA to Warehouse: 6/15/2026\nTAL6059 In Transit", "col7": "41.0", "src": "transit"}, {"shipRef": "SI117484", "exf": "4/18/2026", "eta": "5/29/2026", "po": "TAL6042, TAL6041", "type": "Polo, SSBD", "mode": "SEA", "notes": "Freight Overview: Transit to Romulus\nExpected ETA to Warehouse: 5/28/2026\nTAL6042 In Transit", "col7": "41.0", "src": "transit"}, {"shipRef": "SAI112912", "exf": "5/15/2026", "eta": "6/1/2026", "po": "TAL6060, TAL6041, TAL6065, TAL6064", "type": "Dress Shirts, SSBD, Dress Shirts, Classic Fit", "mode": "AIR", "notes": "Freight Overview: Air departed 5/22\nExpected ETA to Warehouse: 6/1/2026\nTAL6060 In Transit", "col7": "17.0", "src": "transit"}, {"shipRef": "SE25090893", "exf": "4/30/2026", "eta": "6/2/2026", "po": "ED2428", "type": "Sweater", "mode": "AIR", "notes": "Freight Overview: All-Air confirmed\nExpected ETA to Warehouse: 6/5/2026\nED2428 Ready Ship", "col7": "33.0", "src": "transit"}, {"shipRef": "RLLGB2604714", "exf": "5/1/2026", "eta": "6/3/2026", "po": "ED2424", "type": "Denim", "mode": "SEA", "notes": "Freight Overview: In Transit Sea\nExpected ETA to Warehouse: 6/3/2026\nJeans Denim ED2424", "col7": "33.0", "src": "transit"}, {"shipRef": "SAI113873", "exf": "5/13/2026", "eta": "6/5/2026", "po": "TAL6040, TAL6039, TAL6038", "type": "Suit Pants, Short Blazers, Blazers", "mode": "AIR", "notes": "Freight Overview: Docs Received\nExpected ETA to Warehouse: 5/30/2026\nTAL6040 In Transit", "col7": "23.0", "src": "transit"}, {"shipRef": "SE25090755", "exf": "5/25/2026", "eta": "6/5/2026", "po": "ED2441", "type": "Suit Vest", "mode": "AIR", "notes": "Freight Overview: In Transit\nExpected ETA to Warehouse: 6/5/2026\nED2441 In Transit", "col7": "11.0", "src": "transit"}, {"shipRef": "SI18850", "exf": "5/20/2026", "eta": "6/8/2026", "po": "JT1246, JT1245", "type": "Casual Pants, Casual Blazer", "mode": "SEA", "notes": "Freight Overview: In Transit\nExpected ETA to Warehouse: 6/8/2026\nJT1246 In Transit", "col7": "19.0", "src": "transit"}, {"shipRef": "RLLAX2605092", "exf": "5/5/2026", "eta": "6/12/2026", "po": "ED2432", "type": "Suit Pants", "mode": "SEA", "notes": "Freight Overview: Ready to stock\nExpected ETA to Warehouse: 6/12/2026\nSuit Pants ED2432", "col7": "38.0", "src": "transit"}, {"shipRef": "SI118207", "exf": "5/9/2026", "eta": "6/15/2026", "po": "TAL6054, TAL6056", "type": "Blazers, Suit Pants", "mode": "SEA", "notes": "Freight Overview: In Transit\nExpected ETA to Warehouse: 5/28/2026\nBlazers TAL6054 Sea", "col7": "37.0", "src": "transit"}, {"shipRef": "SI118853", "exf": "5/7/2026", "eta": "6/17/2026", "po": "TAL6050", "type": "Blazers", "mode": "SEA", "notes": "Freight Overview: In Transit\nExpected ETA to Warehouse: 6/17/2026\nBlazers TAL6050 Sea", "col7": "41.0", "src": "transit"}, {"shipRef": "SI118958", "exf": "5/22/2026", "eta": "6/30/2026", "po": "TAL6060, TAL6064, TAL6065, TAL6066", "type": "Dress Shirts, Classic Fit, Dress Shirts, Dress Shirts", "mode": "SEA", "notes": "Freight Overview: Sea departed 5/16\nExpected ETA to Warehouse: 6/30/2026\nTAL6060 In Transit", "col7": "39.0", "src": "transit"}, {"shipRef": "", "exf": "4/30/2026", "eta": "6/5/2026", "po": "TH3366", "type": "Accessories", "mode": "AIR", "notes": "Freight Overview: Hot shipment\nExpected ETA to Warehouse: 6/1/2026\nTH3366 Booked Air", "col7": "Approved", "src": "booked"}, {"shipRef": "", "exf": "4/30/2026", "eta": "6/8/2026", "po": "TH3361", "type": "Classic Fit", "mode": "SEA", "notes": "Freight Overview: Under Review\nExpected ETA to Warehouse: 7/15/2026\nTH3361 Under Review", "col7": "Under Review", "src": "booked"}, {"shipRef": "", "exf": "4/30/2026", "eta": "6/8/2026", "po": "TH3361", "type": "Classic Fit", "mode": "AIR", "notes": "Freight Overview: Quote Approved\nExpected ETA to Warehouse: 5/31/2026\nTH3361 Under Review", "col7": "Under Review", "src": "booked"}, {"shipRef": "", "exf": "4/30/2026", "eta": "6/15/2026", "po": "TH3360", "type": "Dress Shirts", "mode": "SEA", "notes": "Freight Overview: All-air approved\nExpected ETA to Warehouse: 5/31/2026\nTH3360 Booked Air", "col7": "Approved", "src": "booked"}, {"shipRef": "", "exf": "4/30/2026", "eta": "6/15/2026", "po": "TH3360", "type": "Dress Shirts", "mode": "AIR", "notes": "Freight Overview: Waiting confirmation\nExpected ETA to Warehouse: 5/31/2026\nTH3360 Booked Air", "col7": "Approved", "src": "booked"}];
+const SID = "1YPxtFy4jwuj11HAouWuiJt6mJL-KDZOAGMf0JMcaS24";
+
+/*
+  Fetch strategy: use the Google Sheets CSV export URL per tab.
+  Format: /export?format=csv&gid=SHEET_ID
+  This returns ONLY the exact tab, NO fallback to other sheets.
+  Empty tabs return a single header row — which we skip.
+
+  Sheet GIDs (from workbook.xml — these are the internal xlsx sheetId values,
+  but for the /export?format=csv endpoint Google uses the same numeric IDs):
+    In-Transit      = 3   col[7] = Transit Time (number)
+    Booked          = 4   col[7] = Tops Status (text)
+    QuotedRequested = 5   col[7] = (none — empty tab)
+
+  NOTE: /export?format=csv does NOT fallback like gviz does.
+  If the tab is empty, it returns only the header row.
+*/
+const TABS = [
+  { gid:3, src:"transit", col7:"Transit Time" },
+  { gid:4, src:"booked",  col7:"Tops Status"  },
+  { gid:5, src:"quoted",  col7:null            },
+];
 
 const SC = {transit:"#1a6b3c",booked:"#1a4a8b",quoted:"#7a4a0a"};
 const SL = {transit:"In-Transit",booked:"Booked",quoted:"Quoted/Req"};
 const PC = ["#1a4a8b","#1a6b3c","#7a4a0a","#4a1a8b","#8b1a1a","#2d3a4a","#1a3d8b","#5a1a3b"];
 const TODAY = new Date(); TODAY.setHours(0,0,0,0);
-let ACTIVE = "all";
+let DATA = [], ACTIVE = "all";
 
-function pd(s){
-  if(!s)return null;
-  const p=String(s).split("/");
-  if(p.length===3&&p[2].length===4)return new Date(+p[2],+p[0]-1,+p[1]);
-  return null;
+// ── CSV parser (handles quoted fields with commas/newlines) ──────────────────
+function parseCSV(text) {
+  const rows = [];
+  let row = [], cur = "", inQ = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i], n = text[i+1];
+    if (inQ) {
+      if (c === '"' && n === '"') { cur += '"'; i++; }
+      else if (c === '"') inQ = false;
+      else cur += c;
+    } else {
+      if (c === '"') inQ = true;
+      else if (c === ',') { row.push(cur.trim()); cur = ""; }
+      else if (c === '\n' || (c === '\r' && n === '\n')) {
+        if (c === '\r') i++;
+        row.push(cur.trim()); cur = "";
+        if (row.some(v => v)) rows.push(row);
+        row = [];
+      } else cur += c;
+    }
+  }
+  if (cur || row.length) { row.push(cur.trim()); if (row.some(v=>v)) rows.push(row); }
+  return rows;
 }
-function sup(r){
-  const m=r.po.split(",")[0].trim().match(/^([A-Z]+)/);
-  return m?m[1].slice(0,3):"";
+
+async function fetchTab(gid, src, col7Label) {
+  // CSV export — guaranteed to return only THIS tab, no fallback
+  const url = `https://docs.google.com/spreadsheets/d/${SID}/export?format=csv&gid=${gid}&t=${Date.now()}`;
+  const res  = await fetch(url);
+  if (!res.ok) throw new Error(`HTTP ${res.status} fetching gid=${gid}`);
+  const text = await res.text();
+  const rows = parseCSV(text);
+
+  const out = [];
+  for (let i = 1; i < rows.length; i++) {  // i=0 is header
+    const r = rows[i];
+    const po = (r[3] || "").trim();
+    if (!po) continue;  // skip blank rows — no PO# = not a real row
+    out.push({
+      shipRef: (r[0] || "").trim(),
+      exf:     (r[1] || "").trim(),
+      eta:     (r[2] || "").trim(),
+      po,
+      type:    (r[4] || "").trim(),
+      mode:    (r[5] || "").trim(),
+      notes:   (r[6] || "").trim(),
+      col7:    col7Label ? (r[7] || "").trim() : "",
+      src,
+    });
+  }
+  return out;
 }
-function setTab(t){
-  ACTIVE=t;
-  document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("on",b.dataset.t===t));
+
+async function loadAll() {
+  const btn = document.getElementById("rfBtn");
+  btn.classList.add("spin");
+  document.getElementById("errBar").style.display = "none";
+  document.getElementById("sdot").classList.remove("live");
+  document.getElementById("syncTime").textContent = "Fetching…";
+  try {
+    const results = await Promise.all(TABS.map(t => fetchTab(t.gid, t.src, t.col7)));
+    DATA = results.flat();
+    const ct = {transit:0, booked:0, quoted:0};
+    DATA.forEach(r => ct[r.src]++);
+    document.getElementById("tc0").textContent = DATA.length;
+    document.getElementById("tc1").textContent = ct.transit;
+    document.getElementById("tc2").textContent = ct.booked;
+    document.getElementById("tc3").textContent = ct.quoted;
+    buildFilters();
+    drawTransitDays();
+    render();
+    const now = new Date();
+    document.getElementById("syncTime").textContent =
+      "Updated " + now.toLocaleTimeString("en-US",{hour:"2-digit",minute:"2-digit"});
+    document.getElementById("sdot").classList.add("live");
+  } catch(e) {
+    console.error(e);
+    const eb = document.getElementById("errBar");
+    eb.textContent = "⚠ Could not load from Google Sheets — make sure the sheet is shared as Anyone with the link (Viewer). Error: " + e.message;
+    eb.style.display = "block";
+    document.getElementById("syncTime").textContent = "Load failed";
+  } finally {
+    btn.classList.remove("spin");
+  }
+}
+
+function setTab(t) {
+  ACTIVE = t;
+  document.querySelectorAll(".tab").forEach(b => b.classList.toggle("on", b.dataset.t === t));
   render();
 }
-function buildFilters(){
-  const so=(id,arr)=>{
-    const el=document.getElementById(id);
-    while(el.options.length>1)el.remove(1);
-    arr.forEach(v=>{const o=document.createElement("option");o.value=v;o.textContent=v;el.appendChild(o);});
+
+function buildFilters() {
+  const so = (id, arr) => {
+    const el = document.getElementById(id);
+    while (el.options.length > 1) el.remove(1);
+    arr.forEach(v => { const o = document.createElement("option"); o.value=v; o.textContent=v; el.appendChild(o); });
   };
-  so("fM",[...new Set(DATA.map(r=>r.mode).filter(Boolean))].sort());
-  so("fS",[...new Set(DATA.map(sup).filter(Boolean))].sort());
+  so("fM", [...new Set(DATA.map(r=>r.mode).filter(Boolean))].sort());
+  so("fS", [...new Set(DATA.map(sup).filter(Boolean))].sort());
 }
-function drawTransitDays(){
-  const tr=DATA.filter(r=>r.src==="transit"&&r.col7&&!isNaN(parseFloat(r.col7)));
-  const agg={};
-  tr.forEach(r=>{
-    const s=sup(r);
-    const m=r.mode.toUpperCase().includes("SEA")?"SEA":r.mode.toUpperCase().includes("AIR")?"AIR":null;
-    if(!m||!s)return;
-    if(!agg[s])agg[s]={SEA:[],AIR:[]};
+
+function sup(r) {
+  const m = r.po.split(",")[0].trim().match(/^([A-Z]+)/);
+  return m ? m[1].slice(0,3) : "";
+}
+
+function drawTransitDays() {
+  const tr = DATA.filter(r => r.src==="transit" && r.col7 && !isNaN(parseFloat(r.col7)));
+  const agg = {};
+  tr.forEach(r => {
+    const s = sup(r);
+    const m = r.mode.toUpperCase().includes("SEA") ? "SEA"
+            : r.mode.toUpperCase().includes("AIR") ? "AIR" : null;
+    if (!m || !s) return;
+    if (!agg[s]) agg[s] = {SEA:[], AIR:[]};
     agg[s][m].push(parseFloat(r.col7));
   });
-  function rs(rid,nid,mode,col){
-    const ent=[];
-    Object.entries(agg).forEach(([s,d])=>{
-      if(!d[mode].length)return;
-      ent.push({s,avg:Math.round(d[mode].reduce((a,v)=>a+v,0)/d[mode].length),n:d[mode].length});
+  function rs(rid, nid, mode, col) {
+    const ent = [];
+    Object.entries(agg).forEach(([s,d]) => {
+      if (!d[mode].length) return;
+      ent.push({s, avg: Math.round(d[mode].reduce((a,v)=>a+v,0)/d[mode].length), n: d[mode].length});
     });
-    ent.sort((a,b)=>a.avg-b.avg);
-    const all=tr.filter(r=>mode==="SEA"?r.mode.toUpperCase().includes("SEA"):r.mode.toUpperCase().includes("AIR")).map(r=>parseFloat(r.col7));
-    document.getElementById(nid).textContent=all.length?`Overall avg: ${Math.round(all.reduce((a,v)=>a+v,0)/all.length)} days`:"";
-    if(!ent.length){document.getElementById(rid).innerHTML=`<div class="tempty">No data</div>`;return;}
-    const mx=Math.max(...ent.map(e=>e.avg),1);
-    document.getElementById(rid).innerHTML=ent.map(e=>`<div class="trow">
+    ent.sort((a,b) => a.avg - b.avg);
+    const all = tr.filter(r => mode==="SEA" ? r.mode.toUpperCase().includes("SEA") : r.mode.toUpperCase().includes("AIR")).map(r => parseFloat(r.col7));
+    document.getElementById(nid).textContent = all.length
+      ? `Overall avg: ${Math.round(all.reduce((a,v)=>a+v,0)/all.length)} days` : "";
+    if (!ent.length) { document.getElementById(rid).innerHTML=`<div class="tempty">No data</div>`; return; }
+    const mx = Math.max(...ent.map(e=>e.avg), 1);
+    document.getElementById(rid).innerHTML = ent.map(e => `<div class="trow">
       <span class="tsup">${e.s}</span>
       <div class="ttrack"><div class="tfill" style="width:${Math.max(Math.round(e.avg/mx*100),8)}%;background:${col}"><span>${e.avg}d</span></div></div>
       <span class="tdays">${e.avg} days <span class="tships">(${e.n})</span></span>
@@ -226,27 +349,35 @@ function drawTransitDays(){
   rs("seaRows","seaNote","SEA","#1a4a8b");
   rs("airRows","airNote","AIR","#4a1a8b");
 }
-function modeBadge(m){
-  if(!m)return`<span style="color:var(--text3)">—</span>`;
-  const u=m.toUpperCase();
-  if(u.includes("SEA"))return`<span class="badge bsea">⬡ SEA</span>`;
-  if(u.includes("AIR"))return`<span class="badge bair">△ AIR</span>`;
-  return`<span class="badge bmode">${m}</span>`;
+
+function pd(s) {
+  if (!s) return null;
+  const p = String(s).split("/");
+  if (p.length===3 && p[2].length===4) return new Date(+p[2],+p[0]-1,+p[1]);
+  return null;
 }
-function topsBadge(v){
-  if(!v)return`<span style="color:var(--text3)">—</span>`;
-  const m={"Approved":"btop-ok","Under Review":"btop-rev","Requested/Submitted":"btop-sub","In-Transit":"btop-ok"};
-  return`<span class="badge ${m[v]||'bmode'}">${v}</span>`;
+function modeBadge(m) {
+  if (!m) return `<span style="color:var(--text3)">—</span>`;
+  const u = m.toUpperCase();
+  if (u.includes("SEA")) return `<span class="badge bsea">⬡ SEA</span>`;
+  if (u.includes("AIR")) return `<span class="badge bair">△ AIR</span>`;
+  return `<span class="badge bmode">${m}</span>`;
 }
-function etaCell(s){
-  const d=pd(s);if(!d)return`<span class="mono">${s||"—"}</span>`;
-  const diff=Math.round((d-TODAY)/86400000);
-  let cls="",ex="";
+function topsBadge(v) {
+  if (!v) return `<span style="color:var(--text3)">—</span>`;
+  const m = {"Approved":"btop-ok","Under Review":"btop-rev","Requested/Submitted":"btop-sub","In-Transit":"btop-ok"};
+  return `<span class="badge ${m[v]||'bmode'}">${v}</span>`;
+}
+function etaCell(s) {
+  const d = pd(s); if (!d) return `<span class="mono">${s||"—"}</span>`;
+  const diff = Math.round((d-TODAY)/86400000);
+  let cls="", ex="";
   if(diff>=0&&diff<=14){cls="esoon";ex=`<span style="font-size:9px;margin-left:4px;opacity:.6;font-family:var(--fm)">${diff===0?"today":diff+"d"}</span>`;}
   else if(diff<0){cls="elate";ex=`<span style="font-size:9px;margin-left:4px;opacity:.6;font-family:var(--fm)">${Math.abs(diff)}d late</span>`;}
-  return`<span class="${cls} mono">${s}${ex}</span>`;
+  return `<span class="${cls} mono">${s}${ex}</span>`;
 }
-function drawDonut(rows){
+
+function drawDonut(rows) {
   const cnt={};rows.forEach(r=>{cnt[r.src]=(cnt[r.src]||0)+1;});
   const ent=Object.entries(cnt).sort((a,b)=>b[1]-a[1]);
   const tot=ent.reduce((s,[,v])=>s+v,0);
@@ -262,26 +393,27 @@ function drawDonut(rows){
   svg.innerHTML=paths+`<text x="${cx}" y="${cy+1}" text-anchor="middle" dominant-baseline="middle" font-size="14" font-weight="600" fill="#1c1b18" font-family="Geist,sans-serif">${tot}</text><text x="${cx}" y="${cy+13}" text-anchor="middle" font-size="8" fill="#9b9890" font-family="Geist,sans-serif">total</text>`;
   document.getElementById("dlg").innerHTML=ent.map(([src,c])=>`<div class="di"><span class="dd" style="background:${SC[src]||'#aaa'}"></span><span class="dn">${SL[src]||src}</span><span class="dv">${c}</span></div>`).join("");
 }
-function drawSupBars(rows){
+function drawSupBars(rows) {
   const m={};rows.forEach(r=>{const s=sup(r);if(s)m[s]=(m[s]||0)+1;});
   const ent=Object.entries(m).sort((a,b)=>b[1]-a[1]).slice(0,8);
   const mx=ent[0]?.[1]||1;
   document.getElementById("sbar").innerHTML=ent.map(([s,v],i)=>`<div class="br"><span class="bl">${s}</span><div class="bt"><div class="bf" style="width:${Math.round(v/mx*100)}%;background:${PC[i%PC.length]}"><span>${v}</span></div></div></div>`).join("");
 }
-function drawEtaTl(rows){
+function drawEtaTl(rows) {
   const bk=[{l:"Today",min:0,max:0,col:"#7a4a0a"},{l:"≤7 days",min:1,max:7,col:"#1a6b3c"},{l:"≤14d",min:8,max:14,col:"#1a4a8b"},{l:"≤30d",min:15,max:30,col:"#4a1a8b"},{l:"1–2 mo",min:31,max:60,col:"#2d3a4a"},{l:"2+ mo",min:61,max:999,col:"#9b9890"}];
   const cn=bk.map(b=>rows.filter(r=>{const d=pd(r.eta);if(!d)return false;const dif=Math.round((d-TODAY)/86400000);return dif>=b.min&&dif<=b.max;}).length);
   const mx=Math.max(...cn,1);
   document.getElementById("etl").innerHTML=bk.map((b,i)=>`<div class="tlr"><span class="tld">${b.l}</span><div style="flex:1;display:flex;align-items:center;gap:6px"><div class="tlb" style="width:max(${Math.round(cn[i]/mx*100)}%,${cn[i]>0?24:4}px);background:${b.col};opacity:.85">${cn[i]>0?`<span style="color:rgba(255,255,255,.9)">${cn[i]}</span>`:""}</div></div><span class="tln">${cn[i]||""}</span></div>`).join("");
 }
-function render(){
+
+function render() {
   const fM=document.getElementById("fM").value;
-  const fS=document.getElementById("fS").value;
+  const fSv=document.getElementById("fS").value;
   const q=document.getElementById("srch").value.toLowerCase().trim();
   let rows=DATA.filter(r=>{
     if(ACTIVE!=="all"&&r.src!==ACTIVE)return false;
     if(fM&&r.mode!==fM)return false;
-    if(fS&&sup(r)!==fS)return false;
+    if(fSv&&sup(r)!==fSv)return false;
     if(q&&![r.shipRef,r.po,r.type,r.mode,r.notes,r.col7].join(" ").toLowerCase().includes(q))return false;
     return true;
   }).sort((a,b)=>{const da=pd(a.eta),db=pd(b.eta);if(!da&&!db)return 0;if(!da)return 1;if(!db)return -1;return da-db;});
@@ -329,7 +461,13 @@ function render(){
     </tr>`;
   }).join("");
 }
-buildFilters();drawTransitDays();render();
+
+["fM","fS"].forEach(id=>document.getElementById(id).addEventListener("change",render));
+document.getElementById("srch").addEventListener("input",render);
+
+// Auto-refresh every 5 minutes
+loadAll();
+setInterval(loadAll, 5 * 60 * 1000);
 </script>
 </body>
 </html>
