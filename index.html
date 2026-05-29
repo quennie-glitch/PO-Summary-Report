@@ -431,7 +431,7 @@ function render(){
     <div class="kpi"><div class="kl">Arriving ≤14 days</div><div class="kv">${arr}</div><div class="ks">upcoming</div></div>`;
   drawDonut(rows);drawSupBars(rows);drawEtaTl(rows);
   let eTh="";
-  if(ACTIVE==="all")eTh=`<th style="width:80px">Transit Days</th><th style="width:120px">Tops Status</th>`;
+  if(ACTIVE==="all")eTh=`<th style="width:90px">Transit Days</th>`;
   else if(ACTIVE==="transit")eTh=`<th style="width:90px">Transit Time</th>`;
   else if(ACTIVE==="booked")eTh=`<th style="width:120px">Tops Status</th>`;
   document.getElementById("thead").innerHTML=`<tr>
@@ -440,13 +440,13 @@ function render(){
     ${eTh}<th>Notes</th></tr>`;
   document.getElementById("ctLbl").textContent=ACTIVE==="all"?"All records":(SL[ACTIVE]||ACTIVE);
   document.getElementById("ctBdg").textContent=`${n} records · sorted by ETA`;
-  const cs=ACTIVE==="all"?9:ACTIVE==="quoted"?7:8;
+  const cs=ACTIVE==="all"?8:ACTIVE==="quoted"?7:8;
   if(!rows.length){document.getElementById("tbody").innerHTML=`<tr><td colspan="${cs}" class="empty">Wala pang data.</td></tr>`;return;}
   document.getElementById("tbody").innerHTML=rows.map(r=>{
     let eTd="";
     if(ACTIVE==="all"){
       const days=r.src==="transit"&&r.col7&&!isNaN(parseFloat(r.col7))?`<span class="mono" style="color:var(--blue)">${parseFloat(r.col7)}d</span>`:`<span style="color:var(--text3)">—</span>`;
-      eTd=`<td>${days}</td><td>${r.src==="booked"?topsBadge(r.col7):`<span style="color:var(--text3)">—</span>`}</td>`;
+      eTd=`<td>${days}</td>`;
     }else if(ACTIVE==="transit"){
       eTd=`<td>${r.col7&&!isNaN(parseFloat(r.col7))?`<span class="mono" style="color:var(--blue)">${parseFloat(r.col7)}d</span>`:`<span style="color:var(--text3)">—</span>`}</td>`;
     }else if(ACTIVE==="booked"){
