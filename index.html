@@ -16,7 +16,6 @@
   --blue:#1a4a8b;--blue-bg:#e8eef8;
   --amber:#7a4a0a;--amber-bg:#fdf0dc;
   --purple:#4a1a8b;--purple-bg:#eeebf8;
-  --red:#8b1a1a;--red-bg:#fde8e8;
   --ff:'Geist',sans-serif;--fm:'Geist Mono',monospace;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -44,7 +43,6 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:0
 .kv{font-size:26px;font-weight:600;line-height:1;letter-spacing:-.5px}
 .ks{font-size:11px;color:var(--text3);margin-top:4px}
 
-/* charts row */
 .charts{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;padding:0 2rem 12px}
 .chart{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.25rem}
 .ct{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text2);margin-bottom:1rem}
@@ -69,9 +67,9 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:0
 /* transit days */
 .tsec{padding:0 2rem 12px}
 .tcard{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden}
-.thead{padding:.85rem 1.25rem;border-bottom:1px solid var(--border);background:var(--surface2);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
-.thead strong{font-size:12.5px;font-weight:600}
-.thead-note{font-size:11px;color:var(--text3)}
+.thead2{padding:.85rem 1.25rem;border-bottom:1px solid var(--border);background:var(--surface2);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.thead2 strong{font-size:12.5px;font-weight:600}
+.thead2-note{font-size:11px;color:var(--text3)}
 .tgrid{display:grid;grid-template-columns:1fr 1fr}
 .tcol{padding:1rem 1.25rem}
 .tcol:first-child{border-right:1px solid var(--border)}
@@ -88,9 +86,8 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:0
 .tfill span{font-size:10.5px;font-weight:500;color:rgba(255,255,255,.92);white-space:nowrap}
 .tdays{font-family:var(--fm);font-size:11px;color:var(--text2);width:70px;text-align:right;flex-shrink:0;white-space:nowrap}
 .tships{color:var(--text3);font-size:10px}
-.tempty{font-size:11px;color:var(--text3);padding:.25rem 0}
+.tempty{font-size:11px;color:var(--text3);padding:.25rem 0;font-style:italic}
 
-/* controls */
 .ctrl{display:flex;align-items:center;gap:10px;padding:.75rem 2rem;background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);flex-wrap:wrap}
 .sw{position:relative;flex:1;min-width:200px}
 .sw svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text3);pointer-events:none}
@@ -99,13 +96,11 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:0
 .ctrl select{background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:6px 24px 6px 10px;font-family:var(--ff);font-size:12px;color:var(--text);outline:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%239b9890'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center}
 .divl{width:1px;height:20px;background:var(--border);flex-shrink:0}
 
-/* table */
 .tw{background:var(--surface);overflow:hidden;margin:0 2rem 2rem;border:1px solid var(--border);border-radius:12px}
 .tm{display:flex;align-items:center;justify-content:space-between;padding:.7rem 1.25rem;border-bottom:1px solid var(--border);background:var(--surface2)}
 .tm strong{font-size:12.5px;font-weight:600}.tm span{font-size:11px;color:var(--text3);font-family:var(--fm)}
 .sc{max-height:52vh;overflow-y:auto}
 table{width:100%;border-collapse:collapse;table-layout:fixed}
-/* col widths vary by tab — set via JS */
 thead th{padding:8px 12px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);border-bottom:1px solid var(--border);background:var(--surface2);text-align:left;white-space:nowrap;position:sticky;top:0;z-index:5}
 td{padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:middle}
 tr:last-child td{border-bottom:none}tr:hover td{background:#faf9f6}
@@ -165,12 +160,11 @@ tr:last-child td{border-bottom:none}tr:hover td{background:#faf9f6}
   <div class="chart"><div class="ct">POs by ETA window</div><div class="tlc" id="etl"></div></div>
 </div>
 
-<!-- AVG TRANSIT DAYS — data from In-Transit tab col[7] Transit Time -->
 <div class="tsec">
   <div class="tcard">
-    <div class="thead">
+    <div class="thead2">
       <strong>Avg. Transit Days by Supplier</strong>
-      <span class="thead-note">In-Transit tab · col[7] Transit Time · sorted fastest → slowest</span>
+      <span class="thead2-note">In-Transit tab · col[7] Transit Time · sorted fastest → slowest</span>
     </div>
     <div class="tgrid">
       <div class="tcol">
@@ -217,29 +211,28 @@ tr:last-child td{border-bottom:none}tr:hover td{background:#faf9f6}
 </div>
 
 <script>
-// ─── CONFIG ──────────────────────────────────────────────────────────────────
 const SID = "1YPxtFy4jwuj11HAouWuiJt6mJL-KDZOAGMf0JMcaS24";
 
 /*
-  EXACT columns per tab (from inspection):
+  TABS — using gid= (sheetId) instead of sheet= name to PREVENT fallback to RAW2.
+  GIDs confirmed from workbook:
+    RAW2            = 1   ← we do NOT fetch this
+    Settings        = 2   ← we do NOT fetch this
+    In-Transit      = 3
+    Booked          = 4
+    QuotedRequested = 5
 
-  In-Transit      col[0]=Shipment Ref #  col[1]=Current EXF  col[2]=ETA
-                  col[3]=PO#  col[4]=Product Type  col[5]=Ship Mode
-                  col[6]=Notes  col[7]=Transit Time (number of days)
-
-  Booked          col[0]=Shipment Ref #  col[1]=Current EXF  col[2]=ETA
-                  col[3]=PO#  col[4]=Product Type  col[5]=Ship Mode
-                  col[6]=Notes  col[7]=Tops Status (text)
-
-  QuotedRequested col[0]=Shipment Ref #  col[1]=Current EXF  col[2]=ETA
-                  col[3]=PO#  col[4]=Product Type  col[5]=Ship Mode
-                  col[6]=Notes  (no col[7])
+  Columns per tab (EXACT, from inspection):
+    All 3 tabs share:  [0]=Shipment Ref#  [1]=Current EXF  [2]=ETA
+                       [3]=PO#  [4]=Product Type  [5]=Ship Mode  [6]=Notes
+    In-Transit only:   [7]=Transit Time (number)
+    Booked only:       [7]=Tops Status (text)
+    QuotedRequested:   no col[7] — empty tab for now
 */
-
 const TABS = [
-  { name:"In-Transit",      src:"transit", col7:"Transit Time" },
-  { name:"Booked",          src:"booked",  col7:"Tops Status"  },
-  { name:"QuotedRequested", src:"quoted",  col7:null            },
+  { gid:3, src:"transit", col7:"Transit Time" },
+  { gid:4, src:"booked",  col7:"Tops Status"  },
+  { gid:5, src:"quoted",  col7:null            },
 ];
 
 const SRC_COLOR = { transit:"#1a6b3c", booked:"#1a4a8b", quoted:"#7a4a0a" };
@@ -249,7 +242,6 @@ const SUP_COLORS = ["#1a4a8b","#1a6b3c","#7a4a0a","#4a1a8b","#8b1a1a","#2d3a4a",
 const TODAY = new Date(); TODAY.setHours(0,0,0,0);
 let DATA = [], ACTIVE = "all";
 
-// ─── HELPERS ─────────────────────────────────────────────────────────────────
 function parseDate(s) {
   if (!s) return null;
   const p = String(s).split("/");
@@ -263,18 +255,18 @@ function cellVal(row, idx) {
   return c.f ? String(c.f).trim() : String(c.v).trim();
 }
 
-// ─── FETCH ───────────────────────────────────────────────────────────────────
-async function fetchTab(tabName) {
+// Use gid= (numeric sheetId) — this never falls back to another sheet.
+// If the tab is empty, gviz returns 0 rows, not RAW2 rows.
+async function fetchTab(gid) {
   const url = `https://docs.google.com/spreadsheets/d/${SID}/gviz/tq`
-    + `?tqx=out:json&sheet=${encodeURIComponent(tabName)}&headers=1&t=${Date.now()}`;
+    + `?tqx=out:json&gid=${gid}&headers=1&t=${Date.now()}`;
   const res  = await fetch(url);
   const text = await res.text();
   const json = JSON.parse(text.replace(/^[^(]+\(/, "").replace(/\);\s*$/, ""));
-  if (json.status === "error") throw new Error(`Tab "${tabName}": ${json.errors?.[0]?.message}`);
+  if (json.status === "error") throw new Error(`GID ${gid}: ${json.errors?.[0]?.message}`);
   return json;
 }
 
-// ─── PARSE ───────────────────────────────────────────────────────────────────
 function parseTab(json, src, col7Label) {
   const rows = json.table?.rows ?? [];
   const out  = [];
@@ -289,37 +281,32 @@ function parseTab(json, src, col7Label) {
     const note    = cellVal(r, 6);
     const col7    = col7Label ? cellVal(r, 7) : "";
 
-    if (!po && !type && !eta) continue;
+    // Hard filter: skip if no actual PO data
+    if (!po && !type && !eta && !shipRef) continue;
 
-    // Transit days only exist in In-Transit tab
     const transitDays = (src === "transit" && col7 && !isNaN(parseFloat(col7)))
       ? parseFloat(col7) : null;
-
-    // Tops status only exists in Booked tab
     const topsStatus = src === "booked" ? col7 : "";
 
-    // Supplier prefix from first PO
-    const firstPO = po.split(",")[0].trim();
+    const firstPO  = po.split(",")[0].trim();
     const supMatch = firstPO.match(/^([A-Z]+)/);
-    const sup = supMatch ? supMatch[1].slice(0, 3) : "";
-
-    // Short note (first line, strip prefix)
+    const sup      = supMatch ? supMatch[1].slice(0, 3) : "";
     const shortNote = note.split(/\\n|\n/)[0].replace(/^Freight Overview:\s*/i, "").trim();
 
-    out.push({ shipRef, exf, eta, po, type, mode, note: shortNote, fullNote: note,
+    out.push({ shipRef, exf, eta, po, type, mode,
+               note: shortNote, fullNote: note,
                col7, transitDays, topsStatus, sup, src });
   }
   return out;
 }
 
-// ─── LOAD ────────────────────────────────────────────────────────────────────
 async function loadAll() {
   const btn = document.getElementById("rfBtn");
   btn.classList.add("spin");
   document.getElementById("errBar").style.display = "none";
   try {
     const results = await Promise.all(
-      TABS.map(t => fetchTab(t.name).then(j => parseTab(j, t.src, t.col7)))
+      TABS.map(t => fetchTab(t.gid).then(j => parseTab(j, t.src, t.col7)))
     );
     DATA = results.flat();
 
@@ -357,17 +344,15 @@ function buildFilters() {
   const setOpts = (id, arr) => {
     const el = document.getElementById(id);
     while (el.options.length > 1) el.remove(1);
-    arr.forEach(v => { const o = document.createElement("option"); o.value = v; o.textContent = v; el.appendChild(o); });
+    arr.forEach(v => { const o = document.createElement("option"); o.value=v; o.textContent=v; el.appendChild(o); });
   };
   setOpts("fM", [...new Set(DATA.map(r => r.mode).filter(Boolean))].sort());
   setOpts("fS", [...new Set(DATA.map(r => r.sup).filter(Boolean))].sort());
 }
 
-// ─── AVG TRANSIT DAYS ────────────────────────────────────────────────────────
+// ── Transit Days ─────────────────────────────────────────────────────────────
 function drawTransitDays() {
   const tRows = DATA.filter(r => r.src === "transit" && r.transitDays !== null);
-
-  // Group by supplier + mode
   const agg = {};
   tRows.forEach(r => {
     const sup  = r.sup || "—";
@@ -378,51 +363,43 @@ function drawTransitDays() {
     agg[sup][mode].push(r.transitDays);
   });
 
-  function renderSide(rowsId, noteId, mode, fillColor) {
+  function renderSide(rowsId, noteId, mode, color) {
     const entries = [];
     Object.entries(agg).forEach(([sup, data]) => {
       if (!data[mode].length) return;
-      const avg   = Math.round(data[mode].reduce((s, v) => s + v, 0) / data[mode].length);
-      const count = data[mode].length;
-      entries.push({ sup, avg, count });
+      const avg   = Math.round(data[mode].reduce((s,v)=>s+v,0) / data[mode].length);
+      entries.push({ sup, avg, count: data[mode].length });
     });
-    entries.sort((a, b) => a.avg - b.avg);
+    entries.sort((a,b) => a.avg - b.avg);
 
-    // Overall avg for this mode
-    const allDays = tRows
-      .filter(r => mode === "SEA" ? r.mode.toUpperCase().includes("SEA") : r.mode.toUpperCase().includes("AIR"))
-      .map(r => r.transitDays);
-    const overallAvg = allDays.length
-      ? Math.round(allDays.reduce((s, v) => s + v, 0) / allDays.length) : null;
+    const allDays = tRows.filter(r => mode==="SEA"
+      ? r.mode.toUpperCase().includes("SEA")
+      : r.mode.toUpperCase().includes("AIR")).map(r => r.transitDays);
+    const overall = allDays.length
+      ? Math.round(allDays.reduce((s,v)=>s+v,0)/allDays.length) : null;
 
     document.getElementById(noteId).textContent =
-      overallAvg !== null ? `Overall avg: ${overallAvg} days` : "";
+      overall !== null ? `Overall avg: ${overall} days` : "";
 
     if (!entries.length) {
       document.getElementById(rowsId).innerHTML = `<div class="tempty">No data</div>`;
       return;
     }
-
-    const max = Math.max(...entries.map(e => e.avg), 1);
+    const max = Math.max(...entries.map(e=>e.avg), 1);
     document.getElementById(rowsId).innerHTML = entries.map(e => {
-      const pct = Math.max(Math.round(e.avg / max * 100), 8);
+      const pct = Math.max(Math.round(e.avg/max*100), 8);
       return `<div class="trow">
         <span class="tsup">${e.sup}</span>
-        <div class="ttrack">
-          <div class="tfill" style="width:${pct}%;background:${fillColor}">
-            <span>${e.avg}d</span>
-          </div>
-        </div>
+        <div class="ttrack"><div class="tfill" style="width:${pct}%;background:${color}"><span>${e.avg}d</span></div></div>
         <span class="tdays">${e.avg} days <span class="tships">(${e.count})</span></span>
       </div>`;
     }).join("");
   }
-
-  renderSide("seaRows", "seaNote", "SEA", "#1a4a8b");
-  renderSide("airRows", "airNote", "AIR", "#4a1a8b");
+  renderSide("seaRows","seaNote","SEA","#1a4a8b");
+  renderSide("airRows","airNote","AIR","#4a1a8b");
 }
 
-// ─── BADGES ──────────────────────────────────────────────────────────────────
+// ── Badges ────────────────────────────────────────────────────────────────────
 function modeBadge(m) {
   if (!m) return `<span style="color:var(--text3)">—</span>`;
   const u = m.toUpperCase();
@@ -430,84 +407,54 @@ function modeBadge(m) {
   if (u.includes("AIR")) return `<span class="badge bair">△ AIR</span>`;
   return `<span class="badge bmode">${m}</span>`;
 }
-
 function topsBadge(v) {
   if (!v) return `<span style="color:var(--text3)">—</span>`;
-  const m = { "Approved":"btop-ok", "Under Review":"btop-rev",
-               "Requested/Submitted":"btop-sub", "In-Transit":"btop-tr" };
-  return `<span class="badge ${m[v] || 'bmode'}">${v}</span>`;
+  const m = {"Approved":"btop-ok","Under Review":"btop-rev","Requested/Submitted":"btop-sub","In-Transit":"btop-tr"};
+  return `<span class="badge ${m[v]||'bmode'}">${v}</span>`;
 }
-
 function etaCell(s) {
-  const d = parseDate(s);
-  if (!d) return `<span class="mono">${s || "—"}</span>`;
-  const diff = Math.round((d - TODAY) / 86400000);
-  let cls = "", extra = "";
-  if (diff >= 0 && diff <= 14) {
-    cls = "esoon";
-    extra = `<span style="font-size:9px;margin-left:4px;opacity:.6;font-family:var(--fm)">${diff === 0 ? "today" : diff + "d"}</span>`;
-  } else if (diff < 0) {
-    cls = "elate";
-    extra = `<span style="font-size:9px;margin-left:4px;opacity:.6;font-family:var(--fm)">${Math.abs(diff)}d late</span>`;
-  }
+  const d = parseDate(s); if (!d) return `<span class="mono">${s||"—"}</span>`;
+  const diff = Math.round((d-TODAY)/86400000);
+  let cls="",extra="";
+  if(diff>=0&&diff<=14){cls="esoon";extra=`<span style="font-size:9px;margin-left:4px;opacity:.6;font-family:var(--fm)">${diff===0?"today":diff+"d"}</span>`;}
+  else if(diff<0){cls="elate";extra=`<span style="font-size:9px;margin-left:4px;opacity:.6;font-family:var(--fm)">${Math.abs(diff)}d late</span>`;}
   return `<span class="${cls} mono">${s}${extra}</span>`;
 }
 
-// ─── CHARTS ──────────────────────────────────────────────────────────────────
+// ── Charts ────────────────────────────────────────────────────────────────────
 function drawDonut(rows) {
-  const cnt = {};
-  rows.forEach(r => { cnt[r.src] = (cnt[r.src] || 0) + 1; });
-  const ent = Object.entries(cnt).sort((a, b) => b[1] - a[1]);
-  const tot = ent.reduce((s, [, v]) => s + v, 0);
-  const svg = document.getElementById("dsv");
-  const cx = 45, cy = 45, R = 35, ri = 22;
-  let paths = "", angle = -Math.PI / 2;
-  ent.forEach(([src, c]) => {
-    const f = c / tot, a1 = angle, a2 = angle + f * 2 * Math.PI;
-    const x1 = cx + R * Math.cos(a1), y1 = cy + R * Math.sin(a1);
-    const x2 = cx + R * Math.cos(a2), y2 = cy + R * Math.sin(a2);
-    const xi1 = cx + ri * Math.cos(a1), yi1 = cy + ri * Math.sin(a1);
-    const xi2 = cx + ri * Math.cos(a2), yi2 = cy + ri * Math.sin(a2);
-    paths += `<path d="M${xi1} ${yi1}L${x1} ${y1}A${R} ${R} 0 ${f > .5 ? 1 : 0} 1 ${x2} ${y2}L${xi2} ${yi2}A${ri} ${ri} 0 ${f > .5 ? 1 : 0} 0 ${xi1} ${yi1}Z" fill="${SRC_COLOR[src] || '#aaa'}" opacity=".85"/>`;
-    angle = a2;
+  const cnt={};rows.forEach(r=>{cnt[r.src]=(cnt[r.src]||0)+1;});
+  const ent=Object.entries(cnt).sort((a,b)=>b[1]-a[1]);
+  const tot=ent.reduce((s,[,v])=>s+v,0);
+  const svg=document.getElementById("dsv");
+  const cx=45,cy=45,R=35,ri=22;
+  let paths="",angle=-Math.PI/2;
+  ent.forEach(([src,c])=>{
+    const f=c/tot,a1=angle,a2=angle+f*2*Math.PI;
+    const x1=cx+R*Math.cos(a1),y1=cy+R*Math.sin(a1);
+    const x2=cx+R*Math.cos(a2),y2=cy+R*Math.sin(a2);
+    const xi1=cx+ri*Math.cos(a1),yi1=cy+ri*Math.sin(a1);
+    const xi2=cx+ri*Math.cos(a2),yi2=cy+ri*Math.sin(a2);
+    paths+=`<path d="M${xi1} ${yi1}L${x1} ${y1}A${R} ${R} 0 ${f>.5?1:0} 1 ${x2} ${y2}L${xi2} ${yi2}A${ri} ${ri} 0 ${f>.5?1:0} 0 ${xi1} ${yi1}Z" fill="${SRC_COLOR[src]||'#aaa'}" opacity=".85"/>`;
+    angle=a2;
   });
-  svg.innerHTML = paths + `<text x="${cx}" y="${cy + 1}" text-anchor="middle" dominant-baseline="middle" font-size="14" font-weight="600" fill="#1c1b18" font-family="Geist,sans-serif">${tot}</text><text x="${cx}" y="${cy + 13}" text-anchor="middle" font-size="8" fill="#9b9890" font-family="Geist,sans-serif">total</text>`;
-  document.getElementById("dlg").innerHTML = ent.map(([src, c]) =>
-    `<div class="di"><span class="dd" style="background:${SRC_COLOR[src] || '#aaa'}"></span><span class="dn">${SRC_LABEL[src] || src}</span><span class="dv">${c}</span></div>`
-  ).join("");
+  svg.innerHTML=paths+`<text x="${cx}" y="${cy+1}" text-anchor="middle" dominant-baseline="middle" font-size="14" font-weight="600" fill="#1c1b18" font-family="Geist,sans-serif">${tot}</text><text x="${cx}" y="${cy+13}" text-anchor="middle" font-size="8" fill="#9b9890" font-family="Geist,sans-serif">total</text>`;
+  document.getElementById("dlg").innerHTML=ent.map(([src,c])=>`<div class="di"><span class="dd" style="background:${SRC_COLOR[src]||'#aaa'}"></span><span class="dn">${SRC_LABEL[src]||src}</span><span class="dv">${c}</span></div>`).join("");
 }
-
 function drawSupBars(rows) {
-  const m = {};
-  rows.forEach(r => { if (r.sup) m[r.sup] = (m[r.sup] || 0) + 1; });
-  const ent = Object.entries(m).sort((a, b) => b[1] - a[1]).slice(0, 8);
-  const max = ent[0]?.[1] || 1;
-  document.getElementById("sbar").innerHTML = ent.map(([s, v], i) =>
-    `<div class="br"><span class="bl">${s}</span><div class="bt"><div class="bf" style="width:${Math.round(v / max * 100)}%;background:${SUP_COLORS[i % SUP_COLORS.length]}"><span>${v}</span></div></div></div>`
-  ).join("");
+  const m={};rows.forEach(r=>{if(r.sup)m[r.sup]=(m[r.sup]||0)+1;});
+  const ent=Object.entries(m).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  const max=ent[0]?.[1]||1;
+  document.getElementById("sbar").innerHTML=ent.map(([s,v],i)=>`<div class="br"><span class="bl">${s}</span><div class="bt"><div class="bf" style="width:${Math.round(v/max*100)}%;background:${SUP_COLORS[i%SUP_COLORS.length]}"><span>${v}</span></div></div></div>`).join("");
 }
-
 function drawEtaTl(rows) {
-  const buckets = [
-    { l:"Today",   min:0,  max:0,   col:"#7a4a0a" },
-    { l:"≤7 days", min:1,  max:7,   col:"#1a6b3c" },
-    { l:"≤14d",    min:8,  max:14,  col:"#1a4a8b" },
-    { l:"≤30d",    min:15, max:30,  col:"#4a1a8b" },
-    { l:"1–2 mo",  min:31, max:60,  col:"#2d3a4a" },
-    { l:"2+ mo",   min:61, max:999, col:"#9b9890" },
-  ];
-  const cnts = buckets.map(b => rows.filter(r => {
-    const d = parseDate(r.eta); if (!d) return false;
-    const diff = Math.round((d - TODAY) / 86400000);
-    return diff >= b.min && diff <= b.max;
-  }).length);
-  const max = Math.max(...cnts, 1);
-  document.getElementById("etl").innerHTML = buckets.map((b, i) =>
-    `<div class="tlr"><span class="tld">${b.l}</span><div style="flex:1;display:flex;align-items:center;gap:6px"><div class="tlb" style="width:max(${Math.round(cnts[i] / max * 100)}%,${cnts[i] > 0 ? 24 : 4}px);background:${b.col};opacity:.85">${cnts[i] > 0 ? `<span style="color:rgba(255,255,255,.9)">${cnts[i]}</span>` : ""}</div></div><span class="tln">${cnts[i] || ""}</span></div>`
-  ).join("");
+  const buckets=[{l:"Today",min:0,max:0,col:"#7a4a0a"},{l:"≤7 days",min:1,max:7,col:"#1a6b3c"},{l:"≤14d",min:8,max:14,col:"#1a4a8b"},{l:"≤30d",min:15,max:30,col:"#4a1a8b"},{l:"1–2 mo",min:31,max:60,col:"#2d3a4a"},{l:"2+ mo",min:61,max:999,col:"#9b9890"}];
+  const cnts=buckets.map(b=>rows.filter(r=>{const d=parseDate(r.eta);if(!d)return false;const diff=Math.round((d-TODAY)/86400000);return diff>=b.min&&diff<=b.max;}).length);
+  const max=Math.max(...cnts,1);
+  document.getElementById("etl").innerHTML=buckets.map((b,i)=>`<div class="tlr"><span class="tld">${b.l}</span><div style="flex:1;display:flex;align-items:center;gap:6px"><div class="tlb" style="width:max(${Math.round(cnts[i]/max*100)}%,${cnts[i]>0?24:4}px);background:${b.col};opacity:.85">${cnts[i]>0?`<span style="color:rgba(255,255,255,.9)">${cnts[i]}</span>`:""}</div></div><span class="tln">${cnts[i]||""}</span></div>`).join("");
 }
 
-// ─── RENDER TABLE ────────────────────────────────────────────────────────────
+// ── Render ────────────────────────────────────────────────────────────────────
 function render() {
   const fM  = document.getElementById("fM").value;
   const fSv = document.getElementById("fS").value;
@@ -517,48 +464,33 @@ function render() {
     if (ACTIVE !== "all" && r.src !== ACTIVE) return false;
     if (fM  && r.mode !== fM)  return false;
     if (fSv && r.sup  !== fSv) return false;
-    if (q && ![r.shipRef, r.po, r.type, r.mode, r.note, r.fullNote, r.col7]
-      .join(" ").toLowerCase().includes(q)) return false;
+    if (q && ![r.shipRef,r.po,r.type,r.mode,r.note,r.fullNote,r.col7].join(" ").toLowerCase().includes(q)) return false;
     return true;
-  }).sort((a, b) => {
-    const da = parseDate(a.eta), db = parseDate(b.eta);
-    if (!da && !db) return 0; if (!da) return 1; if (!db) return -1;
-    return da - db;
+  }).sort((a,b)=>{
+    const da=parseDate(a.eta),db=parseDate(b.eta);
+    if(!da&&!db)return 0;if(!da)return 1;if(!db)return -1;return da-db;
   });
 
-  const n = rows.length;
-  const ct = { transit:0, booked:0, quoted:0 };
-  rows.forEach(r => ct[r.src]++);
-  const arr = rows.filter(r => {
-    const d = parseDate(r.eta); if (!d) return false;
-    const diff = Math.round((d - TODAY) / 86400000);
-    return diff >= 0 && diff <= 14;
-  }).length;
+  const n=rows.length;
+  const ct={transit:0,booked:0,quoted:0};
+  rows.forEach(r=>ct[r.src]++);
+  const arr=rows.filter(r=>{const d=parseDate(r.eta);if(!d)return false;const diff=Math.round((d-TODAY)/86400000);return diff>=0&&diff<=14;}).length;
 
-  document.getElementById("kpis").innerHTML = `
+  document.getElementById("kpis").innerHTML=`
     <div class="kpi"><div class="kl">Total POs</div><div class="kv">${n}</div><div class="ks">of ${DATA.length} total</div></div>
-    <div class="kpi"><div class="kl">In-Transit</div><div class="kv">${ct.transit}</div><div class="ks">${n ? Math.round(ct.transit / n * 100) : 0}%</div></div>
-    <div class="kpi"><div class="kl">Booked</div><div class="kv">${ct.booked}</div><div class="ks">${n ? Math.round(ct.booked / n * 100) : 0}%</div></div>
+    <div class="kpi"><div class="kl">In-Transit</div><div class="kv">${ct.transit}</div><div class="ks">${n?Math.round(ct.transit/n*100):0}%</div></div>
+    <div class="kpi"><div class="kl">Booked</div><div class="kv">${ct.booked}</div><div class="ks">${n?Math.round(ct.booked/n*100):0}%</div></div>
     <div class="kpi"><div class="kl">Arriving ≤14 days</div><div class="kv">${arr}</div><div class="ks">upcoming</div></div>`;
 
-  drawDonut(rows);
-  drawSupBars(rows);
-  drawEtaTl(rows);
+  drawDonut(rows); drawSupBars(rows); drawEtaTl(rows);
 
-  // Determine which col[7] label to show based on active tab
-  const showTransitDays = ACTIVE === "transit" || (ACTIVE === "all" && rows.some(r => r.src === "transit" && r.transitDays !== null));
-  const showTops        = ACTIVE === "booked"  || (ACTIVE === "all" && rows.some(r => r.src === "booked" && r.topsStatus));
+  // Dynamic thead — exact columns per tab
+  let extraTh = "";
+  if (ACTIVE === "all")     extraTh = `<th style="width:80px">Transit Days</th><th style="width:120px">Tops Status</th>`;
+  else if (ACTIVE === "transit") extraTh = `<th style="width:90px">Transit Time</th>`;
+  else if (ACTIVE === "booked")  extraTh = `<th style="width:120px">Tops Status</th>`;
+  // quoted: no extra column
 
-  // Build thead dynamically
-  let extraCols = "";
-  if (ACTIVE === "all") {
-    extraCols = `<th>Transit Days</th><th>Tops Status</th>`;
-  } else if (ACTIVE === "transit") {
-    extraCols = `<th>Transit Time</th>`;
-  } else if (ACTIVE === "booked") {
-    extraCols = `<th>Tops Status</th>`;
-  }
-  const colspan = ACTIVE === "all" ? 9 : (ACTIVE === "quoted" ? 7 : 8);
   document.getElementById("thead").innerHTML = `<tr>
     <th style="width:100px">Shipment Ref #</th>
     <th style="width:90px">Current EXF</th>
@@ -566,45 +498,46 @@ function render() {
     <th style="width:120px">PO #</th>
     <th style="width:120px">Product Type</th>
     <th style="width:75px">Ship Mode</th>
-    ${extraCols}
+    ${extraTh}
     <th>Notes</th>
   </tr>`;
 
-  document.getElementById("ctLbl").textContent = ACTIVE === "all" ? "All records" : (SRC_LABEL[ACTIVE] || ACTIVE);
+  document.getElementById("ctLbl").textContent = ACTIVE==="all" ? "All records" : (SRC_LABEL[ACTIVE]||ACTIVE);
   document.getElementById("ctBdg").textContent = `${n} records · sorted by ETA`;
 
+  const colspan = ACTIVE==="all" ? 9 : ACTIVE==="quoted" ? 7 : 8;
   if (!rows.length) {
-    document.getElementById("tbody").innerHTML = `<tr><td colspan="${colspan}" class="empty">No records</td></tr>`;
+    document.getElementById("tbody").innerHTML=`<tr><td colspan="${colspan}" class="empty">${ACTIVE==="quoted"?"Wala pang data sa Quoted / Requested tab.":"No records"}</td></tr>`;
     return;
   }
 
   document.getElementById("tbody").innerHTML = rows.map(r => {
     let extraTd = "";
     if (ACTIVE === "all") {
-      const tdDays = r.transitDays !== null
+      const days = r.transitDays !== null
         ? `<span class="mono" style="color:var(--blue)">${r.transitDays}d</span>`
         : `<span style="color:var(--text3)">—</span>`;
-      extraTd = `<td>${tdDays}</td><td>${topsBadge(r.topsStatus)}</td>`;
+      extraTd = `<td>${days}</td><td>${topsBadge(r.topsStatus)}</td>`;
     } else if (ACTIVE === "transit") {
-      extraTd = `<td>${r.transitDays !== null ? `<span class="mono" style="color:var(--blue)">${r.transitDays}d</span>` : "—"}</td>`;
+      extraTd = `<td>${r.transitDays!==null?`<span class="mono" style="color:var(--blue)">${r.transitDays}d</span>`:`<span style="color:var(--text3)">—</span>`}</td>`;
     } else if (ACTIVE === "booked") {
       extraTd = `<td>${topsBadge(r.topsStatus)}</td>`;
     }
     return `<tr>
-      <td><span class="mono">${r.shipRef || "—"}</span></td>
-      <td><span class="mono">${r.exf || "—"}</span></td>
+      <td><span class="mono">${r.shipRef||"—"}</span></td>
+      <td><span class="mono">${r.exf||"—"}</span></td>
       <td>${etaCell(r.eta)}</td>
-      <td><span class="mono" style="font-weight:500">${r.po || "—"}</span></td>
-      <td style="font-size:12px;color:var(--text2)">${r.type || "—"}</td>
+      <td><span class="mono" style="font-weight:500">${r.po||"—"}</span></td>
+      <td style="font-size:12px;color:var(--text2)">${r.type||"—"}</td>
       <td>${modeBadge(r.mode)}</td>
       ${extraTd}
-      <td><div class="note" onclick="this.classList.toggle('exp')">${r.note || "—"}</div></td>
+      <td><div class="note" onclick="this.classList.toggle('exp')">${r.note||"—"}</div></td>
     </tr>`;
   }).join("");
 }
 
-["fM", "fS"].forEach(id => document.getElementById(id).addEventListener("change", render));
-document.getElementById("srch").addEventListener("input", render);
+["fM","fS"].forEach(id=>document.getElementById(id).addEventListener("change",render));
+document.getElementById("srch").addEventListener("input",render);
 loadAll();
 </script>
 </body>
