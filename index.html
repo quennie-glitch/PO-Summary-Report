@@ -6,176 +6,267 @@
 <title>PO Summary — State & Liberty</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#f7f6f3;--surface:#fff;--surface2:#f0efe9;
-  --border:#e5e3db;--text:#1c1b18;--text2:#6b6960;--text3:#9b9890;
-  --green:#1a6b3c;--green-bg:#e8f5ee;
-  --blue:#1a4a8b;--blue-bg:#e8eef8;
-  --amber:#7a4a0a;--amber-bg:#fdf0dc;
-  --purple:#4a1a8b;--purple-bg:#eeebf8;
+  --bg:#141414;--panel:#1f1f1f;--card:#262626;--card2:#2e2e2e;
+  --border:#343434;--border2:#3e3e3e;
+  --text:#f4f2ed;--text2:#b9b6ae;--text3:#85827a;
+  --lime:#9ddb4a;--blue:#3d8bfd;--pink:#e85b9e;--amber:#f2a93b;--purple:#9a7bf5;--red:#f06262;--teal:#3ecfcb;
+  --lime-bg:rgba(157,219,74,.14);--blue-bg:rgba(61,139,253,.14);--pink-bg:rgba(232,91,158,.14);
+  --amber-bg:rgba(242,169,59,.14);--purple-bg:rgba(154,123,245,.14);--red-bg:rgba(240,98,98,.16);
   --ff:'Geist',sans-serif;--fm:'Geist Mono',monospace;
+  --r:16px;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:var(--ff);background:var(--bg);color:var(--text);font-size:13px}
-header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:56px;gap:1rem}
-.brand{font-size:13px;font-weight:600}.brand span{color:var(--text3);font-weight:400;margin-left:6px}
-.hright{display:flex;align-items:center;gap:10px}
-.pill{display:flex;align-items:center;gap:6px;background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:4px 10px;font-size:11px;color:var(--text2);font-family:var(--fm)}
-.sdot{width:6px;height:6px;border-radius:50%;background:#9b9890}
-.sdot.live{background:#22c55e;animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-.btn{background:var(--text);color:#fff;border:none;border-radius:7px;padding:6px 14px;font-family:var(--ff);font-size:12px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:6px;transition:opacity .15s}
-.btn:hover{opacity:.85}.btn.spin svg{animation:rot .7s linear infinite}
+html{scrollbar-color:#444 var(--bg)}
+body{font-family:var(--ff);background:var(--bg);color:var(--text);font-size:14px;line-height:1.45}
+.app{display:flex;min-height:100vh}
+
+/* ---------- SIDEBAR ---------- */
+.side{width:230px;flex-shrink:0;background:var(--panel);border-right:1px solid var(--border);padding:1.5rem 1.1rem;display:flex;flex-direction:column;gap:.4rem;position:sticky;top:0;height:100vh}
+.logo{display:flex;align-items:center;gap:10px;padding:0 .4rem 1.4rem}
+.logo-mark{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,var(--lime),#5fae22);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;color:#10210a;flex-shrink:0}
+.logo-name{font-size:14px;font-weight:600;line-height:1.2}
+.logo-name span{display:block;font-size:11px;font-weight:400;color:var(--text3)}
+.acct{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:.65rem .8rem;margin-bottom:1.2rem}
+.acct-av{width:34px;height:34px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:#fff;flex-shrink:0}
+.acct b{font-size:12.5px;font-weight:600;display:block}
+.acct small{font-size:11px;color:var(--text3);font-family:var(--fm)}
+.nav-lbl{font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);padding:.4rem .5rem .5rem;font-weight:600}
+.nbtn{display:flex;align-items:center;gap:11px;width:100%;background:var(--card);border:1px solid var(--border);border-radius:50px;padding:.7rem 1rem;color:var(--text2);font-family:var(--ff);font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;text-align:left}
+.nbtn:hover{background:var(--card2);color:var(--text)}
+.nbtn.on{background:var(--card2);color:var(--text);border-color:var(--border2);box-shadow:inset 0 0 0 1px var(--border2)}
+.nbtn .ic{width:18px;height:18px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.nbtn .cnt{margin-left:auto;font-family:var(--fm);font-size:11px;background:var(--bg);border-radius:20px;padding:2px 9px;color:var(--text3)}
+.nbtn.on .cnt{background:var(--blue);color:#fff}
+.side-foot{margin-top:auto;display:flex;flex-direction:column;gap:.6rem}
+.sync{display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--text3);font-family:var(--fm);padding:0 .5rem}
+.sdot{width:7px;height:7px;border-radius:50%;background:#666;flex-shrink:0}
+.sdot.live{background:var(--lime);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.rbtn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:var(--lime);border:none;border-radius:50px;padding:.75rem;color:#15240a;font-family:var(--ff);font-size:13px;font-weight:600;cursor:pointer;transition:opacity .15s}
+.rbtn:hover{opacity:.88}.rbtn.spin svg{animation:rot .7s linear infinite}
 @keyframes rot{to{transform:rotate(360deg)}}
-.tabs{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2rem;display:flex}
-.tab{padding:10px 18px;font-size:12.5px;font-weight:500;color:var(--text3);cursor:pointer;border:none;background:none;border-bottom:2px solid transparent;white-space:nowrap}
-.tab:hover{color:var(--text)}.tab.on{color:var(--text);border-bottom-color:var(--text)}
-.tc{display:inline-block;background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:1px 7px;font-size:10px;font-family:var(--fm);margin-left:6px;color:var(--text3)}
-.tab.on .tc{background:var(--text);color:#fff;border-color:var(--text)}
-.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:1.25rem 2rem}
-.kpi{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1rem 1.25rem}
-.kl{font-size:11px;color:var(--text3);margin-bottom:6px;font-weight:500;text-transform:uppercase;letter-spacing:.04em}
-.kv{font-size:26px;font-weight:600;line-height:1;letter-spacing:-.5px}
-.ks{font-size:11px;color:var(--text3);margin-top:4px}
-.charts{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;padding:0 2rem 12px}
-.chart{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.25rem}
-.ct{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text2);margin-bottom:1rem}
-.dw{display:flex;align-items:center;gap:1.25rem}
-.dl{flex:1;display:flex;flex-direction:column;gap:7px}
-.di{display:flex;align-items:center;gap:7px;font-size:12px}
-.dd{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.dn{flex:1;color:var(--text2)}.dv{font-family:var(--fm);font-size:11px;font-weight:500}
-.bc{display:flex;flex-direction:column;gap:8px}
-.br{display:flex;align-items:center;gap:8px}
-.bl{font-size:11px;color:var(--text2);width:40px;flex-shrink:0;text-align:right;font-family:var(--fm);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.bt{flex:1;height:20px;background:var(--surface2);border-radius:4px;overflow:hidden}
-.bf{height:100%;border-radius:4px;display:flex;align-items:center;padding-left:8px}
-.bf span{font-size:10px;font-weight:500;color:rgba(255,255,255,.9);white-space:nowrap}
-.tlc{display:flex;flex-direction:column;gap:6px}
-.tlr{display:flex;align-items:center;gap:8px}
-.tld{font-family:var(--fm);font-size:10px;color:var(--text3);width:60px;flex-shrink:0}
-.tlb{height:16px;border-radius:4px;display:flex;align-items:center;padding:0 7px}
-.tlb span{font-size:10px;font-weight:500;white-space:nowrap}
-.tln{font-family:var(--fm);font-size:10px;color:var(--text3);width:20px;text-align:right}
-.tsec{padding:0 2rem 12px}
-.tcard{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden}
-.thead2{padding:.85rem 1.25rem;border-bottom:1px solid var(--border);background:var(--surface2);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
-.thead2 strong{font-size:12.5px;font-weight:600}
-.thead2-note{font-size:11px;color:var(--text3)}
-.tgrid{display:grid;grid-template-columns:1fr 1fr}
-.tcol{padding:1rem 1.25rem}.tcol:first-child{border-right:1px solid var(--border)}
-.tcol-hdr{display:flex;align-items:center;gap:8px;margin-bottom:.85rem}
-.mtag{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;font-family:var(--fm)}
+
+/* ---------- MAIN ---------- */
+.main{flex:1;padding:1.6rem 2rem 2.5rem;min-width:0}
+.tophdr{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:1.4rem;flex-wrap:wrap}
+.tophdr h1{font-size:22px;font-weight:700;letter-spacing:-.3px}
+.tophdr .sub{font-size:12.5px;color:var(--text3);margin-top:2px}
+.sw{position:relative;width:340px;max-width:100%}
+.sw svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--text3);pointer-events:none}
+.sw input{width:100%;background:var(--card);border:1px solid var(--border);border-radius:50px;padding:.7rem 1rem .7rem 38px;font-family:var(--ff);font-size:13px;color:var(--text);outline:none;transition:border-color .15s}
+.sw input:focus{border-color:var(--blue)}
+.sw input::placeholder{color:var(--text3)}
+
+/* ---------- KPI CARDS ---------- */
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:14px}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:1.1rem 1.2rem 0;overflow:hidden;display:flex;flex-direction:column}
+.kpi-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:.8rem}
+.kpi-lbl{font-size:12.5px;font-weight:600;color:var(--text2)}
+.kpi-pct{font-family:var(--fm);font-size:10.5px;font-weight:600;padding:3px 9px;border-radius:20px}
+.kpi-mid{display:flex;align-items:center;gap:12px;margin-bottom:1rem}
+.kpi-ic{width:44px;height:44px;border-radius:12px;background:var(--card2);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.kpi-val{font-size:30px;font-weight:700;letter-spacing:-.8px;line-height:1;font-family:var(--fm)}
+.kpi-strip{margin:auto -1.2rem 0;background:var(--blue);padding:.45rem;text-align:center;font-size:11px;font-weight:500;color:#eaf2ff;font-family:var(--fm)}
+
+/* ---------- GRID ROW 2 ---------- */
+.row2{display:grid;grid-template-columns:380px 1fr;gap:14px;margin-bottom:14px}
+.panelc{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:1.25rem 1.4rem}
+.pt{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.1rem}
+.pt h3{font-size:14.5px;font-weight:600}
+.pt .note{font-size:11px;color:var(--text3);font-family:var(--fm)}
+.dw{display:flex;align-items:center;gap:1.4rem}
+.dlegend{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:.9rem .6rem}
+.dli .dn{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--text2)}
+.dd{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.dli .dv{font-size:19px;font-weight:700;font-family:var(--fm);margin-top:2px;padding-left:16px}
+
+/* transit bars */
+.tgrid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+.mtag{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:20px;font-size:11.5px;font-weight:600;font-family:var(--fm)}
 .mt-sea{background:var(--blue-bg);color:var(--blue)}.mt-air{background:var(--purple-bg);color:var(--purple)}
-.tavg{font-size:11px;color:var(--text3);margin-left:auto;font-family:var(--fm)}
-.trows{display:flex;flex-direction:column;gap:6px}
+.tavg{font-size:11px;color:var(--text3);font-family:var(--fm)}
+.tcol-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:.9rem}
+.trows{display:flex;flex-direction:column;gap:9px}
 .trow{display:flex;align-items:center;gap:10px}
-.tsup{font-family:var(--fm);font-size:11px;font-weight:500;width:38px;flex-shrink:0;color:var(--text2)}
-.ttrack{flex:1;height:22px;background:var(--surface2);border-radius:5px;overflow:hidden}
-.tfill{height:100%;border-radius:5px;display:flex;align-items:center;padding-left:9px}
-.tfill span{font-size:10.5px;font-weight:500;color:rgba(255,255,255,.92);white-space:nowrap}
-.tdays{font-family:var(--fm);font-size:11px;color:var(--text2);width:70px;text-align:right;flex-shrink:0;white-space:nowrap}
+.tsup{font-family:var(--fm);font-size:12px;font-weight:600;width:40px;flex-shrink:0;color:var(--text2)}
+.ttrack{flex:1;height:24px;background:var(--card2);border-radius:6px;overflow:hidden}
+.tfill{height:100%;border-radius:6px;display:flex;align-items:center;padding-left:10px;min-width:34px}
+.tfill span{font-size:11px;font-weight:600;color:rgba(255,255,255,.95);white-space:nowrap;font-family:var(--fm)}
+.tdays{font-family:var(--fm);font-size:11.5px;color:var(--text2);width:78px;text-align:right;flex-shrink:0;white-space:nowrap}
 .tships{color:var(--text3);font-size:10px}
-.tempty{font-size:11px;color:var(--text3);font-style:italic}
-.ctrl{display:flex;align-items:center;gap:10px;padding:.75rem 2rem;background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);flex-wrap:wrap}
-.sw{position:relative;flex:1;min-width:200px}
-.sw svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text3);pointer-events:none}
-.ctrl input[type=text]{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:6px 10px 6px 32px;font-family:var(--ff);font-size:12.5px;color:var(--text);outline:none}
-.ctrl input::placeholder{color:var(--text3)}
-.ctrl select{background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:6px 24px 6px 10px;font-family:var(--ff);font-size:12px;color:var(--text);outline:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%239b9890'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center}
-.divl{width:1px;height:20px;background:var(--border);flex-shrink:0}
-.tw{background:var(--surface);overflow:hidden;margin:0 2rem 2rem;border:1px solid var(--border);border-radius:12px}
-.tm{display:flex;align-items:center;justify-content:space-between;padding:.7rem 1.25rem;border-bottom:1px solid var(--border);background:var(--surface2)}
-.tm strong{font-size:12.5px;font-weight:600}.tm span{font-size:11px;color:var(--text3);font-family:var(--fm)}
-.sc{max-height:52vh;overflow-y:auto}
+.tempty{font-size:12px;color:var(--text3);font-style:italic}
+
+/* ---------- GRID ROW 3 ---------- */
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px}
+.ringcard{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:1.1rem 1.25rem;display:flex;align-items:center;gap:14px}
+.ringwrap{position:relative;width:64px;height:64px;flex-shrink:0}
+.ringwrap svg{transform:rotate(-90deg)}
+.ringpct{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--fm);font-size:12px;font-weight:600}
+.ringinfo .rv{font-size:24px;font-weight:700;font-family:var(--fm);line-height:1.1}
+.ringinfo .rl{font-size:11.5px;color:var(--text3);margin-top:3px}
+.barlist{display:flex;flex-direction:column;gap:8px}
+.blr{display:flex;align-items:center;gap:9px}
+.bll{font-family:var(--fm);font-size:11px;color:var(--text3);width:58px;flex-shrink:0;text-align:right}
+.blb{height:18px;border-radius:5px;display:flex;align-items:center;padding:0 8px;transition:width .3s}
+.blb span{font-size:10.5px;font-weight:600;color:rgba(255,255,255,.95);font-family:var(--fm)}
+.bln{font-family:var(--fm);font-size:11px;color:var(--text3);width:22px;text-align:right}
+
+/* ---------- TABLE ---------- */
+.ctrl{display:flex;align-items:center;gap:10px;margin-bottom:0;flex-wrap:wrap}
+.ctrl select{background:var(--card);border:1px solid var(--border);border-radius:50px;padding:.55rem 30px .55rem 14px;font-family:var(--ff);font-size:12.5px;color:var(--text);outline:none;appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%2385827a'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
+.tw{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+.tm{display:flex;align-items:center;justify-content:space-between;padding:.95rem 1.4rem;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:10px}
+.tm strong{font-size:14.5px;font-weight:600}
+.tm span{font-size:11.5px;color:var(--text3);font-family:var(--fm)}
+.sc{max-height:60vh;overflow-y:auto}
 table{width:100%;border-collapse:collapse;table-layout:fixed}
-thead th{padding:8px 12px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);border-bottom:1px solid var(--border);background:var(--surface2);text-align:left;white-space:nowrap;position:sticky;top:0;z-index:5}
-td{padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:middle}
-tr:last-child td{border-bottom:none}tr:hover td{background:#faf9f6}
-.mono{font-family:var(--fm);font-size:11.5px}
-.esoon{color:#166534;font-weight:500}.elate{color:#991b1b}
-.badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:5px;font-size:10.5px;font-weight:500;white-space:nowrap}
-.bsea{background:var(--blue-bg);color:var(--blue);font-family:var(--fm);font-size:10px}
-.bair{background:var(--purple-bg);color:var(--purple);font-family:var(--fm);font-size:10px}
-.bmode{background:var(--surface2);color:var(--text3);font-family:var(--fm);font-size:10px}
-.btop-ok{background:var(--green-bg);color:var(--green)}
+thead th{padding:11px 14px;font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);border-bottom:1px solid var(--border);background:var(--card2);text-align:left;white-space:nowrap;position:sticky;top:0;z-index:5}
+td{padding:12px 14px;border-bottom:1px solid var(--border);vertical-align:middle;font-size:13px}
+tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:var(--card2)}
+.mono{font-family:var(--fm);font-size:12.5px}
+.esoon{color:var(--lime);font-weight:600}.elate{color:var(--red);font-weight:600}
+.badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:600;white-space:nowrap;font-family:var(--fm)}
+.bsea{background:var(--blue-bg);color:var(--blue)}
+.bair{background:var(--purple-bg);color:var(--purple)}
+.bmode{background:var(--card2);color:var(--text3)}
+.btop-ok{background:var(--lime-bg);color:var(--lime)}
 .btop-rev{background:var(--amber-bg);color:var(--amber)}
 .btop-sub{background:var(--blue-bg);color:var(--blue)}
-.note{font-size:11px;color:var(--text3);line-height:1.4;max-height:36px;overflow:hidden;cursor:pointer}
-.note::after{content:" ▾";opacity:.5;font-size:9px}.note.exp{max-height:220px}.note.exp::after{content:" ▴"}
+.note{font-size:12px;color:var(--text3);line-height:1.45;max-height:38px;overflow:hidden;cursor:pointer}
+.note::after{content:" ▾";opacity:.5;font-size:9px}.note.exp{max-height:240px}.note.exp::after{content:" ▴"}
 .note-transit{display:flex;flex-direction:column;gap:3px}
-.nt-status{font-size:11.5px;font-weight:500;color:var(--text)}
-.nt-eta{font-size:10.5px;color:var(--text2)}
-.nt-ref{font-size:10px;color:var(--text3);font-family:var(--fm)}
+.nt-status{font-size:12.5px;font-weight:500;color:var(--text)}
+.nt-eta{font-size:11.5px;color:var(--text2)}
+.nt-ref{font-size:11px;color:var(--text3);font-family:var(--fm)}
 .empty{text-align:center;padding:3rem;color:var(--text3)}
-.errbar{background:#fef2f2;border:1px solid #fecaca;color:#b91c1c;border-radius:8px;padding:.65rem 1.25rem;margin:0 2rem 12px;font-size:12px;display:none}
+.errbar{background:var(--red-bg);border:1px solid rgba(240,98,98,.4);color:#ffb4b4;border-radius:12px;padding:.7rem 1.25rem;margin-bottom:14px;font-size:12.5px;display:none}
+
+/* ---------- RESPONSIVE ---------- */
+@media(max-width:1280px){.kpis{grid-template-columns:repeat(2,1fr)}.row2{grid-template-columns:1fr}.row3{grid-template-columns:1fr 1fr}}
+@media(max-width:900px){
+  .app{flex-direction:column}
+  .side{width:100%;height:auto;position:static;flex-direction:row;flex-wrap:wrap;align-items:center;padding:1rem}
+  .logo{padding:0;margin-right:auto}.acct,.nav-lbl,.side-foot{display:none}
+  .nbtn{width:auto;padding:.5rem .9rem}
+  .main{padding:1.2rem 1rem 2rem}
+  .row3{grid-template-columns:1fr}.tgrid{grid-template-columns:1fr}
+  .sw{width:100%}
+}
 </style>
 </head>
 <body>
-<header>
-  <div class="brand">State &amp; Liberty <span>PO Tracker</span></div>
-  <div class="hright">
-    <div class="pill"><span class="sdot" id="sdot"></span><span id="syncTime">Loading…</span></div>
-    <button class="btn" id="rfBtn" onclick="loadAll()">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
-      Refresh
+<div class="app">
+
+<!-- ============ SIDEBAR ============ -->
+<aside class="side">
+  <div class="logo">
+    <div class="logo-mark">S&amp;L</div>
+    <div class="logo-name">State &amp; Liberty<span>PO Tracker</span></div>
+  </div>
+  <div class="acct">
+    <div class="acct-av">SC</div>
+    <div><b>SCM Team</b><small id="todayLbl">—</small></div>
+  </div>
+
+  <div class="nav-lbl">Views</div>
+  <button class="nbtn on" data-t="all" onclick="setTab('all')">
+    <span class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span>
+    All POs <span class="cnt" id="tc0">—</span>
+  </button>
+  <button class="nbtn" data-t="transit" onclick="setTab('transit')">
+    <span class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17h13v-6l-3-6H3z"/><path d="M16 11h4l2 3v3h-6"/><circle cx="7" cy="19" r="2"/><circle cx="18" cy="19" r="2"/></svg></span>
+    In-Transit <span class="cnt" id="tc1">—</span>
+  </button>
+  <button class="nbtn" data-t="booked" onclick="setTab('booked')">
+    <span class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 9h18"/></svg></span>
+    Booked <span class="cnt" id="tc2">—</span>
+  </button>
+  <button class="nbtn" data-t="quoted" onclick="setTab('quoted')">
+    <span class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg></span>
+    Quoted / Req <span class="cnt" id="tc3">—</span>
+  </button>
+
+  <div class="side-foot">
+    <div class="sync"><span class="sdot" id="sdot"></span><span id="syncTime">Loading…</span></div>
+    <button class="rbtn" id="rfBtn" onclick="loadAll()">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+      Refresh data
     </button>
   </div>
-</header>
+</aside>
 
-<div class="tabs">
-  <button class="tab on" data-t="all"     onclick="setTab('all')">All POs              <span class="tc" id="tc0">—</span></button>
-  <button class="tab"    data-t="transit" onclick="setTab('transit')">In-Transit       <span class="tc" id="tc1">—</span></button>
-  <button class="tab"    data-t="booked"  onclick="setTab('booked')">Booked            <span class="tc" id="tc2">—</span></button>
-  <button class="tab"    data-t="quoted"  onclick="setTab('quoted')">Quoted / Requested<span class="tc" id="tc3">—</span></button>
-</div>
-
-<div class="kpis" id="kpis">
-  <div class="kpi"><div class="kl">Total POs</div><div class="kv">—</div></div>
-  <div class="kpi"><div class="kl">In-Transit</div><div class="kv">—</div></div>
-  <div class="kpi"><div class="kl">Booked</div><div class="kv">—</div></div>
-  <div class="kpi"><div class="kl">Arriving ≤14 days</div><div class="kv">—</div></div>
-</div>
-<div class="charts">
-  <div class="chart"><div class="ct">By source</div>
-    <div class="dw"><svg id="dsv" width="90" height="90" viewBox="0 0 90 90" style="flex-shrink:0"></svg><div class="dl" id="dlg"></div></div>
-  </div>
-  <div class="chart"><div class="ct">POs by supplier</div><div class="bc" id="sbar"></div></div>
-  <div class="chart"><div class="ct">POs by ETA window</div><div class="tlc" id="etl"></div></div>
-</div>
-<div class="tsec">
-  <div class="tcard">
-    <div class="thead2">
-      <strong>Avg. Transit Days by Supplier</strong>
-      <span class="thead2-note">In-Transit tab · Transit Time column · fastest → slowest</span>
+<!-- ============ MAIN ============ -->
+<main class="main">
+  <div class="tophdr">
+    <div>
+      <h1>PO Summary</h1>
+      <div class="sub" id="hdrSub">In-Transit · Booked · Quoted/Requested — live from Google Sheets</div>
     </div>
-    <div class="tgrid">
-      <div class="tcol">
-        <div class="tcol-hdr"><span class="mtag mt-sea">⬡ SEA</span><span class="tavg" id="seaNote"></span></div>
-        <div class="trows" id="seaRows"><div class="tempty">Loading…</div></div>
-      </div>
-      <div class="tcol">
-        <div class="tcol-hdr"><span class="mtag mt-air">△ AIR</span><span class="tavg" id="airNote"></span></div>
-        <div class="trows" id="airRows"><div class="tempty">Loading…</div></div>
-      </div>
+    <div class="sw">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="srch" placeholder="Search PO#, ref, type, mode, notes…">
     </div>
   </div>
-</div>
-<div class="errbar" id="errBar"></div>
-<div class="ctrl">
-  <div class="sw">
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-    <input type="text" id="srch" placeholder="Search PO#, type, mode, notes…">
+
+  <div class="errbar" id="errBar"></div>
+
+  <!-- KPI CARDS -->
+  <div class="kpis" id="kpis"></div>
+
+  <!-- DONUT + TRANSIT -->
+  <div class="row2">
+    <div class="panelc">
+      <div class="pt"><h3>POs by Source</h3><span class="note" id="dnote"></span></div>
+      <div class="dw">
+        <svg id="dsv" width="130" height="130" viewBox="0 0 130 130" style="flex-shrink:0"></svg>
+        <div class="dlegend" id="dlg"></div>
+      </div>
+    </div>
+    <div class="panelc">
+      <div class="pt"><h3>Avg Transit Days by Supplier</h3><span class="note">In-Transit · fastest → slowest</span></div>
+      <div class="tgrid">
+        <div>
+          <div class="tcol-hdr"><span class="mtag mt-sea">⬡ SEA</span><span class="tavg" id="seaNote"></span></div>
+          <div class="trows" id="seaRows"><div class="tempty">Loading…</div></div>
+        </div>
+        <div>
+          <div class="tcol-hdr"><span class="mtag mt-air">△ AIR</span><span class="tavg" id="airNote"></span></div>
+          <div class="trows" id="airRows"><div class="tempty">Loading…</div></div>
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="divl"></div>
-  <select id="fM"><option value="">All modes</option></select>
-  <select id="fS"><option value="">All suppliers</option></select>
-</div>
-<div class="tw">
-  <div class="tm"><strong id="ctLbl">—</strong><span id="ctBdg">sorted by ETA</span></div>
-  <div class="sc"><table><thead id="thead"></thead><tbody id="tbody"><tr><td colspan="8" class="empty">Loading…</td></tr></tbody></table></div>
+
+  <!-- RINGS + ETA + SUPPLIERS -->
+  <div class="row3">
+    <div class="ringcard" id="ring1"></div>
+    <div class="panelc" style="padding:1.1rem 1.25rem">
+      <div class="pt" style="margin-bottom:.8rem"><h3 style="font-size:13px">POs by ETA Window</h3></div>
+      <div class="barlist" id="etl"></div>
+    </div>
+    <div class="panelc" style="padding:1.1rem 1.25rem">
+      <div class="pt" style="margin-bottom:.8rem"><h3 style="font-size:13px">POs by Supplier</h3></div>
+      <div class="barlist" id="sbar"></div>
+    </div>
+  </div>
+
+  <!-- TABLE -->
+  <div class="tw">
+    <div class="tm">
+      <strong id="ctLbl">—</strong>
+      <div class="ctrl">
+        <select id="fM"><option value="">All modes</option></select>
+        <select id="fS"><option value="">All suppliers</option></select>
+        <span id="ctBdg">sorted by ETA</span>
+      </div>
+    </div>
+    <div class="sc"><table><thead id="thead"></thead><tbody id="tbody"><tr><td colspan="8" class="empty">Loading…</td></tr></tbody></table></div>
+  </div>
+</main>
 </div>
 
 <script>
@@ -186,24 +277,22 @@ const SID = "1YPxtFy4jwuj11HAouWuiJt6mJL-KDZOAGMf0JMcaS24";
   1. ?sheet=EXACT_NAME  — targets the correct tab by name
   2. &tq=select * where D is not null  — col D = PO#, filters all blank rows
   3. Column count guard: our tabs have 7-8 cols, RAW2 has 33.
-     If response returns >10 cols → we got the wrong sheet → treat as 0 rows.
-
-  Tabs (exact names from workbook):
-    "In-Transit"      col[0-6] + col[7]=Transit Time (number)
-    "Booked"          col[0-6] + col[7]=Tops Status  (text)
-    "QuotedRequested" col[0-6] only
+     If response returns >10 cols → wrong sheet → treat as 0 rows.
 */
 const TABS = [
-  { name:"In-Transit",      src:"transit", maxCols:8, col7:"Transit Time" },
-  { name:"Booked",          src:"booked",  maxCols:8, col7:"Tops Status"  },
-  { name:"Quoted/Requested", src:"quoted",  maxCols:7, col7:null            },
+  { name:"In-Transit",       src:"transit", maxCols:8, col7:"Transit Time" },
+  { name:"Booked",           src:"booked",  maxCols:8, col7:"Tops Status"  },
+  { name:"Quoted/Requested", src:"quoted",  maxCols:7, col7:null           },
 ];
 
-const SC = {transit:"#1a6b3c",booked:"#1a4a8b",quoted:"#7a4a0a"};
+const SC = {transit:"#9ddb4a",booked:"#3d8bfd",quoted:"#f2a93b"};
 const SL = {transit:"In-Transit",booked:"Booked",quoted:"Quoted/Req"};
-const PC = ["#1a4a8b","#1a6b3c","#7a4a0a","#4a1a8b","#8b1a1a","#2d3a4a","#1a3d8b","#5a1a3b"];
+const PC = ["#3d8bfd","#9ddb4a","#f2a93b","#9a7bf5","#e85b9e","#3ecfcb","#f06262","#b9b6ae"];
 const TODAY = new Date(); TODAY.setHours(0,0,0,0);
 let DATA = [], ACTIVE = "all";
+
+document.getElementById("todayLbl").textContent =
+  TODAY.toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric",year:"numeric"});
 
 function cv(row, i) {
   const c = row.c?.[i];
@@ -212,42 +301,29 @@ function cv(row, i) {
 }
 
 async function fetchTab(tabName, src, maxCols, col7Label) {
-  // tq filters blank PO# rows. sheet= targets exact tab by name.
   const tq  = encodeURIComponent("select * where D is not null");
   const url = `https://docs.google.com/spreadsheets/d/${SID}/gviz/tq`
     + `?tqx=out:json&sheet=${encodeURIComponent(tabName)}&tq=${tq}&headers=1&t=${Date.now()}`;
-
   const res  = await fetch(url);
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   const text = await res.text();
   const json = JSON.parse(text.replace(/^[^(]+\(/, "").replace(/\);\s*$/, ""));
-
   if (json.status === "error") throw new Error(json.errors?.[0]?.message || "gviz error");
-
   const cols = json.table?.cols ?? [];
   const rows = json.table?.rows ?? [];
-
-  // GUARD: if column count > 10, we got the wrong sheet (RAW2 has 33 cols)
   if (cols.length > 10) {
     console.warn(`[${tabName}] Got ${cols.length} cols — wrong sheet returned, treating as empty`);
     return [];
   }
-
   const out = [];
   for (const r of rows) {
     if (!r?.c) continue;
     const po = cv(r, 3);
     if (!po) continue;
     out.push({
-      shipRef: cv(r, 0),
-      exf:     cv(r, 1),
-      eta:     cv(r, 2),
-      po,
-      type:    cv(r, 4),
-      mode:    cv(r, 5),
-      notes:   cv(r, 6),
-      col7:    col7Label ? cv(r, 7) : "",
-      src,
+      shipRef: cv(r, 0), exf: cv(r, 1), eta: cv(r, 2), po,
+      type: cv(r, 4), mode: cv(r, 5), notes: cv(r, 6),
+      col7: col7Label ? cv(r, 7) : "", src,
     });
   }
   return out;
@@ -260,9 +336,7 @@ async function loadAll() {
   document.getElementById("sdot").classList.remove("live");
   document.getElementById("syncTime").textContent = "Fetching…";
   try {
-    const results = await Promise.all(
-      TABS.map(t => fetchTab(t.name, t.src, t.maxCols, t.col7))
-    );
+    const results = await Promise.all(TABS.map(t => fetchTab(t.name, t.src, t.maxCols, t.col7)));
     DATA = results.flat();
     const ct = {transit:0, booked:0, quoted:0};
     DATA.forEach(r => ct[r.src]++);
@@ -290,7 +364,7 @@ async function loadAll() {
 
 function setTab(t) {
   ACTIVE = t;
-  document.querySelectorAll(".tab").forEach(b => b.classList.toggle("on", b.dataset.t === t));
+  document.querySelectorAll(".nbtn").forEach(b => b.classList.toggle("on", b.dataset.t === t));
   render();
 }
 
@@ -326,17 +400,17 @@ function drawTransitDays() {
     });
     ent.sort((a,b)=>a.avg-b.avg);
     const all=tr.filter(r=>mode==="SEA"?r.mode.toUpperCase().includes("SEA"):r.mode.toUpperCase().includes("AIR")).map(r=>parseFloat(r.col7));
-    document.getElementById(nid).textContent=all.length?`Overall avg: ${Math.round(all.reduce((a,v)=>a+v,0)/all.length)} days`:"";
+    document.getElementById(nid).textContent=all.length?`avg ${Math.round(all.reduce((a,v)=>a+v,0)/all.length)}d`:"";
     if(!ent.length){document.getElementById(rid).innerHTML=`<div class="tempty">No data</div>`;return;}
     const mx=Math.max(...ent.map(e=>e.avg),1);
     document.getElementById(rid).innerHTML=ent.map(e=>`<div class="trow">
       <span class="tsup">${e.s}</span>
-      <div class="ttrack"><div class="tfill" style="width:${Math.max(Math.round(e.avg/mx*100),8)}%;background:${col}"><span>${e.avg}d</span></div></div>
+      <div class="ttrack"><div class="tfill" style="width:${Math.max(Math.round(e.avg/mx*100),12)}%;background:${col}"><span>${e.avg}d</span></div></div>
       <span class="tdays">${e.avg} days <span class="tships">(${e.n})</span></span>
     </div>`).join("");
   }
-  rs("seaRows","seaNote","SEA","#1a4a8b");
-  rs("airRows","airNote","AIR","#4a1a8b");
+  rs("seaRows","seaNote","SEA","#3d8bfd");
+  rs("airRows","airNote","AIR","#9a7bf5");
 }
 
 function pd(s){
@@ -361,55 +435,97 @@ function etaCell(s){
   const d=pd(s);if(!d)return`<span class="mono">${s||"—"}</span>`;
   const diff=Math.round((d-TODAY)/86400000);
   let cls="",ex="";
-  if(diff>=0&&diff<=14){cls="esoon";ex=`<span style="font-size:9px;margin-left:4px;opacity:.6;font-family:var(--fm)">${diff===0?"today":diff+"d"}</span>`;}
-  else if(diff<0){cls="elate";ex=`<span style="font-size:9px;margin-left:4px;opacity:.6;font-family:var(--fm)">${Math.abs(diff)}d late</span>`;}
+  if(diff>=0&&diff<=14){cls="esoon";ex=`<span style="font-size:10px;margin-left:5px;opacity:.7;font-family:var(--fm)">${diff===0?"today":diff+"d"}</span>`;}
+  else if(diff<0){cls="elate";ex=`<span style="font-size:10px;margin-left:5px;opacity:.7;font-family:var(--fm)">${Math.abs(diff)}d late</span>`;}
   return`<span class="${cls} mono">${s}${ex}</span>`;
 }
+
 function drawDonut(rows){
   const cnt={};rows.forEach(r=>{cnt[r.src]=(cnt[r.src]||0)+1;});
   const ent=Object.entries(cnt).sort((a,b)=>b[1]-a[1]);
   const tot=ent.reduce((s,[,v])=>s+v,0);
   const svg=document.getElementById("dsv");
-  const cx=45,cy=45,R=35,ri=22;let paths="",a=-Math.PI/2;
+  const cx=65,cy=65,R=54,ri=38;let paths="",a=-Math.PI/2;
   ent.forEach(([src,c])=>{
-    const f=c/tot,a1=a,a2=a+f*2*Math.PI;
+    const f=c/tot,a1=a,a2=a+f*2*Math.PI-(ent.length>1?.04:0);
     const[x1,y1,x2,y2]=[cx+R*Math.cos(a1),cy+R*Math.sin(a1),cx+R*Math.cos(a2),cy+R*Math.sin(a2)];
     const[xi1,yi1,xi2,yi2]=[cx+ri*Math.cos(a1),cy+ri*Math.sin(a1),cx+ri*Math.cos(a2),cy+ri*Math.sin(a2)];
-    paths+=`<path d="M${xi1} ${yi1}L${x1} ${y1}A${R} ${R} 0 ${f>.5?1:0} 1 ${x2} ${y2}L${xi2} ${yi2}A${ri} ${ri} 0 ${f>.5?1:0} 0 ${xi1} ${yi1}Z" fill="${SC[src]||'#aaa'}" opacity=".85"/>`;
-    a=a2;
+    paths+=`<path d="M${xi1} ${yi1}L${x1} ${y1}A${R} ${R} 0 ${f>.5?1:0} 1 ${x2} ${y2}L${xi2} ${yi2}A${ri} ${ri} 0 ${f>.5?1:0} 0 ${xi1} ${yi1}Z" fill="${SC[src]||'#888'}" stroke="#262626" stroke-width="1"/>`;
+    a=a2+(ent.length>1?.04:0);
   });
-  svg.innerHTML=paths+`<text x="${cx}" y="${cy+1}" text-anchor="middle" dominant-baseline="middle" font-size="14" font-weight="600" fill="#1c1b18" font-family="Geist,sans-serif">${tot}</text><text x="${cx}" y="${cy+13}" text-anchor="middle" font-size="8" fill="#9b9890" font-family="Geist,sans-serif">total</text>`;
-  document.getElementById("dlg").innerHTML=ent.map(([src,c])=>`<div class="di"><span class="dd" style="background:${SC[src]||'#aaa'}"></span><span class="dn">${SL[src]||src}</span><span class="dv">${c}</span></div>`).join("");
+  svg.innerHTML=paths
+    +`<text x="${cx}" y="${cy-3}" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="700" fill="#f4f2ed" font-family="Geist Mono,monospace">${tot}</text>`
+    +`<text x="${cx}" y="${cy+16}" text-anchor="middle" font-size="10" fill="#85827a" font-family="Geist,sans-serif">total POs</text>`;
+  document.getElementById("dlg").innerHTML=ent.map(([src,c])=>`<div class="dli">
+    <div class="dn"><span class="dd" style="background:${SC[src]||'#888'}"></span>${SL[src]||src}</div>
+    <div class="dv">${tot?Math.round(c/tot*100):0}%<span style="font-size:11px;color:var(--text3);font-weight:400"> · ${c}</span></div>
+  </div>`).join("");
+  document.getElementById("dnote").textContent=`${tot} records`;
 }
+
 function drawSupBars(rows){
   const m={};rows.forEach(r=>{const s=sup(r);if(s)m[s]=(m[s]||0)+1;});
   const ent=Object.entries(m).sort((a,b)=>b[1]-a[1]).slice(0,8);
   const mx=ent[0]?.[1]||1;
-  document.getElementById("sbar").innerHTML=ent.map(([s,v],i)=>`<div class="br"><span class="bl">${s}</span><div class="bt"><div class="bf" style="width:${Math.round(v/mx*100)}%;background:${PC[i%PC.length]}"><span>${v}</span></div></div></div>`).join("");
+  document.getElementById("sbar").innerHTML=ent.length?ent.map(([s,v],i)=>`<div class="blr">
+    <span class="bll">${s}</span>
+    <div style="flex:1"><div class="blb" style="width:max(${Math.round(v/mx*100)}%,30px);background:${PC[i%PC.length]}"><span>${v}</span></div></div>
+  </div>`).join(""):`<div class="tempty">No data</div>`;
 }
+
 function drawEtaTl(rows){
-  const bk=[{l:"Today",min:0,max:0,col:"#7a4a0a"},{l:"≤7 days",min:1,max:7,col:"#1a6b3c"},{l:"≤14d",min:8,max:14,col:"#1a4a8b"},{l:"≤30d",min:15,max:30,col:"#4a1a8b"},{l:"1–2 mo",min:31,max:60,col:"#2d3a4a"},{l:"2+ mo",min:61,max:999,col:"#9b9890"}];
+  const bk=[{l:"Today",min:0,max:0,col:"#f2a93b"},{l:"≤7 days",min:1,max:7,col:"#9ddb4a"},{l:"≤14 days",min:8,max:14,col:"#3d8bfd"},{l:"≤30 days",min:15,max:30,col:"#9a7bf5"},{l:"1–2 mo",min:31,max:60,col:"#3ecfcb"},{l:"2+ mo",min:61,max:999,col:"#85827a"}];
   const cn=bk.map(b=>rows.filter(r=>{const d=pd(r.eta);if(!d)return false;const dif=Math.round((d-TODAY)/86400000);return dif>=b.min&&dif<=b.max;}).length);
   const mx=Math.max(...cn,1);
-  document.getElementById("etl").innerHTML=bk.map((b,i)=>`<div class="tlr"><span class="tld">${b.l}</span><div style="flex:1;display:flex;align-items:center;gap:6px"><div class="tlb" style="width:max(${Math.round(cn[i]/mx*100)}%,${cn[i]>0?24:4}px);background:${b.col};opacity:.85">${cn[i]>0?`<span style="color:rgba(255,255,255,.9)">${cn[i]}</span>`:""}</div></div><span class="tln">${cn[i]||""}</span></div>`).join("");
+  document.getElementById("etl").innerHTML=bk.map((b,i)=>`<div class="blr">
+    <span class="bll">${b.l}</span>
+    <div style="flex:1"><div class="blb" style="width:max(${Math.round(cn[i]/mx*100)}%,${cn[i]>0?30:5}px);background:${b.col}">${cn[i]>0?`<span>${cn[i]}</span>`:""}</div></div>
+    <span class="bln">${cn[i]||""}</span>
+  </div>`).join("");
 }
-function formatNote(r){
-  if(r.src !== "transit") {
-    // For non-transit: show first line, stripped
-    const sn = r.notes.split("\n")[0].replace(/^Freight Overview:\s*/i,"").trim();
-    return `<div class="note" onclick="this.classList.toggle('exp')">${sn||"—"}</div>`;
-  }
-  // For In-Transit: parse and render 3 structured lines
-  const lines = r.notes.split("\n").map(l=>l.trim()).filter(Boolean);
-  const status  = lines[0] ? lines[0].replace(/^Freight Overview:\s*/i,"").trim() : "—";
-  const etaLine = lines[1] ? lines[1].replace(/^Expected ETA to Warehouse:\s*/i,"").trim() : "";
-  const ref     = lines[2] || "";
-  return `<div class="note-transit">
-    <span class="nt-status">${status}</span>
-    ${etaLine ? `<span class="nt-eta">📦 ETA to WH: ${etaLine}</span>` : ""}
-    ${ref     ? `<span class="nt-ref">${ref}</span>` : ""}
+
+function drawRing(rows){
+  const arr=rows.filter(r=>{const d=pd(r.eta);if(!d)return false;const dif=Math.round((d-TODAY)/86400000);return dif>=0&&dif<=14;}).length;
+  const tot=rows.length||1;
+  const pct=Math.round(arr/tot*100);
+  const C=2*Math.PI*27;
+  document.getElementById("ring1").innerHTML=`
+    <div class="ringwrap">
+      <svg width="64" height="64" viewBox="0 0 64 64">
+        <circle cx="32" cy="32" r="27" fill="none" stroke="#2e2e2e" stroke-width="7"/>
+        <circle cx="32" cy="32" r="27" fill="none" stroke="#9ddb4a" stroke-width="7" stroke-linecap="round"
+          stroke-dasharray="${C}" stroke-dashoffset="${C*(1-pct/100)}"/>
+      </svg>
+      <div class="ringpct">${pct}%</div>
+    </div>
+    <div class="ringinfo">
+      <div class="rv">${arr}</div>
+      <div class="rl">arriving ≤14 days<br>of ${rows.length} in view</div>
+    </div>`;
+}
+
+function kpiCard(lbl, val, pctTxt, pctCol, pctBg, icon){
+  const dateStr=TODAY.toLocaleDateString("en-US",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
+  return `<div class="kpi">
+    <div class="kpi-top">
+      <span class="kpi-lbl">${lbl}</span>
+      <span class="kpi-pct" style="color:${pctCol};background:${pctBg}">${pctTxt}</span>
+    </div>
+    <div class="kpi-mid">
+      <div class="kpi-ic">${icon}</div>
+      <div class="kpi-val">${val}</div>
+    </div>
+    <div class="kpi-strip">${dateStr}</div>
   </div>`;
 }
+
+const IC = {
+  grid:`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9ddb4a" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>`,
+  truck:`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3d8bfd" stroke-width="2"><path d="M3 17h13v-6l-3-6H3z"/><path d="M16 11h4l2 3v3h-6"/><circle cx="7" cy="19" r="2"/><circle cx="18" cy="19" r="2"/></svg>`,
+  cal:`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9a7bf5" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 9h18"/></svg>`,
+  clock:`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f2a93b" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>`,
+};
+
 function render(){
   const fM=document.getElementById("fM").value;
   const fSv=document.getElementById("fS").value;
@@ -421,22 +537,26 @@ function render(){
     if(q&&![r.shipRef,r.po,r.type,r.mode,r.notes,r.col7].join(" ").toLowerCase().includes(q))return false;
     return true;
   }).sort((a,b)=>{const da=pd(a.eta),db=pd(b.eta);if(!da&&!db)return 0;if(!da)return 1;if(!db)return -1;return da-db;});
+
   const n=rows.length,ct={transit:0,booked:0,quoted:0};
   rows.forEach(r=>ct[r.src]++);
   const arr=rows.filter(r=>{const d=pd(r.eta);if(!d)return false;const dif=Math.round((d-TODAY)/86400000);return dif>=0&&dif<=14;}).length;
-  document.getElementById("kpis").innerHTML=`
-    <div class="kpi"><div class="kl">Total POs</div><div class="kv">${n}</div><div class="ks">of ${DATA.length} total</div></div>
-    <div class="kpi"><div class="kl">In-Transit</div><div class="kv">${ct.transit}</div><div class="ks">${n?Math.round(ct.transit/n*100):0}%</div></div>
-    <div class="kpi"><div class="kl">Booked</div><div class="kv">${ct.booked}</div><div class="ks">${n?Math.round(ct.booked/n*100):0}%</div></div>
-    <div class="kpi"><div class="kl">Arriving ≤14 days</div><div class="kv">${arr}</div><div class="ks">upcoming</div></div>`;
-  drawDonut(rows);drawSupBars(rows);drawEtaTl(rows);
+
+  document.getElementById("kpis").innerHTML=
+    kpiCard("Total POs", n, `of ${DATA.length}`, "var(--lime)", "var(--lime-bg)", IC.grid)
+    +kpiCard("In-Transit", ct.transit, `${n?Math.round(ct.transit/n*100):0}%`, "var(--blue)", "var(--blue-bg)", IC.truck)
+    +kpiCard("Booked", ct.booked, `${n?Math.round(ct.booked/n*100):0}%`, "var(--purple)", "var(--purple-bg)", IC.cal)
+    +kpiCard("Arriving ≤14 Days", arr, `${n?Math.round(arr/n*100):0}%`, "var(--amber)", "var(--amber-bg)", IC.clock);
+
+  drawDonut(rows);drawSupBars(rows);drawEtaTl(rows);drawRing(rows);
+
   let eTh="";
-  if(ACTIVE==="all")eTh=`<th style="width:90px">Transit Days</th>`;
-  else if(ACTIVE==="transit")eTh=`<th style="width:90px">Transit Time</th>`;
-  else if(ACTIVE==="booked")eTh=`<th style="width:120px">Tops Status</th>`;
+  if(ACTIVE==="all")eTh=`<th style="width:95px">Transit Days</th>`;
+  else if(ACTIVE==="transit")eTh=`<th style="width:95px">Transit Time</th>`;
+  else if(ACTIVE==="booked")eTh=`<th style="width:130px">Tops Status</th>`;
   document.getElementById("thead").innerHTML=`<tr>
-    <th style="width:100px">Shipment Ref #</th><th style="width:90px">Current EXF</th><th style="width:90px">ETA</th>
-    <th style="width:120px">PO #</th><th style="width:120px">Product Type</th><th style="width:75px">Ship Mode</th>
+    <th style="width:105px">Shipment Ref #</th><th style="width:95px">Current EXF</th><th style="width:110px">ETA</th>
+    <th style="width:125px">PO #</th><th style="width:125px">Product Type</th><th style="width:85px">Ship Mode</th>
     ${eTh}<th>Notes</th></tr>`;
   document.getElementById("ctLbl").textContent=ACTIVE==="all"?"All records":(SL[ACTIVE]||ACTIVE);
   document.getElementById("ctBdg").textContent=`${n} records · sorted by ETA`;
@@ -456,13 +576,29 @@ function render(){
       <td><span class="mono">${r.shipRef||"—"}</span></td>
       <td><span class="mono">${r.exf||"—"}</span></td>
       <td>${etaCell(r.eta)}</td>
-      <td><span class="mono" style="font-weight:500">${r.po||"—"}</span></td>
-      <td style="font-size:12px;color:var(--text2)">${r.type||"—"}</td>
+      <td><span class="mono" style="font-weight:600">${r.po||"—"}</span></td>
+      <td style="color:var(--text2)">${r.type||"—"}</td>
       <td>${modeBadge(r.mode)}</td>
       ${eTd}
       <td>${formatNote(r)}</td>
     </tr>`;
   }).join("");
+}
+
+function formatNote(r){
+  if(r.src !== "transit") {
+    const sn = r.notes.split("\n")[0].replace(/^Freight Overview:\s*/i,"").trim();
+    return `<div class="note" onclick="this.classList.toggle('exp')">${sn||"—"}</div>`;
+  }
+  const lines = r.notes.split("\n").map(l=>l.trim()).filter(Boolean);
+  const status  = lines[0] ? lines[0].replace(/^Freight Overview:\s*/i,"").trim() : "—";
+  const etaLine = lines[1] ? lines[1].replace(/^Expected ETA to Warehouse:\s*/i,"").trim() : "";
+  const ref     = lines[2] || "";
+  return `<div class="note-transit">
+    <span class="nt-status">${status}</span>
+    ${etaLine ? `<span class="nt-eta">📦 ETA to WH: ${etaLine}</span>` : ""}
+    ${ref     ? `<span class="nt-ref">${ref}</span>` : ""}
+  </div>`;
 }
 
 ["fM","fS"].forEach(id=>document.getElementById(id).addEventListener("change",render));
