@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Warehouse Tracker — State & Liberty</title>
+  <style>
+    :root {
+      --bg: #f7f6f3;
+      --text: #1c1b18;
+      --border: #e5e3db;
+      --header-bg: #1c1b18;
+      --header-text: #f7f6f3;
+      --accent: #c8102e;
+      --muted: #6b6960;
+      --card-bg: #ffffff;
+      --pill-active-bg: #1c1b18;
+      --pill-active-text: #f7f6f3;
+      --pill-bg: #eeece7;
+      --shadow: 0 1px 4px rgba(0,0,0,0.07);
+      --radius: 8px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg); color: var(--text);
+      min-height: 100vh; display: flex; flex-direction: column;
+    }
+
+    /* HEADER */
+    header {
+      background: var(--header-bg); color: var(--header-text);
+      padding: 0 24px; height: 52px;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 100; flex-shrink: 0;
+    }
+    .header-left { display: flex; align-items: center; gap: 14px; }
+    .logo { font-size: 13px; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--header-text); text-decoration: none; }
+    .logo-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent); margin-right: 4px; vertical-align: middle; }
+    .header-divider { width: 1px; height: 20px; background: rgba(255,255,255,0.15); }
+    .header-title { font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.7); }
+    .header-nav { display: flex; align-items: center; gap: 6px; }
+    .header-nav a { font-size: 12px; font-weight: 500; color: rgba(255,255,255,0.55);
+      text-decoration: none; padding: 4px 10px; border-radius: 4px; transition: color 0.15s, background 0.15s; }
+    .header-nav a:hover { color: #fff; background: rgba(255,255,255,0.08); }
+    .header-nav a.active { color: #fff; background: rgba(255,255,255,0.12); }
+
+    /* LAYOUT */
+    .layout { display: flex; flex: 1; min-height: 0; }
+
+    /* SIDEBAR */
+    aside {
+      width: 200px; flex-shrink: 0; padding: 20px 12px;
+      border-right: 1px solid var(--border); background: var(--bg);
+      position: sticky; top: 52px; height: calc(100vh - 52px); overflow-y: auto;
+    }
+    .sidebar-label { font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--muted); padding: 0 8px 8px; }
+    .pill-nav { display: flex; flex-direction: column; gap: 2px; }
+    .pill-nav a { display: flex; align-items: center; gap: 8px; font-size: 13px;
+      font-weight: 500; color: var(--text); text-decoration: none; padding: 7px 10px;
+      border-radius: 6px; background: transparent; transition: background 0.12s; }
+    .pill-nav a:hover { background: var(--pill-bg); }
+    .pill-nav a.active { background: var(--pill-active-bg); color: var(--pill-active-text); }
+    .pill-icon { font-size: 14px; width: 18px; text-align: center; }
+
+    /* MAIN */
+    main { flex: 1; padding: 28px 32px; overflow-x: auto; min-width: 0; }
+    .page-header { margin-bottom: 24px; }
+    .page-header h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; }
+    .page-header p { font-size: 13px; color: var(--muted); margin-top: 4px; }
+
+    /* KPI CARDS */
+    .kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px; margin-bottom: 28px; }
+    .kpi-card { background: var(--card-bg); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); }
+    .kpi-label { font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.07em; color: var(--muted); margin-bottom: 6px; }
+    .kpi-value { font-size: 26px; font-weight: 700; letter-spacing: -0.03em;
+      color: var(--text); line-height: 1; }
+    .kpi-sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+    /* SECTION TITLE */
+    .section-title { font-size: 12px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.07em; color: var(--muted); margin-bottom: 12px; display: flex;
+      align-items: center; gap: 8px; }
+    .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+    /* SHIPMENT SUMMARY TABLE */
+    .summary-wrap {
+      background: var(--card-bg); border: 1px solid var(--border);
+      border-radius: var(--radius); box-shadow: var(--shadow);
+      overflow: hidden; margin-bottom: 28px;
+    }
+    .summary-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .summary-table thead tr { background: #1c1b18; }
+    .summary-table thead th {
+      padding: 10px 16px; text-align: left; font-size: 11px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.07em; color: rgba(255,255,255,0.7);
+      white-space: nowrap;
+    }
+    .summary-table thead th:not(:first-child) { text-align: center; }
+    .summary-table tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; }
+    .summary-table tbody tr:last-child { border-bottom: none; }
+    .summary-table tbody tr:hover { background: #faf9f7; }
+    .summary-table td { padding: 11px 16px; }
+    .summary-table td:not(:first-child) { text-align: center; }
+    .eta-day-cell { font-weight: 700; font-size: 13px; }
+    .eta-day-cell.today { color: var(--accent); }
+    .eta-day-cell.past { color: var(--muted); }
+    .num-cell { font-variant-numeric: tabular-nums; font-weight: 600; }
+    .num-cell.big { font-size: 15px; font-weight: 700; }
+    .na-cell { color: #ccc; font-style: italic; font-size: 12px; }
+    .summary-loading { padding: 24px; text-align: center; color: var(--muted); font-size: 13px; }
+
+    /* TODAY HIGHLIGHT */
+    .summary-table tbody tr.row-today { background: #fff8f8; }
+    .summary-table tbody tr.row-today td { border-bottom: 1px solid #f0d0d0; }
+
+    /* TOOLBAR */
+    .toolbar { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+    .toolbar-title { font-size: 15px; font-weight: 700; flex: 1; }
+    select, input[type=text] { font-size: 12px; padding: 6px 10px;
+      border: 1px solid var(--border); border-radius: 6px; background: var(--card-bg);
+      color: var(--text); outline: none; cursor: pointer; }
+    select:focus, input[type=text]:focus { border-color: #999; }
+
+    /* BADGES */
+    .badge { display: inline-block; font-size: 10px; font-weight: 700;
+      padding: 2px 7px; border-radius: 99px; text-transform: uppercase; letter-spacing: 0.06em; }
+    .badge-sea { background: #e0f0ff; color: #0066aa; }
+    .badge-air { background: #e8f8ec; color: #1a7a3c; }
+    .badge-fast { background: #fff3e0; color: #b05a00; }
+    .badge-need { background: #f3f0ff; color: #5a3ab0; }
+    .badge-transit { background: #e8f8ec; color: #1a7a3c; }
+    .badge-delivered { background: #e8f8ec; color: #1a7a3c; }
+    .badge-booked { background: #e0f0ff; color: #0066aa; }
+    .badge-ready { background: #fff8e0; color: #8a6a00; }
+    .badge-quoted { background: #f3f0ff; color: #5a3ab0; }
+    .badge-dev { background: #ffeae0; color: #8a3a00; }
+    .badge-default { background: var(--pill-bg); color: var(--muted); }
+
+    /* MAIN TABLE */
+    .table-wrap { background: var(--card-bg); border: 1px solid var(--border);
+      border-radius: var(--radius); box-shadow: var(--shadow); overflow-x: auto; }
+    table.main-tbl { width: 100%; border-collapse: collapse; font-size: 12px; }
+    table.main-tbl thead tr { background: #f2f0ec; border-bottom: 1px solid var(--border); }
+    table.main-tbl th { padding: 10px 12px; text-align: left; font-size: 10px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted);
+      white-space: nowrap; cursor: pointer; user-select: none; }
+    table.main-tbl th:hover { color: var(--text); }
+    table.main-tbl th.sorted { color: var(--text); }
+    table.main-tbl td { padding: 9px 12px; border-bottom: 1px solid var(--border);
+      white-space: nowrap; color: var(--text); }
+    table.main-tbl tr:last-child td { border-bottom: none; }
+    table.main-tbl tr:hover td { background: #faf9f7; }
+    td.po-num { font-weight: 700; }
+    td.num { text-align: right; color: var(--muted); }
+    td.val { text-align: right; font-weight: 600; }
+    .na { color: #bbb; font-style: italic; }
+
+    .btn-refresh { display: flex; align-items: center; gap: 6px; font-size: 12px;
+      font-weight: 600; padding: 7px 14px; border: 1px solid var(--border);
+      border-radius: 6px; background: var(--card-bg); color: var(--text);
+      cursor: pointer; transition: background 0.12s; }
+    .btn-refresh:hover { background: var(--pill-bg); }
+    .status-bar { font-size: 11px; color: var(--muted); margin-bottom: 16px; }
+    .status-bar span { color: var(--text); font-weight: 600; }
+
+    .loading-state { text-align: center; padding: 60px 20px;
+      color: var(--muted); font-size: 13px; }
+    .spinner { display: inline-block; width: 20px; height: 20px;
+      border: 2px solid var(--border); border-top-color: var(--text);
+      border-radius: 50%; animation: spin 0.7s linear infinite; margin-bottom: 10px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @media (max-width: 768px) { aside { display: none; } main { padding: 16px; } }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <a class="logo" href="index.html"><span class="logo-dot"></span>S&L</a>
+    <div class="header-divider"></div>
+    <span class="header-title">State &amp; Liberty · SCM</span>
+  </div>
+  <nav class="header-nav">
+    <a href="index.html">PO Summary</a>
+    <a href="warehouse.html" class="active">Warehouse</a>
+  </nav>
+</header>
+
+<div class="layout">
+  <aside>
+    <div class="sidebar-label">Views</div>
+    <nav class="pill-nav">
+      <a href="#" class="active" data-filter="all"><span class="pill-icon">📦</span>All POs</a>
+      <a href="#" data-filter="In-Transit"><span class="pill-icon">🚢</span>In-Transit</a>
+      <a href="#" data-filter="Delivered"><span class="pill-icon">✅</span>Delivered</a>
+      <a href="#" data-filter="Ready to Ship"><span class="pill-icon">📬</span>Ready to Ship</a>
+      <a href="#" data-filter="Booked"><span class="pill-icon">📋</span>Booked</a>
+      <a href="#" data-filter="Quoted"><span class="pill-icon">💬</span>Quoted</a>
+      <a href="#" data-filter="Development Ongoing"><span class="pill-icon">🔧</span>Dev Ongoing</a>
+    </nav>
+  </aside>
+
+  <main>
+    <div class="page-header">
+      <h1>Warehouse Tracker</h1>
+      <p>Live from New Shipment Tracker · inbound PO visibility across all suppliers</p>
+    </div>
+
+    <!-- KPI CARDS -->
+    <div class="kpi-row">
+      <div class="kpi-card">
+        <div class="kpi-label">Total POs</div>
+        <div class="kpi-value" id="kpiTotal">—</div>
+        <div class="kpi-sub">all statuses</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Total Cartons</div>
+        <div class="kpi-value" id="kpiCtns">—</div>
+        <div class="kpi-sub">actual / estimated</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Total Styles</div>
+        <div class="kpi-value" id="kpiStyles">—</div>
+        <div class="kpi-sub">across all POs</div>
+      </div>
+    </div>
+
+    <!-- SHIPMENT SUMMARY -->
+    <div class="section-title">Shipment Summary</div>
+    <div class="summary-wrap">
+      <div class="summary-loading" id="summaryLoading">
+        <div class="spinner"></div><br>Loading shipment summary…
+      </div>
+      <table class="summary-table" id="summaryTable" style="display:none">
+        <thead>
+          <tr>
+            <th>ETA</th>
+            <th># Shipments</th>
+            <th># POs</th>
+            <th># Cartons</th>
+            <th># Styles</th>
+          </tr>
+        </thead>
+        <tbody id="summaryBody"></tbody>
+      </table>
+    </div>
+
+    <!-- ALL SHIPMENTS TABLE -->
+    <div class="toolbar">
+      <div class="toolbar-title">All Shipments</div>
+      <input type="text" id="searchInput" placeholder="Search PO#, supplier, product…" style="width:220px" />
+      <select id="modeFilter">
+        <option value="">All modes</option>
+        <option>SEA</option>
+        <option>AIR</option>
+        <option>FAST BOAT</option>
+      </select>
+      <select id="supplierFilter"><option value="">All suppliers</option></select>
+      <button class="btn-refresh" id="refreshBtn" onclick="loadData()">↻ Refresh</button>
+    </div>
+    <div class="status-bar" id="statusBar">Loading…</div>
+
+    <div class="table-wrap">
+      <div class="loading-state" id="loadingState">
+        <div class="spinner"></div><br>Pulling from Google Sheets…
+      </div>
+      <table class="main-tbl" id="mainTable" style="display:none">
+        <thead>
+          <tr>
+            <th data-col="po">PO #</th>
+            <th data-col="supplier">Supplier</th>
+            <th data-col="product">Product Type</th>
+            <th data-col="mode">Mode</th>
+            <th data-col="qty">Qty</th>
+            <th data-col="curExf">Current EXF</th>
+            <th data-col="eta">ETA</th>
+            <th data-col="delay">Delay</th>
+            <th data-col="actCtns">Ctns</th>
+            <th data-col="cbm">CBM</th>
+            <th data-col="value">PO Value</th>
+            <th data-col="status">PO Status</th>
+            <th data-col="tops">TOPs</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+  </main>
+</div>
+
+<script>
+  const SHEET_ID = '1xexgCJvXrhRtJO9rCZrGQ4iKwHi45sskEOmOLHNKwLI';
+  // gid=0 is the main tracker tab; we'll also try common GIDs for the Shipment Summary tab
+  const SUMMARY_GIDS = ['1672462950','1169346674','738847461','1234567890','2000000000','1'];
+
+  let allData = [];
+  let sortCol = 'eta';
+  let sortAsc = true;
+  let activeFilter = 'all';
+
+  function csvUrl(gid) {
+    return `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${gid}&t=${Date.now()}`;
+  }
+
+  // ── MAIN DATA LOAD ──
+  async function loadData() {
+    document.getElementById('refreshBtn').style.opacity = '0.6';
+    document.getElementById('loadingState').style.display = 'block';
+    document.getElementById('mainTable').style.display = 'none';
+    document.getElementById('statusBar').textContent = 'Refreshing…';
+
+    try {
+      const [mainRes, summaryData] = await Promise.all([
+        fetch(csvUrl('0')).then(r => r.text()),
+        loadSummaryTab()
+      ]);
+
+      allData = parseMainCSV(mainRes);
+      populateFilters();
+      renderKPIs();
+      renderSummaryTable(summaryData);
+      renderTable();
+
+      const now = new Date().toLocaleString('en-US', {
+        timeZone: 'America/New_York', dateStyle: 'medium', timeStyle: 'short'
+      });
+      document.getElementById('statusBar').innerHTML =
+        `Last updated: <span>${now} ET</span> · <span>${allData.length}</span> rows`;
+    } catch(e) {
+      document.getElementById('loadingState').innerHTML =
+        `<p style="color:#c00">Load failed. Ensure the sheet is set to "Anyone with the link can view".<br><small>${e.message}</small></p>`;
+      document.getElementById('statusBar').textContent = 'Load failed.';
+    }
+    document.getElementById('refreshBtn').style.opacity = '';
+  }
+
+  // ── LOAD SHIPMENT SUMMARY TAB ──
+  // The summary data is actually embedded at the bottom of gid=0 (we parse it from mainRes)
+  // but we also try dedicated summary tab GIDs just in case
+  async function loadSummaryTab() {
+    // First try: parse from the already-loaded main tab (the summary table is in gid=0)
+    // We'll do that inline after main load. For now just return null — renderSummaryTable
+    // will fall back to building it from allData.
+    return null;
+  }
+
+  // ── PARSE MAIN CSV ──
+  function parseCSVLine(line) {
+    const result = []; let cur = '', inQ = false;
+    for (let i = 0; i < line.length; i++) {
+      const c = line[i];
+      if (c === '"') { if (inQ && line[i+1] === '"') { cur += '"'; i++; } else inQ = !inQ; }
+      else if (c === ',' && !inQ) { result.push(cur); cur = ''; }
+      else cur += c;
+    }
+    result.push(cur);
+    return result.map(s => s.trim().replace(/^"|"$/g, ''));
+  }
+
+  function parseMainCSV(text) {
+    const lines = text.trim().split('\n');
+    if (lines.length < 2) return [];
+    const headers = parseCSVLine(lines[0]);
+    const idx = name => headers.findIndex(h => h.toLowerCase().includes(name.toLowerCase()));
+
+    const cols = {
+      bp: idx('bp order'), shipRef: idx('ship'), po: idx('po#'),
+      supplier: idx('supplier'), product: idx('product type'),
+      qty: idx('quantity'), mode: idx('ship mode'), coo: idx('coo'),
+      origExf: idx('original exf'), curExf: idx('current exf'),
+      eta: idx('eta'), delay: idx('purchase order delay'),
+      status: idx('po status'), newReorder: idx('new/reorder'),
+      tops: idx('tops'), actCtns: idx('actual ctns'),
+      estCtns: idx('estimated ctns'), styles: idx('styles'),
+      cbm: idx('cbm'), value: idx('po value'),
+    };
+
+    const rows = [];
+    for (let i = 1; i < lines.length; i++) {
+      const c = parseCSVLine(lines[i]);
+      if (c.length < 5) continue;
+      const po = c[cols.po] || '';
+      // Skip header-like rows and the embedded summary tables
+      if (!po || po === 'PO#' || po.includes('ETA') || po.includes('Estimated')
+          || po.includes('Wednesday') || po.includes('Thursday') || po.includes('Friday')
+          || po.includes('Monday') || po.includes('Tuesday') || po.includes('Saturday') || po.includes('Sunday')) continue;
+      if (po.startsWith('|') || po.length > 20) continue;
+
+      const modeRaw = c[cols.mode] || '';
+      rows.push({
+        bp: c[cols.bp], shipRef: c[cols.shipRef], po, supplier: c[cols.supplier],
+        product: c[cols.product], qty: toNum(c[cols.qty]), mode: modeRaw,
+        coo: c[cols.coo], origExf: c[cols.origExf], curExf: c[cols.curExf],
+        eta: c[cols.eta], delay: c[cols.delay], status: c[cols.status],
+        newReorder: c[cols.newReorder], tops: c[cols.tops],
+        actCtns: toNum(c[cols.actCtns]), estCtns: toNum(c[cols.estCtns]),
+        styles: toNum(c[cols.styles]),
+        cbm: parseFloat(c[cols.cbm]) || 0,
+        value: parseMoney(c[cols.value]),
+      });
+    }
+    return rows;
+  }
+
+  function toNum(v) { const n = parseInt(v); return isNaN(n) ? null : n; }
+  function parseMoney(v) { return parseFloat((v||'').replace(/[$,]/g,'')) || 0; }
+
+  // ── SHIPMENT SUMMARY TABLE ──
+  // Built from allData: group by ETA date, count shipments (unique shipRef), POs, cartons, styles
+  function renderSummaryTable(externalData) {
+    // Build from allData
+    const today = new Date(); today.setHours(0,0,0,0);
+    const etaMap = {};
+
+    for (const r of allData) {
+      const d = parseDate(r.eta);
+      if (!d) continue;
+      // Only show upcoming + today (not past beyond today - 1)
+      // Actually show all — match what the sheet shows
+      const key = d.toDateString();
+      if (!etaMap[key]) etaMap[key] = { date: d, shipments: new Set(), pos: 0, ctns: 0, styles: 0 };
+      if (r.shipRef) etaMap[key].shipments.add(r.shipRef);
+      etaMap[key].pos++;
+      etaMap[key].ctns += (r.actCtns != null ? r.actCtns : (r.estCtns || 0));
+      etaMap[key].styles += (r.styles || 0);
+    }
+
+    const rows = Object.values(etaMap).sort((a,b) => a.date - b.date);
+
+    document.getElementById('summaryLoading').style.display = 'none';
+    document.getElementById('summaryTable').style.display = '';
+
+    const tbody = document.getElementById('summaryBody');
+    if (!rows.length) {
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:24px;color:var(--muted)">No ETA data found.</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = rows.map(r => {
+      const isToday = r.date.toDateString() === today.toDateString();
+      const isPast = r.date < today;
+      const dateLabel = r.date.toLocaleDateString('en-US', { weekday: 'long', month: 'numeric', day: 'numeric', year: 'numeric' });
+      const shipCount = r.shipments.size || '—';
+      const ctns = r.ctns > 0 ? r.ctns : '—';
+      const styles = r.styles > 0 ? r.styles : '—';
+      const rowClass = isToday ? 'row-today' : '';
+      const dayClass = isToday ? 'today' : isPast ? 'past' : '';
+      const todayTag = isToday ? ' <span style="font-size:10px;background:var(--accent);color:#fff;border-radius:4px;padding:1px 6px;font-weight:700;vertical-align:middle">TODAY</span>' : '';
+
+      return `<tr class="${rowClass}">
+        <td class="eta-day-cell ${dayClass}">${dateLabel}${todayTag}</td>
+        <td class="num-cell big">${shipCount}</td>
+        <td class="num-cell big">${r.pos}</td>
+        <td class="num-cell">${ctns}</td>
+        <td class="num-cell">${styles}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  // ── KPIs ──
+  function renderKPIs() {
+    document.getElementById('kpiTotal').textContent = allData.length;
+    const ctns = allData.reduce((s,r) => s + (r.actCtns != null ? r.actCtns : (r.estCtns || 0)), 0);
+    document.getElementById('kpiCtns').textContent = ctns.toLocaleString();
+    const styles = allData.reduce((s,r) => s + (r.styles || 0), 0);
+    document.getElementById('kpiStyles').textContent = styles.toLocaleString();
+  }
+
+  // ── DATE UTILS ──
+  function parseDate(s) {
+    if (!s || s === '#N/A' || s === 'In-Transit' || s === 'Approved') return null;
+    const n = parseInt(s);
+    if (!isNaN(n) && n > 40000 && n < 60000)
+      return new Date((n - 25569) * 86400000);
+    const d = new Date(s);
+    return isNaN(d) ? null : d;
+  }
+  function fmtDate(s) {
+    const d = parseDate(s);
+    if (!d) return s || '—';
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  }
+
+  // ── RENDER TABLE ──
+  function renderTable() {
+    const search = document.getElementById('searchInput').value.toLowerCase();
+    const modeF = document.getElementById('modeFilter').value;
+    const supF = document.getElementById('supplierFilter').value;
+
+    let data = allData.filter(r => {
+      if (activeFilter !== 'all' && !(r.status||'').toLowerCase().includes(activeFilter.toLowerCase())) return false;
+      if (modeF && !r.mode.toLowerCase().includes(modeF.toLowerCase())) return false;
+      if (supF && r.supplier !== supF) return false;
+      if (search) {
+        const s = [r.po,r.supplier,r.product,r.mode,r.status,r.tops,r.shipRef].join(' ').toLowerCase();
+        if (!s.includes(search)) return false;
+      }
+      return true;
+    });
+
+    data.sort((a,b) => {
+      let av, bv;
+      if (sortCol === 'eta') { av = parseDate(a.eta); bv = parseDate(b.eta); }
+      else if (sortCol === 'curExf') { av = parseDate(a.curExf); bv = parseDate(b.curExf); }
+      else { av = a[sortCol]; bv = b[sortCol]; }
+      if (av == null && bv == null) return 0;
+      if (av == null) return 1; if (bv == null) return -1;
+      return sortAsc ? (av < bv ? -1 : av > bv ? 1 : 0) : (av > bv ? -1 : av < bv ? 1 : 0);
+    });
+
+    document.getElementById('loadingState').style.display = 'none';
+    document.getElementById('mainTable').style.display = '';
+
+    const tbody = document.getElementById('tableBody');
+    if (!data.length) {
+      tbody.innerHTML = '<tr><td colspan="13" style="text-align:center;padding:40px;color:var(--muted)">No results.</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = data.map(r => `
+      <tr>
+        <td class="po-num">${r.po}</td>
+        <td>${r.supplier||'<span class="na">—</span>'}</td>
+        <td>${r.product||'<span class="na">—</span>'}</td>
+        <td>${modeBadge(r.mode)}</td>
+        <td class="num">${r.qty!=null ? r.qty.toLocaleString() : '<span class="na">—</span>'}</td>
+        <td>${fmtDate(r.curExf)}</td>
+        <td>${fmtDate(r.eta)}</td>
+        ${delayCell(r.delay)}
+        <td class="num">${r.actCtns!=null ? r.actCtns : r.estCtns!=null ? '~'+r.estCtns : '<span class="na">—</span>'}</td>
+        <td class="num">${r.cbm ? r.cbm.toFixed(3) : '<span class="na">—</span>'}</td>
+        <td class="val">${r.value ? '$'+r.value.toLocaleString('en-US',{minimumFractionDigits:2}) : '<span class="na">—</span>'}</td>
+        <td>${statusBadge(r.status)}</td>
+        <td>${r.tops ? `<span class="badge badge-default" style="font-size:10px">${r.tops}</span>` : '<span class="na">—</span>'}</td>
+      </tr>`).join('');
+  }
+
+  function modeBadge(m) {
+    if (!m) return '';
+    const ml = m.toLowerCase();
+    if (ml.includes('sea')) return `<span class="badge badge-sea">⚓ SEA</span>`;
+    if (ml.includes('air')) return `<span class="badge badge-air">✈ AIR</span>`;
+    if (ml.includes('fast')) return `<span class="badge badge-fast">🚤 FAST</span>`;
+    return `<span class="badge badge-need">${m.length > 10 ? 'NEED BKDWN' : m}</span>`;
+  }
+
+  function statusBadge(s) {
+    if (!s) return '—';
+    const sl = s.toLowerCase();
+    if (sl.includes('in-transit')) return `<span class="badge badge-transit">In-Transit</span>`;
+    if (sl.includes('delivered')) return `<span class="badge badge-delivered">Delivered</span>`;
+    if (sl.includes('ready')) return `<span class="badge badge-ready">Ready to Ship</span>`;
+    if (sl.includes('booked')) return `<span class="badge badge-booked">Booked</span>`;
+    if (sl.includes('quoted') || sl.includes('requested')) return `<span class="badge badge-quoted">${s}</span>`;
+    if (sl.includes('development') || sl.includes('production')) return `<span class="badge badge-dev">${s}</span>`;
+    return `<span class="badge badge-default">${s}</span>`;
+  }
+
+  function delayCell(d) {
+    if (!d || d === '#N/A' || d === 'In-Transit' || d === 'Approved') return `<td class="num na">—</td>`;
+    const n = parseInt(d);
+    if (isNaN(n)) return `<td class="num">${d}</td>`;
+    const color = n < 0 ? '#c00' : n === 0 ? '#888' : '#1a7a3c';
+    return `<td class="num" style="color:${color};font-weight:700">${n > 0 ? '+' : ''}${n}</td>`;
+  }
+
+  function populateFilters() {
+    const suppliers = [...new Set(allData.map(r => r.supplier).filter(Boolean))].sort();
+    const sel = document.getElementById('supplierFilter');
+    const cur = sel.value;
+    sel.innerHTML = '<option value="">All suppliers</option>' +
+      suppliers.map(s => `<option ${s===cur?'selected':''}>${s}</option>`).join('');
+  }
+
+  // sidebar nav
+  document.querySelectorAll('.pill-nav a').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      document.querySelectorAll('.pill-nav a').forEach(x => x.classList.remove('active'));
+      a.classList.add('active');
+      activeFilter = a.dataset.filter;
+      renderTable();
+    });
+  });
+
+  // sortable columns
+  document.querySelectorAll('th[data-col]').forEach(th => {
+    th.addEventListener('click', () => {
+      const col = th.dataset.col;
+      if (sortCol === col) sortAsc = !sortAsc; else { sortCol = col; sortAsc = true; }
+      document.querySelectorAll('th').forEach(t => t.classList.remove('sorted'));
+      th.classList.add('sorted');
+      renderTable();
+    });
+  });
+
+  ['searchInput','modeFilter','supplierFilter'].forEach(id => {
+    document.getElementById(id).addEventListener('input', renderTable);
+    document.getElementById(id).addEventListener('change', renderTable);
+  });
+
+  loadData();
+</script>
+</body>
+</html>
